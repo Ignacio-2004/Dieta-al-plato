@@ -1,0 +1,49 @@
+{
+  "project_info": {
+    "project_number": "441062306587",
+    "project_id": "dieta-al-plato-20",
+    "storage_bucket": "dieta-al-plato-20.firebasestorage.app",
+    "database_url": "https://dieta-al-plato-20-default-rtdb.europe-west1.firebasedatabase.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:441062306587:android:454f051e18a5dc29f4d9be",
+        "android_client_info": {
+          "package_name": "com.example.myapplication"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCJfnblZcdolzXdJEaN8o_nWzvJ-gFOGEY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:441062306587:android:8e8906440c4b9c52f4d9be",
+        "android_client_info": {
+          "package_name": "com.tfg.dietaalplato"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCJfnblZcdolzXdJEaN8o_nWzvJ-gFOGEY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
