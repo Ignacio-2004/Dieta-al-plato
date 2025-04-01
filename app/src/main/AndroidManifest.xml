@@ -13,6 +13,24 @@
         android:theme="@style/Theme.DietaAlPlato"
         tools:targetApi="31">
         <activity
+            android:name=".ComidasActivity"
+            android:exported="false" />
+        <activity
+            android:name=".DiasActivity"
+            android:exported="false" />
+        <activity
+            android:name=".DietasActivity"
+            android:exported="false" />
+        <activity
+            android:name=".PacientesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".InicioAdminActivity"
+            android:exported="false" />
+        <activity
+            android:name=".InicioUsuarioActivity"
+            android:exported="false" />
+        <activity
             android:name=".LogIn_Activity"
             android:exported="true">
             <intent-filter>
@@ -21,6 +39,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
     </application>
 
 </manifest>
