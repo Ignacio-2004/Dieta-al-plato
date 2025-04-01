@@ -1,25 +1,29 @@
 package com.tfg.dietaalplato.utilities;
 
-import static android.content.ContentValues.TAG;
-
 import android.util.Log;
 
 import com.google.firebase.database.*;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.tfg.dietaalplato.object.User;
 import com.tfg.dietaalplato.utilities.exception.FBCException;
+
+import java.util.HashMap;
 
 public class FireBaseConnector {
 
     private DatabaseReference ref;
     private FirebaseDatabase bd;
+    private FirebaseFirestore fst;
+    private static final String TAG = "Firebase";
 
     public FireBaseConnector() {
-        bd = FirebaseDatabase.getInstance();
+        bd = FirebaseDatabase.getInstance("https://dieta-al-plato-20-default-rtdb.europe-west1.firebasedatabase.app");
+        fst = FirebaseFirestore.getInstance();
     }
 
     public void setRef() throws FBCException {
         if (bd != null) {
-            this.ref = ref;
+            this.ref = bd.getReference();
         }else{
             throw new FBCException("La BD no puede ser nula");
         }
@@ -62,6 +66,11 @@ public class FireBaseConnector {
     }
 
     public void monitorConnectionStatus() throws FBCException {
+
+        if (fst == null){
+            throw new FBCException("La instancia de Firestore no puede ser nula");
+        }
+
         if (ref != null){
             DatabaseReference connectedRef = ref.getRoot().child(".info/connected");
             connectedRef.addValueEventListener(new ValueEventListener() {
@@ -82,40 +91,58 @@ public class FireBaseConnector {
     }
 
     public void saveUser(String id, String nombre, String psw) throws FBCException {
-        if (ref != null) {
-            // Crear un objeto de usuario
-            User usuario = new User(id, nombre, psw);
 
-            // Guardar en Firebase usando el ID como clave
-            ref.child(id).setValue(usuario)
+        if (fst == null){
+            throw new FBCException("La instancia de Firestore no puede ser nula");
+        }
+
+        if (ref != null) {
+            // Crear un objeto Map con los datos del usuario
+            HashMap<Object, Object> usuario = new HashMap<>();
+            usuario.put("id", id);
+            usuario.put("user", nombre);
+            usuario.put("psw", psw);
+
+            // Guardar en Firestore en la colección "usuarios"
+            fst.collection("usuarios").document(id)
+                    .set(usuario)
                     .addOnSuccessListener(aVoid -> {
-                        Log.d("Firebase", "✅ Usuario guardado con éxito");
+                        Log.d("Firebase", "✅ Usuario guardado con éxito en Firestore");
                     })
                     .addOnFailureListener(e -> {
                         Log.e("Firebase", "❌ Error al guardar usuario: " + e.getMessage());
                     });
-        }else throw new FBCException("La referencia no puede ser nula");
+        } else {
+            throw new FBCException("La referencia no puede ser nula");
+        }
     }
 
     public void leerUsuario(String id) throws FBCException {
-        if (ref != null){
-            ref.child(id).addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot snapshot) {
-                    if (snapshot.exists()) {
-                        User usuario = snapshot.getValue(User.class);
-                        Log.d("Firebase", "📖 Usuario leído: " + usuario.getUser() + ", Password: " + usuario.getPsw());
-                    } else {
-                        Log.d("Firebase", "⚠️ Usuario no encontrado");
-                    }
-                }
 
-                @Override
-                public void onCancelled(DatabaseError error) {
-                    Log.e("Firebase", "❌ Error de lectura: " + error.getMessage());
-                }
-            });
-        }else throw new FBCException("La referencia no puede ser nula");
+        if (fst == null){
+            throw new FBCException("La instancia de Firestore no puede ser nula");
+        }
+
+        if (ref != null) {
+            // Referencia al documento del usuario
+            fst.collection("usuarios").document(id).get()
+                    .addOnSuccessListener(documentSnapshot -> {
+                        if (documentSnapshot.exists()) {
+                            // Convertir el documento a un objeto User
+                            User usuario = documentSnapshot.toObject(User.class);
+                            if (usuario != null) {
+                                Log.d("Firebase", "📖 Usuario leído: " + usuario.getUser() + ", Password: " + usuario.getPsw());
+                            }
+                        } else {
+                            Log.d("Firebase", "⚠️ Usuario no encontrado en Firestore");
+                        }
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.e("Firebase", "❌ Error al leer usuario: " + e.getMessage());
+                    });
+        } else {
+            throw new FBCException("La referencia no puede ser nula");
+        }
     }
 
 
