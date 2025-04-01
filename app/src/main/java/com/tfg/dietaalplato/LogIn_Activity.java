@@ -1,10 +1,7 @@
 package com.tfg.dietaalplato;
 
 import android.annotation.SuppressLint;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
-import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,10 +10,9 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.google.firebase.database.*;
+import com.tfg.dietaalplato.object.User;
 import com.tfg.dietaalplato.utilities.FireBaseConnector;
 import com.tfg.dietaalplato.utilities.exception.FBCException;
-
-import java.net.*;
 
 public class LogIn_Activity extends AppCompatActivity {
 
@@ -42,8 +38,8 @@ public class LogIn_Activity extends AppCompatActivity {
             database.testFirebaseConnection();
             database.monitorConnectionStatus();
 
-            database.saveUser("1", "Ignacio", "1234");
-            database.leerUsuario("1");
+            database.saveUser(new User("US001","Ignacio@gmail.com","123456"));
+            database.readUsuario("1");
 
         } catch (FBCException e) {
             throw new RuntimeException(e);
