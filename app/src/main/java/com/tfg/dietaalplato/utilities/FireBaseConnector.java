@@ -5,13 +5,19 @@ import android.util.Log;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
 import com.google.firebase.database.*;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.tfg.dietaalplato.object.Client;
 import com.tfg.dietaalplato.object.Diet;
+import com.tfg.dietaalplato.object.Food;
+import com.tfg.dietaalplato.object.FoodDiet;
 import com.tfg.dietaalplato.object.User;
 import com.tfg.dietaalplato.utilities.exception.FBCException;
 
 import java.util.HashMap;
+import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 public class FireBaseConnector {
 
@@ -257,6 +263,182 @@ public class FireBaseConnector {
 
         return taskCompletionSource.getTask();
     }
+
+    public void saveFood(Food alimento) throws FBCException {
+
+        if (fst == null) {
+            throw new FBCException("La instancia de Firestore no puede ser nula");
+        }
+
+        // Crear un objeto Map con los datos del alimento
+        HashMap<String, Object> food = new HashMap<>();
+        food.put("id", alimento.getId());
+        food.put("idUser", alimento.getIdUser());
+        food.put("nombre", alimento.getNombre());
+        food.put("pc", alimento.getPc());
+        food.put("energia", alimento.getEnergia());
+        food.put("proteina", alimento.getProteina());
+        food.put("grasa", alimento.getGrasa());
+        food.put("ags", alimento.getAgs());
+        food.put("agmi", alimento.getAgmi());
+        food.put("agpi", alimento.getAgpi());
+        food.put("colesterol", alimento.getColesterol());
+        food.put("hc", alimento.getHc());
+        food.put("fibra", alimento.getFibra());
+        food.put("vitC", alimento.getVitC());
+        food.put("vitB6", alimento.getVitB6());
+        food.put("vitE", alimento.getVitE());
+        food.put("hierro", alimento.getHierro());
+        food.put("sodio", alimento.getSodio());
+        food.put("calcio", alimento.getCalcio());
+        food.put("potasio", alimento.getPotasio());
+
+        // Guardar en Firestore en la colección "alimentos"
+        fst.collection("alimentos").document(alimento.getId())
+                .set(food)
+                .addOnSuccessListener(aVoid -> {
+                    Log.d("Firebase", "✅ Alimento guardado con éxito en Firestore");
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("Firebase", "❌ Error al guardar Alimento: " + e.getMessage());
+                });
+    }
+
+    public Task<Food> readFood(String id) throws FBCException {
+
+        if (fst == null) {
+            throw new FBCException("La instancia de Firestore no puede ser nula");
+        }
+
+        final TaskCompletionSource<Food> taskCompletionSource = new TaskCompletionSource<>();
+
+        // Referencia al documento del alimento
+        fst.collection("alimentos").document(id).get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        // Convertir el documento a un objeto Alimento
+                        Food food = documentSnapshot.toObject(Food.class);
+                        if (food != null) {
+                            Log.d("Firebase", "📖 Alimento leído: " + food);
+                            taskCompletionSource.setResult(food);
+                        }
+                    } else {
+                        Log.d("Firebase", "⚠️ Alimento no encontrado en Firestore");
+                        taskCompletionSource.setException(new Exception("Alimento no encontrado"));
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("Firebase", "❌ Error al leer Alimento: " + e.getMessage());
+                    taskCompletionSource.setException(e);
+                });
+
+        return taskCompletionSource.getTask();
+    }
+
+    public void saveDietFood(FoodDiet dietFood) throws FBCException {
+        if (fst == null) {
+            throw new FBCException("La instancia de Firestore no puede ser nula");
+        }
+
+        // Crear un objeto Map con los datos de la DietFood
+        Map<String, Object> foodData = new HashMap<>();
+        foodData.put("idDieta", dietFood.getIdDieta());
+        foodData.put("idAlimento", dietFood.getIdAlimento());
+        foodData.put("comida", dietFood.getComida());
+        foodData.put("numeroPlato", dietFood.getNumeroPlato());
+        foodData.put("dia", dietFood.getDia());
+        foodData.put("nombreReceta", dietFood.getNombreReceta());
+
+        // Guardar en Firestore en la colección "diet_food"
+        fst.collection("diet_food").document(dietFood.getIdDieta() + "_" + dietFood.getIdAlimento())
+                .set(foodData)
+                .addOnSuccessListener(aVoid -> {
+                    Log.d("Firebase", "✅ DietFood guardado con éxito en Firestore");
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("Firebase", "❌ Error al guardar DietFood: " + e.getMessage());
+                });
+    }
+
+    public Task<FoodDiet> readDietFood(String idDieta, String idAlimento) throws FBCException {
+        if (fst == null) {
+            throw new FBCException("La instancia de Firestore no puede ser nula");
+        }
+
+        final TaskCompletionSource<FoodDiet> taskCompletionSource = new TaskCompletionSource<>();
+
+        // Referencia al documento en la colección "diet_food"
+        fst.collection("diet_food").document(idDieta + "_" + idAlimento).get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        FoodDiet dietFood = documentSnapshot.toObject(FoodDiet.class);
+                        if (dietFood != null) {
+                            Log.d("Firebase", "📖 DietFood leído: " + dietFood);
+                            taskCompletionSource.setResult(dietFood);
+                        }
+                    } else {
+                        Log.d("Firebase", "⚠️ DietFood no encontrado en Firestore");
+                        taskCompletionSource.setException(new Exception("DietFood no encontrado"));
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("Firebase", "❌ Error al leer DietFood: " + e.getMessage());
+                    taskCompletionSource.setException(e);
+                });
+
+        return taskCompletionSource.getTask();
+    }
+
+    public <T> Task<List<T>> readAllFromCollection(String collectionName, Class<T> clazz) throws FBCException {
+        if (fst == null) {
+            throw new FBCException("La instancia de Firestore no puede ser nula");
+        }
+
+        TaskCompletionSource<List<T>> taskCompletionSource = new TaskCompletionSource<>();
+
+        fst.collection(collectionName).get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    List<T> itemList = new ArrayList<>();
+                    for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments()) {
+                        T item = document.toObject(clazz);
+                        if (item != null) {
+                            itemList.add(item);
+                        }
+                    }
+                    Log.d("Firebase", "📖 Se leyeron " + itemList.size() + " documentos de " + collectionName);
+                    taskCompletionSource.setResult(itemList);
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("Firebase", "❌ Error al leer la colección " + collectionName + ": " + e.getMessage());
+                    taskCompletionSource.setException(e);
+                });
+
+        return taskCompletionSource.getTask();
+    }
+
+/* Ejemplo de uso de metodos Task
+    FirestoreHelper firestoreHelper = new FirestoreHelper(FirebaseFirestore.getInstance());
+
+        firestoreHelper.readAllFromCollection("diet_food", DietFood.class)
+                .addOnSuccessListener(dietFoods -> {
+                    for (DietFood food : dietFoods) {
+                        Log.d("Firebase", "🍽️ DietFood: " + food);
+                    }
+                })
+                .addOnFailureListener(e -> Log.e("Firebase", "❌ Error al obtener los DietFood", e));
+*/
+
+/*    🔹 ¿Qué es la clase Task en Firebase?
+    La clase Task<T> de Firebase representa una tarea asincrónica que devuelve un resultado de tipo T o un error si la tarea
+    falla. Se usa para manejar operaciones en segundo plano sin bloquear el hilo principal.
+
+🔹 ¿Para qué se usa?
+    En Firestore, Task se usa para leer, escribir y consultar datos sin que la app se congele.
+
+🔹 ¿Cómo funciona?
+    Cuando llamas a un métdo que devuelve un Task<T>, la operación no se ejecuta inmediatamente. En su lugar, puedes usar listeners
+    (addOnSuccessListener, addOnFailureListener) para ejecutar código cuando la tarea finaliza.*/
+
 
     public DatabaseReference getRef() {
         return ref;
