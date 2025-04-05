@@ -21,22 +21,24 @@ import java.util.List;
 
 public class FireBaseConnector {
 
+    private static FireBaseConnector instance;
+
     private DatabaseReference ref;
     private FirebaseDatabase bd;
     private FirebaseFirestore fst;
     private static final String TAG = "Firebase";
 
-    public FireBaseConnector() {
+    private FireBaseConnector() {
         bd = FirebaseDatabase.getInstance("https://dieta-al-plato-20-default-rtdb.europe-west1.firebasedatabase.app");
         fst = FirebaseFirestore.getInstance();
+        this.ref = bd.getReference();
     }
 
-    public void setRef() throws FBCException {
-        if (bd != null) {
-            this.ref = bd.getReference();
-        }else{
-            throw new FBCException("La BD no puede ser nula");
+    public static FireBaseConnector getInstance() {
+        if (instance == null) {
+            instance = new FireBaseConnector();
         }
+        return instance;
     }
 
     public void testFirebaseConnection() throws FBCException {
@@ -416,28 +418,31 @@ public class FireBaseConnector {
         return taskCompletionSource.getTask();
     }
 
-/* Ejemplo de uso de metodos Task
-    FirestoreHelper firestoreHelper = new FirestoreHelper(FirebaseFirestore.getInstance());
+/*
+    Ejemplo de uso de metodos Task
+        FirestoreHelper firestoreHelper = new FirestoreHelper(FirebaseFirestore.getInstance());
 
-        firestoreHelper.readAllFromCollection("diet_food", DietFood.class)
-                .addOnSuccessListener(dietFoods -> {
-                    for (DietFood food : dietFoods) {
-                        Log.d("Firebase", "🍽️ DietFood: " + food);
-                    }
-                })
-                .addOnFailureListener(e -> Log.e("Firebase", "❌ Error al obtener los DietFood", e));
+            firestoreHelper.readAllFromCollection("diet_food", DietFood.class)
+                    .addOnSuccessListener(dietFoods -> {
+                        for (DietFood food : dietFoods) {
+                            Log.d("Firebase", "🍽️ DietFood: " + food);
+                        }
+                    })
+                    .addOnFailureListener(e -> Log.e("Firebase", "❌ Error al obtener los DietFood", e));
 */
 
-/*    🔹 ¿Qué es la clase Task en Firebase?
-    La clase Task<T> de Firebase representa una tarea asincrónica que devuelve un resultado de tipo T o un error si la tarea
-    falla. Se usa para manejar operaciones en segundo plano sin bloquear el hilo principal.
+/*
+    🔹 ¿Qué es la clase Task en Firebase?
+            La clase Task<T> de Firebase representa una tarea asincrónica que devuelve un resultado de tipo T o un error si la tarea
+            falla. Se usa para manejar operaciones en segundo plano sin bloquear el hilo principal.
 
-🔹 ¿Para qué se usa?
-    En Firestore, Task se usa para leer, escribir y consultar datos sin que la app se congele.
+        🔹 ¿Para qué se usa?
+            En Firestore, Task se usa para leer, escribir y consultar datos sin que la app se congele.
 
-🔹 ¿Cómo funciona?
-    Cuando llamas a un métdo que devuelve un Task<T>, la operación no se ejecuta inmediatamente. En su lugar, puedes usar listeners
-    (addOnSuccessListener, addOnFailureListener) para ejecutar código cuando la tarea finaliza.*/
+        🔹 ¿Cómo funciona?
+            Cuando llamas a un métdo que devuelve un Task<T>, la operación no se ejecuta inmediatamente. En su lugar, puedes usar listeners
+            (addOnSuccessListener, addOnFailureListener) para ejecutar código cuando la tarea finaliza.
+*/
 
 
     public DatabaseReference getRef() {

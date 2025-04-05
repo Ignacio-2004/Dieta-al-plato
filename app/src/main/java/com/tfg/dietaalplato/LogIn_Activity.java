@@ -31,10 +31,10 @@ public class LogIn_Activity extends AppCompatActivity {
             return insets;
         });
 
-        FireBaseConnector database = new FireBaseConnector();
+
 
         try {
-            database.setRef();
+            FireBaseConnector database = FireBaseConnector.getInstance();
             database.testFirebaseConnection();
             database.monitorConnectionStatus();
 
