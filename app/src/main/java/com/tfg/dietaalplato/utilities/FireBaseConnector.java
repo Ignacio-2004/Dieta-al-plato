@@ -225,7 +225,7 @@ public class FireBaseConnector {
         client.put("just", diet.getJust());
 
         // Guardar en Firestore en la colección "usuarios"
-        fst.collection("clientes").document(diet.getId())
+        fst.collection("dietas").document(diet.getId())
                 .set(client)
                 .addOnSuccessListener(aVoid -> {
                     Log.d("Firebase", "✅ Dieta guardado con éxito en Firestore");

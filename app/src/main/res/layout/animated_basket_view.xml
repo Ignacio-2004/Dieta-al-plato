@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/basket_anim_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:visibility="gone">
+
+    <ImageView
+        android:id="@+id/food_image"
+        android:layout_width="128dp"
+        android:layout_height="128dp"
+        android:layout_gravity="top|center_horizontal"
+        android:src="@drawable/carrot"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/basket_image"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:layout_gravity="center_horizontal|bottom"
+        android:layout_marginBottom="50dp"
+        android:src="@drawable/basket" />
+
+    <TextView
+        android:id="@+id/save_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="170dp"
+        android:background="#CC000000"
+        android:padding="8dp"
+        android:textColor="#FFFFFF"
+        android:textSize="14sp"
+        android:visibility="gone"
+        android:text="@string/msgItemGuardado" />
+</FrameLayout>

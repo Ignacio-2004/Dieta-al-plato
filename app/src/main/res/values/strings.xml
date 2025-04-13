@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Dieta al plato</string>
+    <string name="msgItemGuardado">¡Guardado!</string>
 </resources>

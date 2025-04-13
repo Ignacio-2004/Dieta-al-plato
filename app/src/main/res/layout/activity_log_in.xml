@@ -80,6 +80,7 @@
         android:layout_height="81dp"
         android:backgroundTint="#3C871F"
         android:fontFamily="@font/alfa_slab_one"
+        android:onClick="onClick"
         android:text="Iniciar sesión"
         android:textColor="#1E1D21"
         android:textSize="34sp"

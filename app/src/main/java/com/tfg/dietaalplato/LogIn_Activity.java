@@ -2,6 +2,7 @@ package com.tfg.dietaalplato;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,6 +14,7 @@ import com.google.firebase.database.*;
 import com.tfg.dietaalplato.object.User;
 import com.tfg.dietaalplato.utilities.FireBaseConnector;
 import com.tfg.dietaalplato.utilities.exception.FBCException;
+import com.tfg.dietaalplato.utilities.BasketAnimation;
 
 public class LogIn_Activity extends AppCompatActivity {
 
@@ -38,13 +40,18 @@ public class LogIn_Activity extends AppCompatActivity {
             database.testFirebaseConnection();
             database.monitorConnectionStatus();
 
-            database.saveUser(new User("US001","Ignacio@gmail.com","123456"));
-            database.readUsuario("1");
+            database.saveUser(new User("USE002","Patatudo","123456"));
+            database.readUsuario("USE002");
 
         } catch (FBCException e) {
             throw new RuntimeException(e);
         }
 
+    }
+
+    public void onClick(View view) {
+        View animView = getLayoutInflater().inflate(R.layout.animated_basket_view, null);
+        BasketAnimation.showAnimation(this);
     }
 
 }
