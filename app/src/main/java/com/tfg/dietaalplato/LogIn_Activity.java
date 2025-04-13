@@ -1,6 +1,7 @@
 package com.tfg.dietaalplato;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
@@ -14,7 +15,6 @@ import com.google.firebase.database.*;
 import com.tfg.dietaalplato.object.User;
 import com.tfg.dietaalplato.utilities.FireBaseConnector;
 import com.tfg.dietaalplato.utilities.exception.FBCException;
-import com.tfg.dietaalplato.utilities.BasketAnimation;
 
 public class LogIn_Activity extends AppCompatActivity {
 
@@ -50,8 +50,8 @@ public class LogIn_Activity extends AppCompatActivity {
     }
 
     public void onClick(View view) {
-        View animView = getLayoutInflater().inflate(R.layout.animated_basket_view, null);
-        BasketAnimation.showAnimation(this);
+        Intent intent = new Intent(this, InicioUsuarioActivity.class );
+        startActivity(intent);
     }
 
 }
