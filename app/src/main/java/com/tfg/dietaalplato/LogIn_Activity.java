@@ -1,7 +1,6 @@
 package com.tfg.dietaalplato;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
@@ -13,6 +12,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.google.firebase.database.*;
 import com.tfg.dietaalplato.object.User;
+import com.tfg.dietaalplato.utilities.BasketAnimation;
 import com.tfg.dietaalplato.utilities.FireBaseConnector;
 import com.tfg.dietaalplato.utilities.exception.FBCException;
 
@@ -26,7 +26,7 @@ public class LogIn_Activity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_log_in);
+        setContentView(R.layout.activity_log_inmala);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -50,8 +50,10 @@ public class LogIn_Activity extends AppCompatActivity {
     }
 
     public void onClick(View view) {
-        Intent intent = new Intent(this, InicioUsuarioActivity.class );
-        startActivity(intent);
+       /* Intent intent = new Intent(this, InicioUsuarioActivity.class );
+        startActivity(intent);*/
+
+        BasketAnimation.showAnimation(this);
     }
 
 }

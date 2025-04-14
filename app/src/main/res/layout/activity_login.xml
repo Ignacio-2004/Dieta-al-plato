@@ -8,15 +8,6 @@
     android:layout_height="match_parent"
     tools:context=".LogIn_Activity">
 
-    <FrameLayout
-        android:id="@+id/basket_anim_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <include layout="@layout/animated_basket_view" />
-    </FrameLayout>
-
-
 
     <TextView
         android:id="@+id/titulo_textview"
