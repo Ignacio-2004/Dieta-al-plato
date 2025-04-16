@@ -20,6 +20,9 @@ public class InitialLoadingLogo extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_initial_loading_logo);
 
+        /*
+         * Cojemos la referencia a los elementos del layout
+         */
         titleText = findViewById(R.id.app_title);
         logo = findViewById(R.id.app_logo);
 
@@ -27,6 +30,11 @@ public class InitialLoadingLogo extends Activity {
     }
 
     private void startTypeWriterEffect() {
+
+        /*
+         * el código dentro del Runnable (el bloque () -> { ... }) se ejecutará después de 2 segundos, sin bloquear el hilo actual.
+         */
+
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
