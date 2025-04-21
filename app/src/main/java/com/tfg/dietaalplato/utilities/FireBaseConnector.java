@@ -124,7 +124,40 @@ public class FireBaseConnector {
                     Log.e("Firebase", "❌ Error al guardar usuario: " + e.getMessage());
                 });
     }
+private boolean correcto = false; // variable para comprobar que existe
+    public boolean verifyUser(String id) throws FBCException {
 
+        if (fst == null) {
+            throw new FBCException("La instancia de Firestore no puede ser nula");
+        }
+
+        final TaskCompletionSource<User> taskCompletionSource = new TaskCompletionSource<>();
+
+        // Referencia al documento del usuario
+        fst.collection("usuarios").document(id).get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        // Convertir el documento a un objeto User
+                        User usuario = documentSnapshot.toObject(User.class);
+                        if (usuario != null) {
+                            Log.d("Firebase", "📖 Usuario leído: " + usuario.getUser() + ", Password: " + usuario.getPsw());
+                            taskCompletionSource.setResult(usuario);  // Devolver el objeto User
+                            correcto =true;
+                        }
+                    } else {
+                        Log.d("Firebase", "⚠️ Usuario no encontrado en Firestore");
+                        taskCompletionSource.setException(new Exception("Usuario no encontrado"));
+
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("Firebase", "❌ Error al leer usuario: " + e.getMessage());
+                    taskCompletionSource.setException(e);  // Devolver la excepción
+
+                });
+
+        return correcto;
+    }
     public Task<User> readUsuario(String id) throws FBCException {
 
         if (fst == null) {
