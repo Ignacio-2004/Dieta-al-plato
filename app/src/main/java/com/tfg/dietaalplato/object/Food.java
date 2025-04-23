@@ -1,5 +1,13 @@
 package com.tfg.dietaalplato.object;
 
+import android.view.View;
+import android.widget.EditText;
+
+import com.tfg.dietaalplato.utilities.ValidationResult;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+
 public class Food {
     private String id;
     private String idUser;
@@ -107,5 +115,65 @@ public class Food {
 
     public int getPotasio() { return potasio; }
     public void setPotasio(int potasio) { this.potasio = potasio; }
+
+
+//++IP - 23/04/2025 -
+
+    public static ValidationResult toMapData(ArrayList<View> data,String idUser){
+        ValidationResult result = new ValidationResult();
+
+        String[] fieldName = {"nombre","pc","energia","proteina","grasa","ags","agmi","agpi","colesterol","hc","fibra","vitC","vitB6","vitE","hierro","sodio","calcio","potasio"};
+
+        try{
+            result.data = new HashMap<>();
+
+            ArrayList<String> keys = new ArrayList<>();
+            keys.add(idUser);
+            keys.add(((EditText) data.get(0)).getText().toString().trim());
+            keys.add(((EditText) data.get(1)).getText().toString().trim());
+            keys.add(((EditText) data.get(2)).getText().toString().trim());
+            keys.add(((EditText) data.get(3)).getText().toString().trim());
+            keys.add(((EditText) data.get(4)).getText().toString().trim());
+            keys.add(((EditText) data.get(5)).getText().toString().trim());
+            keys.add(((EditText) data.get(6)).getText().toString().trim());
+            keys.add(((EditText) data.get(7)).getText().toString().trim());
+            keys.add(((EditText) data.get(8)).getText().toString().trim());
+            keys.add(((EditText) data.get(9)).getText().toString().trim());
+            keys.add(((EditText) data.get(10)).getText().toString().trim());
+            keys.add(((EditText) data.get(11)).getText().toString().trim());
+            keys.add(((EditText) data.get(12)).getText().toString().trim());
+            keys.add(((EditText) data.get(13)).getText().toString().trim());
+            keys.add(((EditText) data.get(14)).getText().toString().trim());
+            keys.add(((EditText) data.get(15)).getText().toString().trim());
+            keys.add(((EditText) data.get(16)).getText().toString().trim());
+
+            for (int i = 0; i < keys.size(); i++) {
+
+                //Comprobamos que no haya campos vacios
+
+                if (keys.get(i).isEmpty()) {
+                    throw new Exception("El campo " + data.get(i).getTag().toString() + " no puede estar vacio");
+                    //Con tag devuelvo el nombre del campo vacio
+                }
+            }
+
+            for (int i = 0; i < keys.size(); i++) {
+                result.data.put(fieldName[i], keys.get(i));
+            }
+
+            result.exit = true;
+            result.message = "Datos validos";
+
+        }catch (Exception e){
+
+            result.exit = false;
+            result.message = "Error : " + e.getMessage();
+
+        }
+
+        return result;
+    }
+
+//--IP - 23/04/2025 -
 }
 
