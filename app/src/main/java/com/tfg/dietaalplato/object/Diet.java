@@ -8,26 +8,17 @@ import com.tfg.dietaalplato.utilities.ValidationResult;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Diet {
+public class Diet extends BaseObject{
 
-    private String id;
     private int tip;
     private String idCliente;
     private String just;
 
-    public Diet(String id, int tip, String idCliente, String just) {
-        this.id = id;
-        setTip(tip);  // Usamos el setter para validar el valor de tip
+    public Diet(String id, String name, int tip, String idCliente, String just) {
+        super(id, name);
+        this.tip = tip;
         this.idCliente = idCliente;
         this.just = just;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public int getTip() {
@@ -60,25 +51,27 @@ public class Diet {
 
     @Override
     public String toString() {
-        return "Dietas{" +
-                "id='" + id + '\'' +
-                ", tip=" + tip +
+        return "Diet{" +
+                "id='" + super.getId() + '\'' +
+                ", name='" + super.getName() + '\'' +
+                "tip=" + tip +
                 ", idCliente='" + idCliente + '\'' +
                 ", just='" + just + '\'' +
                 '}';
     }
 
-//++IP - 23/04/2025 -
+    //++IP - 23/04/2025 -
 
     public static ValidationResult toMapData(ArrayList<View> data){
         ValidationResult result = new ValidationResult();
 
-        String[] fieldName = {"tip", "idCliente", "just"};
+        String[] fieldName = {"Name","tip", "idCliente", "just"};
 
         try{
             result.data = new HashMap<>();
 
             ArrayList<String> keys = new ArrayList<>();
+            keys.add("Dieta de "+data.get(0)/*tip*/+" dias");
             keys.add(((EditText) data.get(0)).getText().toString().trim());
             keys.add(((EditText) data.get(1)).getText().toString().trim());
             keys.add(((EditText) data.get(2)).getText().toString().trim());

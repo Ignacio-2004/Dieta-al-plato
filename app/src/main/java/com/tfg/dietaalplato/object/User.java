@@ -8,38 +8,19 @@ import com.tfg.dietaalplato.utilities.ValidationResult;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class User {
-    private String id;
-    private String user;
+public class User extends BaseObject {
+
     private String psw;
 
-    // Constructor vacío (necesario para algunas operaciones como Firebase)
-    public User() {
-    }
-
     // Constructor con parámetros
-    public User(String id, String user, String psw) {
-        this.id = id;
-        this.user = user;
+
+
+    public User(String id, String name, String psw) {
+        super(id, name);
         this.psw = psw;
     }
 
     // Getters y Setters
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getUser() {
-        return user;
-    }
-
-    public void setUser(String user) {
-        this.user = user;
-    }
 
     public String getPsw() {
         return psw;
@@ -53,8 +34,8 @@ public class User {
     @Override
     public String toString() {
         return "Usuario{" +
-                "id='" + id + '\'' +
-                ", user='" + user + '\'' +
+                "id='" + super.getId() + '\'' +
+                ", user='" + super.getName() + '\'' +
                 ", psw='" + psw + '\'' +
                 '}';
     }
@@ -64,7 +45,7 @@ public class User {
     public static ValidationResult toMapData(ArrayList<View> data){
         ValidationResult result = new ValidationResult();
 
-        String[] fieldName = {"user", "psw"};
+        String[] fieldName = {"Name", "psw"};
 
         try{
             result.data = new HashMap<>();

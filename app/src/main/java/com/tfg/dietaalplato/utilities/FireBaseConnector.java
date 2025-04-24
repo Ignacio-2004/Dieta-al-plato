@@ -7,6 +7,7 @@ import com.google.android.gms.tasks.TaskCompletionSource;
 import com.google.firebase.database.*;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.tfg.dietaalplato.object.BaseObject;
 import com.tfg.dietaalplato.object.Client;
 import com.tfg.dietaalplato.object.Diet;
 import com.tfg.dietaalplato.object.Food;
@@ -18,6 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class FireBaseConnector {
 
@@ -111,7 +113,7 @@ public class FireBaseConnector {
         // Crear un objeto Map con los datos del usuario
         HashMap<Object, Object> usuario = new HashMap<>();
         usuario.put("id", user.getId());
-        usuario.put("user", user.getUser());
+        usuario.put("user", user.getName());
         usuario.put("psw", user.getPsw());
 
         // Guardar en Firestore en la colección "usuarios"
@@ -140,7 +142,7 @@ private boolean correcto = false; // variable para comprobar que existe
                         // Convertir el documento a un objeto User
                         User usuario = documentSnapshot.toObject(User.class);
                         if (usuario != null) {
-                            Log.d("Firebase", "📖 Usuario leído: " + usuario.getUser() + ", Password: " + usuario.getPsw());
+                            Log.d("Firebase", "📖 Usuario leído: " + usuario.getName() + ", Password: " + usuario.getPsw());
                             taskCompletionSource.setResult(usuario);  // Devolver el objeto User
                             correcto =true;
                         }
@@ -173,7 +175,7 @@ private boolean correcto = false; // variable para comprobar que existe
                         // Convertir el documento a un objeto User
                         User usuario = documentSnapshot.toObject(User.class);
                         if (usuario != null) {
-                            Log.d("Firebase", "📖 Usuario leído: " + usuario.getUser() + ", Password: " + usuario.getPsw());
+                            Log.d("Firebase", "📖 Usuario leído: " + usuario.getName() + ", Password: " + usuario.getPsw());
                             taskCompletionSource.setResult(usuario);  // Devolver el objeto User
                         }
                     } else {
@@ -198,7 +200,7 @@ private boolean correcto = false; // variable para comprobar que existe
         // Crear un objeto Map con los datos del usuario
         HashMap<Object, Object> client = new HashMap<>();
         client.put("id", cli.getId());
-        client.put("cli", cli.getCli());
+        client.put("cli", cli.getName());
         client.put("ape", cli.getApe());
         client.put("idUsr", cli.getIdUsr());
 
@@ -485,4 +487,71 @@ private boolean correcto = false; // variable para comprobar que existe
     public FirebaseDatabase getBd() {
         return bd;
     }
+
+//++IP - 23/04/2025 -
+    public <T> String saveData(Class<T> classType, ValidationResult result) {
+
+        String ret = "success";
+        AtomicReference<String> msg = null; //Es necesario hacerlo atomico para poder comunicarme con el en el metodo
+        /*
+         | Este tipo de variables se utilizan en el multihilo para evitar tener que utilizar syncronized y problemas de concurrencia
+         */
+
+        if (classType != FoodDiet.class) {
+
+            try {
+
+                if (!result.exit) {
+                    throw new Exception(result.message);
+                }
+
+                String collectionName = "";
+
+                if (classType.equals(User.class)) {
+                    collectionName = "usuarios";
+                } else if (classType.equals(Client.class)) {
+                    collectionName = "clientes";
+                } else if (classType.equals(Diet.class)) {
+                    collectionName = "dietas";
+                } else if (classType.equals(Food.class)) {
+                    collectionName = "alimentos";
+                } else if (classType.equals(FoodDiet.class)) {
+                    collectionName = "diet_food";
+                } else {
+                    throw new Exception("Tipo de dato no soportado");
+                }
+
+                readAllFromCollection(collectionName, classType).
+                        addOnSuccessListener(
+                                collection -> {
+                                    for (T item : collection) {
+                                        BaseObject obj = (BaseObject) item;
+                                        if (obj.getName().equals(result.data.get("Name"))) {
+                                            msg.set("Ya existe un elemento con ese nombre");
+                                        }
+                                    }
+                                    if (msg.get() == null) {
+
+                                    }
+
+                                }
+                        ).addOnFailureListener(
+                                e -> {
+                                    msg.set("Error al leer la colección ");
+                                }
+                        );
+
+            } catch (Exception e) {
+                ret = e.getMessage();
+            }
+        } else {
+            ret = "FoodDiet no soportado";
+        }
+        if (msg.get() != null) {
+            ret = msg.get();
+        }
+        return ret;
+    }
+//--IP - 23/04/2025 -
+
 }

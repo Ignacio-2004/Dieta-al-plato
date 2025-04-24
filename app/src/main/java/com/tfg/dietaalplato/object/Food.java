@@ -8,7 +8,7 @@ import com.tfg.dietaalplato.utilities.ValidationResult;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Food {
+public class Food extends BaseObject{
     private String id;
     private String idUser;
     private String nombre; // Alimento
@@ -30,10 +30,12 @@ public class Food {
     private int calcio;
     private int potasio;
 
-    public Food(String id, String idUser, String nombre, int pc, int energia, int proteina, int grasa, int ags,
-                    int agmi, int agpi, int colesterol, int hc, int fibra, int vitC, int vitB6, int vitE,
-                    int hierro, int sodio, int calcio, int potasio) {
-        this.id = id;
+    public Food(String id, String name, String id1, String idUser, String nombre, int pc, int energia,
+                int proteina, int grasa, int ags, int agmi, int agpi, int colesterol, int hc, int fibra,
+                int vitC, int vitB6, int vitE, int hierro, int sodio, int calcio, int potasio) {
+
+        super(id, name);
+        this.id = id1;
         this.idUser = idUser;
         this.nombre = nombre;
         this.pc = pc;
@@ -122,7 +124,7 @@ public class Food {
     public static ValidationResult toMapData(ArrayList<View> data,String idUser){
         ValidationResult result = new ValidationResult();
 
-        String[] fieldName = {"nombre","pc","energia","proteina","grasa","ags","agmi","agpi","colesterol","hc","fibra","vitC","vitB6","vitE","hierro","sodio","calcio","potasio"};
+        String[] fieldName = {"idUser","Name","pc","energia","proteina","grasa","ags","agmi","agpi","colesterol","hc","fibra","vitC","vitB6","vitE","hierro","sodio","calcio","potasio"};
 
         try{
             result.data = new HashMap<>();

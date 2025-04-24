@@ -8,34 +8,15 @@ import com.tfg.dietaalplato.utilities.ValidationResult;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Client {
+public class Client extends BaseObject {
 
-    private String id;
-    private String cli;
     private String ape;
     private String idUsr;
 
-    public Client(String id, String cli, String ape, String idUsr) {
-        this.id = id;
-        this.cli = cli;
+    public Client(String id, String name, String ape, String idUsr) {
+        super(id, name);
         this.ape = ape;
         this.idUsr = idUsr;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getCli() {
-        return cli;
-    }
-
-    public void setCli(String cli) {
-        this.cli = cli;
     }
 
     public String getApe() {
@@ -56,8 +37,8 @@ public class Client {
 
     public String toString() {
         return "Client{" +
-                "id='" + id + '\'' +
-                ", cli='" + cli + '\'' +
+                "id='" + super.getId() + '\'' +
+                ", cli='" + super.getName() + '\'' +
                 ", ape='" + ape + '\'' +
                 ", idUsr='" + idUsr + '\'' +
                 '}';
@@ -68,7 +49,7 @@ public class Client {
     public static ValidationResult toMapData(ArrayList<View> data, String idUsr){
         ValidationResult result = new ValidationResult();
 
-        String[] fieldName = {"cli", "ape", "idUsr"};
+        String[] fieldName = {"Name", "ape", "idUsr"};
 
         try{
             result.data = new HashMap<>();
@@ -76,6 +57,7 @@ public class Client {
             ArrayList<String> keys = new ArrayList<>();
             keys.add(((EditText) data.get(0)).getText().toString().trim());
             keys.add(((EditText) data.get(1)).getText().toString().trim());
+            keys.add(idUsr);
 
             for (int i = 0; i < keys.size(); i++) {
 
@@ -91,7 +73,6 @@ public class Client {
                 result.data.put(fieldName[i], keys.get(i));
             }
 
-            result.data.put("idUsr", idUsr);
             result.exit = true;
             result.message = "Datos validos";
 
