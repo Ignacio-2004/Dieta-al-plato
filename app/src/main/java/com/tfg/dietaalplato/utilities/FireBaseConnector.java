@@ -311,7 +311,7 @@ private boolean correcto = false; // variable para comprobar que existe
         HashMap<String, Object> food = new HashMap<>();
         food.put("id", alimento.getId());
         food.put("idUser", alimento.getIdUser());
-        food.put("nombre", alimento.getNombre());
+        food.put("nombre", alimento.getName());
         food.put("pc", alimento.getPc());
         food.put("energia", alimento.getEnergia());
         food.put("proteina", alimento.getProteina());
@@ -489,12 +489,12 @@ private boolean correcto = false; // variable para comprobar que existe
     }
 
 //++IP - 23/04/2025 -
-    public <T> String saveData(Class<T> classType, ValidationResult result) {
+    public <T> void saveData(Class<T> classType, ValidationResult result, OnResultCallBack callback) {
 
-        String ret = "success";
         AtomicReference<String> msg = null; //Es necesario hacerlo atomico para poder comunicarme con el en el metodo
-        /*
-         | Este tipo de variables se utilizan en el multihilo para evitar tener que utilizar syncronized y problemas de concurrencia
+        /**
+         Este tipo de variables se utilizan en el multihilo para evitar tener que utilizar syncronized y problemas de concurrencia
+
          */
 
         if (classType != FoodDiet.class) {
@@ -527,30 +527,70 @@ private boolean correcto = false; // variable para comprobar que existe
                                     for (T item : collection) {
                                         BaseObject obj = (BaseObject) item;
                                         if (obj.getName().equals(result.data.get("Name"))) {
-                                            msg.set("Ya existe un elemento con ese nombre");
+                                            callback.onResult(false, "Ya existe un elemento con ese nombre");
+                                            return;
                                         }
                                     }
                                     if (msg.get() == null) {
-
+                                        if (classType.equals(User.class)) {
+                                            try {
+                                                User user = new User(result.data.get("idUser"), result.data.get("Name"), result.data.get("psw"));
+                                                saveUser(user);
+                                            } catch (FBCException e) {
+                                                callback.onResult(false,"Error al guardar el usuario");
+                                                return;
+                                            }
+                                        } else if (classType.equals(Client.class)) {
+                                            try {
+                                                Client client = new Client(result.data.get("idClient"), result.data.get("Name"), result.data.get("Ape"), result.data.get("idUsr"));
+                                                saveClient(client);
+                                            } catch (FBCException e) {
+                                                callback.onResult(false,"Error al guardar el cliente");
+                                                return;
+                                            }
+                                        } else if (classType.equals(Diet.class)) {
+                                            try {
+                                                Diet diet = new Diet(result.data.get("idDiet"), result.data.get("Name"), Integer.parseInt(result.data.get("Tip")), result.data.get("idClient"), result.data.get("Just"));
+                                                saveDiet(diet);
+                                            } catch (FBCException e) {
+                                                callback.onResult(false,"Error al guardar la dieta");
+                                                return;
+                                            }
+                                        } else if (classType.equals(Food.class)) {
+                                            try {
+                                                Food food = new Food(result.data.get("idFood"), result.data.get("Name"), result.data.get("idUser"), result.data.get("pc"), result.data.get("energia"),
+                                                        result.data.get("proteina"), result.data.get("grasa"), result.data.get("ags"), result.data.get("agmi"), result.data.get("agpi"), result.data.get("colesterol"),
+                                                        result.data.get("hc"), result.data.get("fibra"), result.data.get("vitC"), result.data.get("vitB6"), result.data.get("vitE"), result.data.get("hierro"),
+                                                        result.data.get("sodio"), result.data.get("calcio"), result.data.get("potasio"));
+                                                saveFood(food);
+                                            } catch (FBCException e) {
+                                                callback.onResult(false,"Error al guardar el alimento");
+                                                return;
+                                            }
+                                        } else {
+                                           callback.onResult(false,"Tipo de dato no soportado");
+                                           return;
+                                        }
                                     }
 
                                 }
                         ).addOnFailureListener(
                                 e -> {
-                                    msg.set("Error al leer la colección ");
+                                    callback.onResult(false,"Error al guardar el elemento");
+                                    return;
                                 }
                         );
 
             } catch (Exception e) {
-                ret = e.getMessage();
+                callback.onResult(false, e.getMessage());
+                return;
             }
         } else {
-            ret = "FoodDiet no soportado";
+            callback.onResult(false, "Tipo de dato no soportado");
+            return;
         }
-        if (msg.get() != null) {
-            ret = msg.get();
-        }
-        return ret;
+        callback.onResult(true, "Datos guardados correctamente");
+        return;
     }
 //--IP - 23/04/2025 -
 

@@ -9,35 +9,32 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Food extends BaseObject{
-    private String id;
+
     private String idUser;
-    private String nombre; // Alimento
-    private int pc;
-    private int energia;
-    private int proteina;
-    private int grasa;
-    private int ags;
-    private int agmi;
-    private int agpi;
-    private int colesterol;
-    private int hc;
-    private int fibra;
-    private int vitC;
-    private int vitB6;
-    private int vitE;
-    private int hierro;
-    private int sodio;
-    private int calcio;
-    private int potasio;
+    private String pc;
+    private String energia;
+    private String proteina;
+    private String grasa;
+    private String ags;
+    private String agmi;
+    private String agpi;
+    private String colesterol;
+    private String hc;
+    private String fibra;
+    private String vitC;
+    private String vitB6;
+    private String vitE;
+    private String hierro;
+    private String sodio;
+    private String calcio;
+    private String potasio;
 
-    public Food(String id, String name, String id1, String idUser, String nombre, int pc, int energia,
-                int proteina, int grasa, int ags, int agmi, int agpi, int colesterol, int hc, int fibra,
-                int vitC, int vitB6, int vitE, int hierro, int sodio, int calcio, int potasio) {
-
+    public Food(String id, String name, String idUser, String pc, String energia, String proteina,
+                String grasa, String ags, String agmi, String agpi, String colesterol, String hc,
+                String fibra, String vitC, String vitB6, String vitE, String hierro, String sodio,
+                String calcio, String potasio) {
         super(id, name);
-        this.id = id1;
         this.idUser = idUser;
-        this.nombre = nombre;
         this.pc = pc;
         this.energia = energia;
         this.proteina = proteina;
@@ -57,69 +54,151 @@ public class Food extends BaseObject{
         this.potasio = potasio;
     }
 
-    // Getters y Setters
-    public String getId() { return id; }
-    public void setId(String id) { this.id = id; }
+    public String getIdUser() {
+        return idUser;
+    }
 
-    public String getIdUser() { return idUser; }
-    public void setIdUser(String idUser) { this.idUser = idUser; }
+    public void setIdUser(String idUser) {
+        this.idUser = idUser;
+    }
 
-    public String getNombre() { return nombre; }
-    public void setNombre(String nombre) { this.nombre = nombre; }
+    public String getPc() {
+        return pc;
+    }
 
-    public int getPc() { return pc; }
-    public void setPc(int pc) { this.pc = pc; }
+    public void setPc(String pc) {
+        this.pc = pc;
+    }
 
-    public int getEnergia() { return energia; }
-    public void setEnergia(int energia) { this.energia = energia; }
+    public String getEnergia() {
+        return energia;
+    }
 
-    public int getProteina() { return proteina; }
-    public void setProteina(int proteina) { this.proteina = proteina; }
+    public void setEnergia(String energia) {
+        this.energia = energia;
+    }
 
-    public int getGrasa() { return grasa; }
-    public void setGrasa(int grasa) { this.grasa = grasa; }
+    public String getProteina() {
+        return proteina;
+    }
 
-    public int getAgs() { return ags; }
-    public void setAgs(int ags) { this.ags = ags; }
+    public void setProteina(String proteina) {
+        this.proteina = proteina;
+    }
 
-    public int getAgmi() { return agmi; }
-    public void setAgmi(int agmi) { this.agmi = agmi; }
+    public String getGrasa() {
+        return grasa;
+    }
 
-    public int getAgpi() { return agpi; }
-    public void setAgpi(int agpi) { this.agpi = agpi; }
+    public void setGrasa(String grasa) {
+        this.grasa = grasa;
+    }
 
-    public int getColesterol() { return colesterol; }
-    public void setColesterol(int colesterol) { this.colesterol = colesterol; }
+    public String getAgs() {
+        return ags;
+    }
 
-    public int getHc() { return hc; }
-    public void setHc(int hc) { this.hc = hc; }
+    public void setAgs(String ags) {
+        this.ags = ags;
+    }
 
-    public int getFibra() { return fibra; }
-    public void setFibra(int fibra) { this.fibra = fibra; }
+    public String getAgmi() {
+        return agmi;
+    }
 
-    public int getVitC() { return vitC; }
-    public void setVitC(int vitC) { this.vitC = vitC; }
+    public void setAgmi(String agmi) {
+        this.agmi = agmi;
+    }
 
-    public int getVitB6() { return vitB6; }
-    public void setVitB6(int vitB6) { this.vitB6 = vitB6; }
+    public String getAgpi() {
+        return agpi;
+    }
 
-    public int getVitE() { return vitE; }
-    public void setVitE(int vitE) { this.vitE = vitE; }
+    public void setAgpi(String agpi) {
+        this.agpi = agpi;
+    }
 
-    public int getHierro() { return hierro; }
-    public void setHierro(int hierro) { this.hierro = hierro; }
+    public String getColesterol() {
+        return colesterol;
+    }
 
-    public int getSodio() { return sodio; }
-    public void setSodio(int sodio) { this.sodio = sodio; }
+    public void setColesterol(String colesterol) {
+        this.colesterol = colesterol;
+    }
 
-    public int getCalcio() { return calcio; }
-    public void setCalcio(int calcio) { this.calcio = calcio; }
+    public String getHc() {
+        return hc;
+    }
 
-    public int getPotasio() { return potasio; }
-    public void setPotasio(int potasio) { this.potasio = potasio; }
+    public void setHc(String hc) {
+        this.hc = hc;
+    }
 
+    public String getFibra() {
+        return fibra;
+    }
 
-//++IP - 23/04/2025 -
+    public void setFibra(String fibra) {
+        this.fibra = fibra;
+    }
+
+    public String getVitC() {
+        return vitC;
+    }
+
+    public void setVitC(String vitC) {
+        this.vitC = vitC;
+    }
+
+    public String getVitB6() {
+        return vitB6;
+    }
+
+    public void setVitB6(String vitB6) {
+        this.vitB6 = vitB6;
+    }
+
+    public String getVitE() {
+        return vitE;
+    }
+
+    public void setVitE(String vitE) {
+        this.vitE = vitE;
+    }
+
+    public String getHierro() {
+        return hierro;
+    }
+
+    public void setHierro(String hierro) {
+        this.hierro = hierro;
+    }
+
+    public String getSodio() {
+        return sodio;
+    }
+
+    public void setSodio(String sodio) {
+        this.sodio = sodio;
+    }
+
+    public String getCalcio() {
+        return calcio;
+    }
+
+    public void setCalcio(String calcio) {
+        this.calcio = calcio;
+    }
+
+    public String getPotasio() {
+        return potasio;
+    }
+
+    public void setPotasio(String potasio) {
+        this.potasio = potasio;
+    }
+
+    //++IP - 23/04/2025 -
 
     public static ValidationResult toMapData(ArrayList<View> data,String idUser){
         ValidationResult result = new ValidationResult();
