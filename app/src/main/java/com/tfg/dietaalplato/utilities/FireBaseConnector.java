@@ -126,8 +126,33 @@ public class FireBaseConnector {
                     Log.e("Firebase", "❌ Error al guardar usuario: " + e.getMessage());
                 });
     }
-private boolean correcto = false; // variable para comprobar que existe
-    public boolean verifyUser(String id) throws FBCException {
+
+    /**
+     * ALEX-----------
+     * comprobamos si existe el usuario pasando correo
+     * @param email
+     * @return true / false
+     * @throws FBCException
+     */
+    public Task<Boolean> verifyUser(String email) throws FBCException {
+        if (fst == null) throw new FBCException("La instancia de Firestore no puede ser nula");
+
+        TaskCompletionSource<Boolean> tcs = new TaskCompletionSource<>();
+        // vamos la coleccion de usuarios, buscamos por el campo "user" que cogemos el correo
+        fst.collection("usuarios")
+                .whereEqualTo("user", email) //buscamos el usario por email
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    boolean exists = !queryDocumentSnapshots.isEmpty();
+                    tcs.setResult(exists);
+                })
+                .addOnFailureListener(tcs::setException);
+
+        return tcs.getTask();
+    }
+
+
+    public Task<User> readUsuario(String id) throws FBCException {
 
         if (fst == null) {
             throw new FBCException("La instancia de Firestore no puede ser nula");
@@ -158,9 +183,17 @@ private boolean correcto = false; // variable para comprobar que existe
 
                 });
 
-        return correcto;
+        return taskCompletionSource.getTask();
     }
-    public Task<User> readUsuario(String id) throws FBCException {
+
+    /**
+     * ALEX-----------
+     * Metodo para ver si existe el usuario pasando su correo
+     * @param email
+     * @return devuelve el usuario
+     * @throws FBCException
+     */
+    public Task<User> readUserByEmail(String email) throws FBCException {
 
         if (fst == null) {
             throw new FBCException("La instancia de Firestore no puede ser nula");
@@ -168,15 +201,22 @@ private boolean correcto = false; // variable para comprobar que existe
 
         final TaskCompletionSource<User> taskCompletionSource = new TaskCompletionSource<>();
 
-        // Referencia al documento del usuario
-        fst.collection("usuarios").document(id).get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    if (documentSnapshot.exists()) {
-                        // Convertir el documento a un objeto User
-                        User usuario = documentSnapshot.toObject(User.class);
+        // vamos la coleccion de usuarios, buscamos por el campo "user" que cogemos el correo
+        fst.collection("usuarios")
+                .whereEqualTo("user", email) //buscamos el usario por email
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    if (!querySnapshot.isEmpty()) {
+
+                        DocumentSnapshot document = querySnapshot.getDocuments().get(0);
+                        User usuario = document.toObject(User.class);
+
                         if (usuario != null) {
                             Log.d("Firebase", "📖 Usuario leído: " + usuario.getName() + ", Password: " + usuario.getPsw());
                             taskCompletionSource.setResult(usuario);  // Devolver el objeto User
+                        } else {
+                            Log.d("Firebase", "⚠️ El documento no pudo convertirse a User");
+                            taskCompletionSource.setException(new Exception("Error al convertir documento a usuario"));
                         }
                     } else {
                         Log.d("Firebase", "⚠️ Usuario no encontrado en Firestore");
@@ -190,6 +230,7 @@ private boolean correcto = false; // variable para comprobar que existe
 
         return taskCompletionSource.getTask();
     }
+
 
     public void saveClient(Client cli) throws FBCException {
 

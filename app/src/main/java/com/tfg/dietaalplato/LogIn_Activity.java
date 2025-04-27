@@ -3,8 +3,10 @@ package com.tfg.dietaalplato;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -24,11 +26,13 @@ public class LogIn_Activity extends AppCompatActivity {
     private static final String TAG = "FirebaseConnection";
     private DatabaseReference databaseReference;
 
-
     //variables para gestionar los gmails y sus password
     private EditText gmail;
     private EditText passw;
     private TextView text_error;
+    private TextView text_passw;
+    private ImageButton see_passw;
+    private ImageButton hide_passw;
     private FireBaseConnector DateBase;
 
     @SuppressLint("StaticFieldLeak")
@@ -43,32 +47,31 @@ public class LogIn_Activity extends AppCompatActivity {
             return insets;
         });
 
-
-
         try {
-            FireBaseConnector database = FireBaseConnector.getInstance();
-            database.testFirebaseConnection();
-            database.monitorConnectionStatus();
+            // inicializamos la conexión con Firebase
+            DateBase = FireBaseConnector.getInstance();
+            DateBase.testFirebaseConnection();
+            DateBase.monitorConnectionStatus();
 
-            database.saveUser(new User("USE002","Patatudo","123456"));
-            database.readUsuario("USE002");
+            // Prueba para guardar y leer un usuario (puedes quitarlo más adelante)
+            DateBase.saveUser(new User("USE002", "Patatudo", "123456"));
+            DateBase.readUsuario("USE002");
 
         } catch (FBCException e) {
             throw new RuntimeException(e);
         }
-
     }
 
     public void onClick(View view) {
-       /* Intent intent = new Intent(this, InicioUsuarioActivity.class );
-        startActivity(intent);*/
-
+        /* Intent intent = new Intent(this, InicioUsuarioActivity.class );
+           startActivity(intent); */
         BasketAnimation.showAnimation(this);
     }
+
     /* metodo para que el usuario se logue
         1 - se comprueba que el correo sea el adecuado
      */
-    public void login (View view) throws FBCException {
+    public void login(View view) throws FBCException {
         text_error = findViewById(R.id.text_error);// guaardamos en la variable la referencia dele textView para los errores
 
         gmail = findViewById(R.id.text_usuario); //almacenamos lo que ha introducio el usario
@@ -85,7 +88,7 @@ public class LogIn_Activity extends AppCompatActivity {
            Al menos un número
            Al menos un símbolo especial de entre estos: !, -, _, #
 
-           Develop1!
+           Ejemplo válido: Develop1!
          */
         String passwRegex = "^(?=.*[A-Z])(?=.*\\d)(?=.*[!\\-_#])[A-Za-z\\d!\\-_#]{8,12}$";
         String emailRegex = "^[a-zA-Z]+(\\.[a-zA-Z]+)?@educa\\.madrid\\.org$";
@@ -96,63 +99,76 @@ public class LogIn_Activity extends AppCompatActivity {
             //COMPROBAMOS QUE SEA UN CORREO CORRECTO
             //nombre.apellidos@educa.madrid.org
 
-            if(gmail_introducido.matches(emailRegex)) // es correcto
+            if (gmail_introducido.matches(emailRegex)) // es correcto
             {
-                if(DateBase.verifyUser(gmail_introducido)) // esta registrado
-                {
-                    // COMPROBAMOS PASSWORD
-                    if(!passwd_introducida.isEmpty())
-                    {
-                        DateBase.readUsuario(gmail_introducido)
-                                .addOnSuccessListener(usuario -> {
-                                    String passwDB = usuario.getPsw();  // Accedemos a la contraseña de la BD
+                // VERIFICAMOS SI EL USUARIO EXISTE EN FIREBASE
+                DateBase.verifyUser(gmail_introducido)
+                        .addOnSuccessListener(isUserExists -> {
+                            if (isUserExists) {// El usuario existe ✅
 
-                                    if (passwd_introducida.equals(passwDB)) {
-                                        // Contraseña correcta
-                                        Intent i = new Intent(this, InicioUsuarioActivity.class);
-                                        startActivity(i);
-                                        finish(); // Cerramos Login para que no se pueda volver atrás
-                                    } else {
-                                        // Contraseña incorrecta
-                                        text_error.setText("Contraseña incorrecta.");
-                                        text_error.setVisibility(View.VISIBLE);
-                                        mostrarTextError();
+                                // COMPROBAMOS PASSWORD
+                                if (!passwd_introducida.isEmpty()) {
+                                    try {
+                                        DateBase.readUserByEmail(gmail_introducido)
+                                                .addOnSuccessListener(usuario -> {
+                                                    String passwDB = usuario.getPsw();  // Accedemos a la contraseña de la BD
+
+                                                    if (passwd_introducida.equals(passwDB)) {
+                                                        // Contraseña correcta
+                                                        Intent i = new Intent(this, InicioUsuarioActivity.class);
+                                                        startActivity(i);
+                                                        finish(); // Cerramos Login para que no se pueda volver atrás
+                                                    } else {
+                                                        // Contraseña incorrecta
+                                                        text_error.setText("Contraseña incorrecta.");
+                                                        text_error.setVisibility(View.VISIBLE);
+                                                        mostrarTextError();
+                                                    }
+                                                })
+                                                .addOnFailureListener(e -> {
+                                                    // Usuario no encontrado o error en la base de datos
+                                                    text_error.setText("Usuario no encontrado.");
+                                                    text_error.setVisibility(View.VISIBLE);
+                                                    mostrarTextError();
+                                                });
+                                    } catch (FBCException e) {
+                                        throw new RuntimeException(e);
                                     }
-                                })
-                                .addOnFailureListener(e -> {
-                                    // Usuario no encontrado o error en la base de datos
-                                    text_error.setText("Usuario no encontrado.");
-                                    text_error.setVisibility(View.VISIBLE);
-                                    mostrarTextError();
-                                });
 
-                    }else{
-                        text_error.setText("  Error: contraseña de usuario vacía.  ");
-                        text_error.setVisibility(View.VISIBLE); // el textView se puede ver
-                        mostrarTextError();// se oculta el mensaje
-                    }
-                }
-                else{// no esta registrado en la BD
+                                } else {
+                                    text_error.setText("  Error: contraseña de usuario vacía.  ");
+                                    text_error.setVisibility(View.VISIBLE); // el textView se puede ver
+                                    mostrarTextError();// se oculta el mensaje
+                                }
 
-                }
-            }
-            else{
-                text_error.setText("  Error: gmail de usuario debe tener la estructura [nombre.apellidos@educa.madrid.org].  ");
+                            } else { // No existe el usuario ❌
+                                text_error.setText("  Error: correo no guardado ");
+                                text_error.setVisibility(View.VISIBLE); // el textView se puede ver
+                                mostrarTextError();// se oculta el mensaje
+                            }
+                        }).addOnFailureListener(e -> {
+                            // Manejo de error
+                            e.printStackTrace();
+                            text_error.setText("Error al verificar el usuario.");
+                            text_error.setVisibility(View.VISIBLE);
+                            mostrarTextError();
+                        });
+
+            } else {
+                text_error.setText("  Error: correo de usuario debe tener la estructura [nombre.apellidos@educa.madrid.org].  ");
                 text_error.setVisibility(View.VISIBLE); // el textView se puede ver
                 mostrarTextError();// se oculta el mensaje
             }
 
-        }
-        else // no ha puesto el gmail
+        } else // no ha puesto el gmail
         {
-            text_error.setText("  Error: gmail de usuario vacío.  ");
+            text_error.setText("  Error: correo de usuario vacío.  ");
             text_error.setVisibility(View.VISIBLE); // el textView se puede ver
             mostrarTextError();// se oculta el mensaje
-
         }
     }
-    public void mostrarTextError()
-    {
+
+    public void mostrarTextError() {
         // ocultamos el mensaje después de 2 segundos
         text_error.postDelayed(new Runnable() {
             @Override
@@ -161,4 +177,25 @@ public class LogIn_Activity extends AppCompatActivity {
             }
         }, 2000);
     }
+
+    public void mostrarPassword(View view) {
+        text_passw = findViewById(R.id.Password);
+        text_passw.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+
+        see_passw = findViewById(R.id.buttonSeePasswd);
+        hide_passw = findViewById(R.id.buttonHidePasswd);
+        see_passw.setVisibility(View.GONE);
+        hide_passw.setVisibility(View.VISIBLE);
+    }
+
+    public void ocultarPassword(View view) {
+        text_passw = findViewById(R.id.Password);
+        text_passw.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+
+        ImageButton see = findViewById(R.id.buttonSeePasswd);
+        ImageButton hide = findViewById(R.id.buttonHidePasswd);
+        see.setVisibility(View.VISIBLE);
+        hide.setVisibility(View.GONE);
+    }
+
 }
