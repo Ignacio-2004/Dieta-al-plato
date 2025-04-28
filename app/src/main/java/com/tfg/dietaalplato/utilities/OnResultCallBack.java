@@ -25,6 +25,6 @@ saveData(User.class, result, (success, message) -> {
             });
 */
 
-public interface OnResultCallBack {
-    void onResult(boolean success, String message);
+public interface OnResultCallBack<T> {
+    void onResult( T result );
 }

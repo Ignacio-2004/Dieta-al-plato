@@ -59,7 +59,7 @@ public class Client extends BaseObject {
             keys.add(((EditText) data.get(1)).getText().toString().trim());
             keys.add(idUsr);
 
-            for (int i = 0; i < keys.size(); i++) {
+            for (int i = 0; i < keys.size()-1; i++) {
 
                 //Comprobamos que no haya campos vacios
 

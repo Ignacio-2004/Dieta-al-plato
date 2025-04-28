@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class FoodDiet {
+    private String id;
     private String idDieta;
     private String idAlimento;
     private int comida; // 1: Desayuno, 2: Almuerzo, 3: Comida, 4: Merienda, 5: Cena, 6: ReCena
@@ -21,16 +22,29 @@ public class FoodDiet {
     }
 
     // Constructor con parámetros
-    public FoodDiet(String idDieta, String idAlimento, int comida, int numeroPlato, int dia, String nombreReceta) {
+
+
+    public FoodDiet(String id, String idDieta, String idAlimento, int comida, int numeroPlato, int dia, String nombreReceta) {
+        this.id = id;
         this.idDieta = idDieta;
         this.idAlimento = idAlimento;
-        setComida(comida); // Usamos el setter para validar
+        this.comida = comida;
         this.numeroPlato = numeroPlato;
         this.dia = dia;
         this.nombreReceta = nombreReceta;
     }
 
     // Getters y Setters
+
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public String getIdDieta() {
         return idDieta;
     }
@@ -96,27 +110,27 @@ public class FoodDiet {
 
 //++IP - 23/04/2025 -
 
-    public static ValidationResult toMapData(ArrayList<View> data, String idDieta){
+    public static ValidationResult toMapData(ArrayList<View> data, String idDieta,String idAlimento){
         ValidationResult result = new ValidationResult();
 
-        String[] fieldName = {"idAlimento", "comida", "numeroPlato", "dia", "nombreReceta"};
+        String[] fieldName = {"idDieta","idAlimento", "comida", "numeroPlato", "dia", "nombreReceta"};
 
         try{
             result.data = new HashMap<>();
 
             ArrayList<String> keys = new ArrayList<>();
             keys.add(idDieta);
+            keys.add(idAlimento);
             keys.add(((EditText) data.get(0)).getText().toString().trim());
             keys.add(((EditText) data.get(1)).getText().toString().trim());
             keys.add(((EditText) data.get(2)).getText().toString().trim());
             keys.add(((EditText) data.get(3)).getText().toString().trim());
-            keys.add(((EditText) data.get(4)).getText().toString().trim());
 
-            for (int i = 0; i < keys.size(); i++) {
+            for (int i = 0; i < keys.size()-2; i++) {
 
                 //Comprobamos que no haya campos vacios
 
-                if (keys.get(i).isEmpty()) {
+                if (keys.get(i+2).isEmpty()) {
                     throw new Exception("El campo " + data.get(i).getTag().toString() + " no puede estar vacio");
                     //Con tag devuelvo el nombre del campo vacio
                 }

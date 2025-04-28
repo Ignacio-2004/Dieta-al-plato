@@ -26,6 +26,7 @@ public class LogIn_Activity extends AppCompatActivity {
     private static final String TAG = "FirebaseConnection";
     private DatabaseReference databaseReference;
 
+
     //variables para gestionar los gmails y sus password
     private EditText gmail;
     private EditText passw;
@@ -47,6 +48,8 @@ public class LogIn_Activity extends AppCompatActivity {
             return insets;
         });
 
+
+
         try {
             // inicializamos la conexión con Firebase
             DateBase = FireBaseConnector.getInstance();
@@ -54,12 +57,13 @@ public class LogIn_Activity extends AppCompatActivity {
             DateBase.monitorConnectionStatus();
 
             // Prueba para guardar y leer un usuario (puedes quitarlo más adelante)
-            DateBase.saveUser(new User("USE002", "Patatudo", "123456"));
-            DateBase.readUsuario("USE002");
+//            DateBase.saveUser(new User("USE002", "Patatudo", "123456"));
+//            DateBase.readUsuario("USE002");
 
         } catch (FBCException e) {
             throw new RuntimeException(e);
         }
+
     }
 
     public void onClick(View view) {

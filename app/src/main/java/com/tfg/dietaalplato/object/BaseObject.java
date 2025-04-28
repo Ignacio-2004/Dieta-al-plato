@@ -1,9 +1,9 @@
 package com.tfg.dietaalplato.object;
 //++IP - 24/04/2025 -
 
-/*
- |  Con esta clase buscamos tener un nexo en comun entre todas las clases que componen la bd, de esta forma
- |  en metodos genericos podemos sacar informacion de las clases sin tener que buscar la clase ezxacta a la que pertenece ahorrando asi codigo.
+/**
+   Con esta clase buscamos tener un nexo en comun entre todas las clases que componen la bd, de esta forma
+   en metodos genericos podemos sacar informacion de las clases sin tener que buscar la clase ezxacta a la que pertenece ahorrando asi codigo.
  */
 
 public class BaseObject {

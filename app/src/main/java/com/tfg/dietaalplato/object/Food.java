@@ -228,12 +228,12 @@ public class Food extends BaseObject{
             keys.add(((EditText) data.get(15)).getText().toString().trim());
             keys.add(((EditText) data.get(16)).getText().toString().trim());
 
-            for (int i = 0; i < keys.size(); i++) {
+            for (int i = 0; i < keys.size()-1; i++) {
 
                 //Comprobamos que no haya campos vacios
 
                 if (keys.get(i).isEmpty()) {
-                    throw new Exception("El campo " + data.get(i).getTag().toString() + " no puede estar vacio");
+                    throw new Exception("El campo " + data.get(i-1).getTag().toString() + " no puede estar vacio");
                     //Con tag devuelvo el nombre del campo vacio
                 }
             }
