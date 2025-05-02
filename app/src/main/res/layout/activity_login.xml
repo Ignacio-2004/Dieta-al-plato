@@ -158,6 +158,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed" />
 
+
     <!-- gmail -->
     <EditText
         android:id="@+id/text_usuario"
@@ -212,6 +213,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/Password" />
+
     <!-- mensaje error login -->
     <TextView
         android:id="@+id/text_error"
@@ -226,6 +228,24 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/buttonLogin" />
+
+    <!-- boton Sign UP -->
+    <Button
+        android:id="@+id/buttonLogin2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="300dp"
+        android:layout_marginTop="72dp"
+        android:layout_marginEnd="300dp"
+        android:backgroundTint="#027C68"
+        android:onClick="signUp"
+        android:text="@string/sign_up"
+        android:textColor="@android:color/white"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/Password" />
 
     <!-- boton mostrar password -->
     <ImageButton
@@ -256,6 +276,10 @@
         app:layout_constraintEnd_toEndOf="parent"
          android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@+id/text_usuario" />
+
+
+
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

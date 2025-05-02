@@ -164,7 +164,7 @@ public class FireBaseConnector {
         TaskCompletionSource<Boolean> tcs = new TaskCompletionSource<>();
         // vamos la coleccion de usuarios, buscamos por el campo "user" que cogemos el correo
         fst.collection("usuarios")
-                .whereEqualTo("user", email) //buscamos el usario por email
+                .whereEqualTo("name", email) //buscamos el usario por email
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     boolean exists = !queryDocumentSnapshots.isEmpty();

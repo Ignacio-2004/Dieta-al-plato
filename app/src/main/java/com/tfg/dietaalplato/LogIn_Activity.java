@@ -1,22 +1,25 @@
 package com.tfg.dietaalplato;
 
 import android.annotation.SuppressLint;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.View;
+
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+
 import com.google.firebase.database.*;
-import com.tfg.dietaalplato.object.User;
 import com.tfg.dietaalplato.utilities.BasketAnimation;
 import com.tfg.dietaalplato.utilities.FireBaseConnector;
 import com.tfg.dietaalplato.utilities.exception.FBCException;
@@ -28,7 +31,7 @@ public class LogIn_Activity extends AppCompatActivity {
 
 
     //variables para gestionar los gmails y sus password
-    private EditText gmail;
+    private EditText correo;
     private EditText passw;
     private TextView text_error;
     private TextView text_passw;
@@ -72,17 +75,29 @@ public class LogIn_Activity extends AppCompatActivity {
         BasketAnimation.showAnimation(this);
     }
 
+
+
+    // metodo para mostrar el dialogo cuando se hace clic sign up
+    public void signUp(View view) {
+        SignUp_Dialogo dialogo = new SignUp_Dialogo();
+        dialogo.show(getSupportFragmentManager(), "dialogoNuevoUsuario");
+    }
+
+
     /* metodo para que el usuario se logue
         1 - se comprueba que el correo sea el adecuado
      */
     public void login(View view) throws FBCException {
+
         text_error = findViewById(R.id.text_error);// guaardamos en la variable la referencia dele textView para los errores
 
-        gmail = findViewById(R.id.text_usuario); //almacenamos lo que ha introducio el usario
-        String gmail_introducido = gmail.getText().toString(); // lo ponemos en tipo String
+        correo = findViewById(R.id.text_usuario); //almacenamos lo que ha introducio el usario
+        String correo_introducido = correo.getText().toString(); // lo ponemos en tipo String
+        String emailRegex = "^[a-zA-Z]+(\\.[a-zA-Z]+)?@educa\\.madrid\\.org$";
 
         passw = findViewById(R.id.Password); // almacenamos lo que ha introducido el usuario
         String passwd_introducida = passw.getText().toString(); // lo ponemos en tipo String
+
 
         //Expresiones regulares para gmail y password
         /*
@@ -95,33 +110,44 @@ public class LogIn_Activity extends AppCompatActivity {
            Ejemplo válido: Develop1!
          */
         String passwRegex = "^(?=.*[A-Z])(?=.*\\d)(?=.*[!\\-_#])[A-Za-z\\d!\\-_#]{8,12}$";
-        String emailRegex = "^[a-zA-Z]+(\\.[a-zA-Z]+)?@educa\\.madrid\\.org$";
+
 
         // COMPROBAMOS CORREo
-        if (!gmail_introducido.isEmpty()) // ha puesto el usuario
+        if (!correo_introducido.isEmpty()) // ha puesto el usuario
         {
             //COMPROBAMOS QUE SEA UN CORREO CORRECTO
             //nombre.apellidos@educa.madrid.org
 
-            if (gmail_introducido.matches(emailRegex)) // es correcto
+            if (correo_introducido.matches(emailRegex)) // es correcto
             {
                 // VERIFICAMOS SI EL USUARIO EXISTE EN FIREBASE
-                DateBase.verifyUser(gmail_introducido)
+                DateBase.verifyUser(correo_introducido)
                         .addOnSuccessListener(isUserExists -> {
                             if (isUserExists) {// El usuario existe ✅
 
                                 // COMPROBAMOS PASSWORD
                                 if (!passwd_introducida.isEmpty()) {
                                     try {
-                                        DateBase.readUserByEmail(gmail_introducido)
+                                        DateBase.readUserByEmail(correo_introducido)
                                                 .addOnSuccessListener(usuario -> {
                                                     String passwDB = usuario.getPsw();  // Accedemos a la contraseña de la BD
 
                                                     if (passwd_introducida.equals(passwDB)) {
                                                         // Contraseña correcta
+
+                                                        // comprobamos que sea el admin
+                                                        if (correo_introducido.equals("admin@educa.madrid.org"))
+                                                        {
+                                                            Intent i = new Intent(this, InicioAdminActivity.class);
+                                                            startActivity(i);
+                                                            finish(); // Cerramos Login para que no se pueda volver atrás
+
+                                                        }
+                                                        else{
                                                         Intent i = new Intent(this, InicioUsuarioActivity.class);
                                                         startActivity(i);
                                                         finish(); // Cerramos Login para que no se pueda volver atrás
+                                                        }
                                                     } else {
                                                         // Contraseña incorrecta
                                                         text_error.setText("Contraseña incorrecta.");
