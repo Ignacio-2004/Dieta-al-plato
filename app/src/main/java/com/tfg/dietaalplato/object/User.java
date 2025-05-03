@@ -15,6 +15,9 @@ public class User extends BaseObject {
     // Constructor con parámetros
 
 
+    public User() {
+    }
+
     public User(String id, String name, String psw) {
         super(id, name);
         this.psw = psw;

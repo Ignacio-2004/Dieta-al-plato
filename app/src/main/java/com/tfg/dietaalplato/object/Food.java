@@ -29,6 +29,9 @@ public class Food extends BaseObject{
     private String calcio;
     private String potasio;
 
+    public Food() {
+    }
+
     public Food(String id, String name, String idUser, String pc, String energia, String proteina,
                 String grasa, String ags, String agmi, String agpi, String colesterol, String hc,
                 String fibra, String vitC, String vitB6, String vitE, String hierro, String sodio,
@@ -203,7 +206,7 @@ public class Food extends BaseObject{
     public static ValidationResult toMapData(ArrayList<View> data,String idUser){
         ValidationResult result = new ValidationResult();
 
-        String[] fieldName = {"idUser","Name","pc","energia","proteina","grasa","ags","agmi","agpi","colesterol","hc","fibra","vitC","vitB6","vitE","hierro","sodio","calcio","potasio"};
+        String[] fieldName = {"idUsr","Name","pc","energia","proteina","grasa","ags","agmi","agpi","colesterol","hc","fibra","vitC","vitB6","vitE","hierro","sodio","calcio","potasio"};
 
         try{
             result.data = new HashMap<>();

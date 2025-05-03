@@ -13,6 +13,9 @@ public class Client extends BaseObject {
     private String ape;
     private String idUsr;
 
+    public Client() {
+    }
+
     public Client(String id, String name, String ape, String idUsr) {
         super(id, name);
         this.ape = ape;

@@ -1,24 +1,59 @@
 package com.tfg.dietaalplato;
 
-import android.os.Bundle;
 
-import androidx.activity.EdgeToEdge;
+import android.os.Bundle;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.Toast;
+
+
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+import com.tfg.dietaalplato.object.User;
+import com.tfg.dietaalplato.utilities.FireBaseConnector;
+import com.tfg.dietaalplato.utilities.exception.FBCException;
+
 
 public class InicioAdminActivity extends AppCompatActivity {
+
+
+    private LinearLayout layoutUsuarios;
+    private FireBaseConnector fbConnector; // tu conector personalizado
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_inicio_admin);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+
+
+        layoutUsuarios = findViewById(R.id.layoutUsuarios);
+        fbConnector = new FireBaseConnector(); // instanciar tu clase
+
+
+        try {
+            fbConnector.readAllFromCollection("usuarios", User.class)
+                    .addOnSuccessListener(usuarios -> {
+                        for (User usuario : usuarios) {
+                            Button botonUsuario = new Button(this);
+                            botonUsuario.setText(usuario.getName());
+
+
+                            botonUsuario.setLayoutParams(new LinearLayout.LayoutParams(
+                                    LinearLayout.LayoutParams.MATCH_PARENT,
+                                    LinearLayout.LayoutParams.WRAP_CONTENT
+                            ));
+
+
+                            botonUsuario.setOnClickListener(v ->
+                                    Toast.makeText(this, "Usuario: " + usuario.getName(), Toast.LENGTH_SHORT).show()
+                            );
+
+
+                            layoutUsuarios.addView(botonUsuario);
+                        }
+                    });
+        } catch (FBCException e) {
+            Toast.makeText(this, "Error al cargar usuarios", Toast.LENGTH_SHORT).show();
+        }
     }
 }

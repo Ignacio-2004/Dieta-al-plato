@@ -10,6 +10,9 @@ public class BaseObject {
     private String id;
     private String name;
 
+    public BaseObject() {
+    }
+
     public BaseObject(String id, String name) {
         this.id = id;
         this.name = name;

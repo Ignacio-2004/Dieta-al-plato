@@ -1,6 +1,8 @@
 package com.tfg.dietaalplato.utilities;
 
+
 import android.util.Log;
+
 
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
@@ -14,51 +16,62 @@ import com.tfg.dietaalplato.object.FoodDiet;
 import com.tfg.dietaalplato.object.User;
 import com.tfg.dietaalplato.utilities.exception.FBCException;
 
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ArrayList;
 import java.util.List;
 
-/*
-    Ejemplo de uso de metodos Task
-        FirestoreHelper firestoreHelper = new FirestoreHelper(FirebaseFirestore.getInstance());
-
-            firestoreHelper.readAllFromCollection("diet_food", DietFood.class)
-                    .addOnSuccessListener(dietFoods -> {
-                        for (DietFood food : dietFoods) {
-                            Log.d("Firebase", "🍽️ DietFood: " + food);
-                        }
-                    })
-                    .addOnFailureListener(e -> Log.e("Firebase", "❌ Error al obtener los DietFood", e));
-*/
 
 /*
-    🔹 ¿Qué es la clase Task en Firebase?
-            La clase Task<T> de Firebase representa una tarea asincrónica que devuelve un resultado de tipo T o un error si la tarea
-            falla. Se usa para manejar operaciones en segundo plano sin bloquear el hilo principal.
+   Ejemplo de uso de metodos Task
+       FirestoreHelper firestoreHelper = new FirestoreHelper(FirebaseFirestore.getInstance());
 
-        🔹 ¿Para qué se usa?
-            En Firestore, Task se usa para leer, escribir y consultar datos sin que la app se congele.
 
-        🔹 ¿Cómo funciona?
-            Cuando llamas a un métdo que devuelve un Task<T>, la operación no se ejecuta inmediatamente. En su lugar, puedes usar listeners
-            (addOnSuccessListener, addOnFailureListener) para ejecutar código cuando la tarea finaliza.
+           firestoreHelper.readAllFromCollection("diet_food", DietFood.class)
+                   .addOnSuccessListener(dietFoods -> {
+                       for (DietFood food : dietFoods) {
+                           Log.d("Firebase", "🍽️ DietFood: " + food);
+                       }
+                   })
+                   .addOnFailureListener(e -> Log.e("Firebase", "❌ Error al obtener los DietFood", e));
 */
+
+
+/*
+   🔹 ¿Qué es la clase Task en Firebase?
+           La clase Task<T> de Firebase representa una tarea asincrónica que devuelve un resultado de tipo T o un error si la tarea
+           falla. Se usa para manejar operaciones en segundo plano sin bloquear el hilo principal.
+
+
+       🔹 ¿Para qué se usa?
+           En Firestore, Task se usa para leer, escribir y consultar datos sin que la app se congele.
+
+
+       🔹 ¿Cómo funciona?
+           Cuando llamas a un métdo que devuelve un Task<T>, la operación no se ejecuta inmediatamente. En su lugar, puedes usar listeners
+           (addOnSuccessListener, addOnFailureListener) para ejecutar código cuando la tarea finaliza.
+*/
+
 
 public class FireBaseConnector {
 
+
     private static FireBaseConnector instance;
+
 
     private DatabaseReference ref;
     private FirebaseDatabase bd;
     private FirebaseFirestore fst;
     private static final String TAG = "Firebase";
 
-    private FireBaseConnector() {
+
+    public FireBaseConnector() {
         bd = FirebaseDatabase.getInstance("https://dieta-al-plato-20-default-rtdb.europe-west1.firebasedatabase.app");
         fst = FirebaseFirestore.getInstance();
         this.ref = bd.getReference();
     }
+
 
     public static FireBaseConnector getInstance() {
         if (instance == null) {
@@ -67,17 +80,22 @@ public class FireBaseConnector {
         return instance;
     }
 
+
     public void testFirebaseConnection() throws FBCException {
+
 
         if (ref != null) {
             String testKey = "test_" + System.currentTimeMillis();
 
+
             Log.d(TAG, "============= testFirebaseConnection: " + ref.toString());
+
 
             // Escritura
             ref.child(testKey).setValue("conexion_exitosa")
                     .addOnSuccessListener(aVoid -> {
                         Log.d(TAG, "✅ Datos escritos en Firebase Europa");
+
 
                         // Lectura para verificar
                         ref.child(testKey).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -86,6 +104,7 @@ public class FireBaseConnector {
                                 String value = snapshot.getValue(String.class);
                                 Log.d(TAG, "📖 Valor leído: " + value);
                             }
+
 
                             @Override
                             public void onCancelled(DatabaseError error) {
@@ -101,13 +120,17 @@ public class FireBaseConnector {
             throw new FBCException("La referencia no puede ser nula");
         }
 
+
     }
 
+
     public void monitorConnectionStatus() throws FBCException {
+
 
         if (fst == null){
             throw new FBCException("La instancia de Firestore no puede ser nula");
         }
+
 
         if (ref != null){
             DatabaseReference connectedRef = ref.getRoot().child(".info/connected");
@@ -117,6 +140,7 @@ public class FireBaseConnector {
                     Boolean connected = snapshot.getValue(Boolean.class);
                     Log.d(TAG, "🔌 Estado conexión: " + (connected ? "CONECTADO" : "DESCONECTADO"));
                 }
+
 
                 @Override
                 public void onCancelled(DatabaseError error) {
@@ -128,17 +152,21 @@ public class FireBaseConnector {
         }
     }
 
+
     private void save(User user) throws FBCException {
+
 
         if (fst == null){
             throw new FBCException("La instancia de Firestore no puede ser nula");
         }
+
 
         // Crear un objeto Map con los datos del usuario
         HashMap<Object, Object> usuario = new HashMap<>();
         usuario.put("id", user.getId());
         usuario.put("user", user.getName());
         usuario.put("psw", user.getPsw());
+
 
         // Guardar en Firestore en la colección "usuarios"
         fst.collection("usuarios").document(user.getId())
@@ -151,6 +179,7 @@ public class FireBaseConnector {
                 });
     }
 
+
     /**
      * ALEX-----------
      * comprobamos si existe el usuario pasando correo
@@ -161,10 +190,11 @@ public class FireBaseConnector {
     public Task<Boolean> verifyUser(String email) throws FBCException {
         if (fst == null) throw new FBCException("La instancia de Firestore no puede ser nula");
 
+
         TaskCompletionSource<Boolean> tcs = new TaskCompletionSource<>();
         // vamos la coleccion de usuarios, buscamos por el campo "user" que cogemos el correo
         fst.collection("usuarios")
-                .whereEqualTo("user", email) //buscamos el usario por email
+                .whereEqualTo("name", email) //buscamos el usario por email
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     boolean exists = !queryDocumentSnapshots.isEmpty();
@@ -172,10 +202,13 @@ public class FireBaseConnector {
                 })
                 .addOnFailureListener(tcs::setException);
 
+
         return tcs.getTask();
     }
 
+
 //++IP - 27/04/2025 -
+
 
     /**
      * Metodo que lee un usario desde su nombre
@@ -187,6 +220,7 @@ public class FireBaseConnector {
         if (fst == null) {
             throw new FBCException("La instancia de Firestore no puede ser nula");
         }
+
 
         fst.collection("usuarios")
                 .whereEqualTo("name", name)
@@ -213,6 +247,7 @@ public class FireBaseConnector {
                 });
     }
 
+
     /**
      * Metrodo que lee una comida de un usuario desde su nombre
      * @param name nombre de la comida
@@ -224,6 +259,7 @@ public class FireBaseConnector {
         if (fst == null) {
             throw new FBCException("La instancia de Firestore no puede ser nula");
         }
+
 
         fst.collection("comidas")
                 .whereEqualTo("name", name).whereEqualTo("idUser", idUser)
@@ -250,6 +286,7 @@ public class FireBaseConnector {
                 });
     }
 
+
     /**
      * Metodo que lee todas las comida de un usuario
      * @param idUser id del usuario al que le pertenece las comidas
@@ -260,6 +297,7 @@ public class FireBaseConnector {
         if (fst == null) {
             throw new FBCException("La instancia de Firestore no puede ser nula");
         }
+
 
         fst.collection("comidas")
                 .whereEqualTo("idUser", idUser)
@@ -277,11 +315,13 @@ public class FireBaseConnector {
                             }
                         }
 
+
                         if (!foods.isEmpty()) {
                             callback.onResult(new ObjectResult<>(true, "success", foods));
                         }else{
                             callback.onResult(new ObjectResult<>(false, "No se encontraron comidas", null));
                         }
+
 
                     } else {
                         Log.d("Firebase", "⚠️ No se encontró ningúna comida que pertenezca al usuario: " +idUser);
@@ -294,6 +334,7 @@ public class FireBaseConnector {
                 });
     }
 
+
     /**
      * Metodo que lee las dietas de un cliente
      * @param idCli cleinte al que pertenecen las dietas
@@ -305,13 +346,16 @@ public class FireBaseConnector {
             throw new FBCException("La instancia de Firestore no puede ser nula");
         }
 
+
         fst.collection("dietas")
                 .whereEqualTo("idCliente", idCli)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     if (!queryDocumentSnapshots.isEmpty()) {
 
+
                         ArrayList<Diet> diets = new ArrayList<>();
+
 
                         for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments()) {
                             Diet diet = document.toObject(Diet.class);
@@ -323,11 +367,13 @@ public class FireBaseConnector {
                             }
                         }
 
+
                         if (!diets.isEmpty()){
                             callback.onResult(new ObjectResult<>(true, "success", diets));
                         }else{
                             callback.onResult(new ObjectResult<>(false, "No se encontraron dietas", null));
                         }
+
 
                     } else {
                         Log.d("Firebase", "⚠️ No se encontró ningúna dieta para el cliente con id: " + idCli);
@@ -339,6 +385,7 @@ public class FireBaseConnector {
                     callback.onResult(new ObjectResult<>(false, "Error al buscar la dieta: " + e.getMessage(), null));
                 });
     }
+
 
     /**
      * Metodo que lee las dietas de un cliente a partir de un nombre
@@ -352,6 +399,7 @@ public class FireBaseConnector {
             throw new FBCException("La instancia de Firestore no puede ser nula");
         }
 
+
         fst.collection("dietas")
                 .whereEqualTo("idCliente", idCli)
                 .whereEqualTo("name", name)
@@ -359,7 +407,9 @@ public class FireBaseConnector {
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     if (!queryDocumentSnapshots.isEmpty()) {
 
+
                         ArrayList<Diet> diets = new ArrayList<>();
+
 
                         for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments()) {
                             Diet diet = document.toObject(Diet.class);
@@ -371,11 +421,13 @@ public class FireBaseConnector {
                             }
                         }
 
+
                         if (!diets.isEmpty()){
                             callback.onResult(new ObjectResult<>(true, "success", diets));
                         }else{
                             callback.onResult(new ObjectResult<>(false, "No se encontraron dietas", null));
                         }
+
 
                     } else {
                         Log.d("Firebase", "⚠️ No se encontró ningúna dieta para el cliente con id: " + idCli);
@@ -387,6 +439,7 @@ public class FireBaseConnector {
                     callback.onResult(new ObjectResult<>(false, "Error al buscar la dieta: " + e.getMessage(), null));
                 });
     }
+
 
     /**
      * Metodo que lee un cliente a partir de su nombre y apellido
@@ -400,6 +453,7 @@ public class FireBaseConnector {
         if (fst == null) {
             throw new FBCException("La instancia de Firestore no puede ser nula");
         }
+
 
         fst.collection("clientes")
                 .whereEqualTo("name", name)
@@ -428,6 +482,7 @@ public class FireBaseConnector {
                 });
     }
 
+
     /**
      * Metodo que lee todos los clientes a partir de su id de usuario
      * @param idUsr id del usuario
@@ -439,13 +494,16 @@ public class FireBaseConnector {
             throw new FBCException("La instancia de Firestore no puede ser nula");
         }
 
+
         fst.collection("cliente")
                 .whereEqualTo("idUsr", idUsr)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     if (!queryDocumentSnapshots.isEmpty()) {
 
+
                         ArrayList<Client> clients = new ArrayList<>();
+
 
                         for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments()) {
                             Client client = document.toObject(Client.class);
@@ -457,11 +515,13 @@ public class FireBaseConnector {
                             }
                         }
 
+
                         if (!clients.isEmpty()){
                             callback.onResult(new ObjectResult<>(true, "success", clients));
                         }else{
                             callback.onResult(new ObjectResult<>(false, "No se encontraron clientes", null));
                         }
+
 
                     } else {
                         Log.d("Firebase", "⚠️ No se encontró ningún cliente que pertenezca al usuario: "+idUsr);
@@ -474,6 +534,7 @@ public class FireBaseConnector {
                 });
     }
 
+
     /**
      * Metodo que lee una comidaDiet a partir de su id de dieta y de alimento
      * @param idDieta id de la dieta
@@ -485,6 +546,7 @@ public class FireBaseConnector {
         if (fst == null) {
             throw new FBCException("La instancia de Firestore no puede ser nula");
         }
+
 
         fst.collection("comidaDietas")
                 .whereEqualTo("idDieta", idDieta)
@@ -512,6 +574,7 @@ public class FireBaseConnector {
                 });
     }
 
+
     /**
      * Metodo que lee todas las comidasde una dieta a partir de su id de dieta
      * @param idDieta id de la dieta
@@ -523,56 +586,16 @@ public class FireBaseConnector {
             throw new FBCException("La instancia de Firestore no puede ser nula");
         }
 
+
         fst.collection("comidaDietas")
                 .whereEqualTo("idDieta", idDieta)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     if (!queryDocumentSnapshots.isEmpty()) {
 
-                        ArrayList<FoodDiet> foods = new ArrayList<>();
-
-                       for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments()) {
-                           FoodDiet food = document.toObject(FoodDiet.class);
-                           if (food != null) {
-                               Log.d("Firebase", "📖 FoodDiet encontrada: " + food.getIdAlimento());
-                               foods.add(food);
-                           }
-                           else{
-                                   Log.e("Firebase", "⚠️ Documento encontrado pero no se pudo convertir a FoodDiet");
-                                   callback.onResult(new ObjectResult<>(false, "Error al convertir el documento a FoodDiet", null));
-                          }
-                       }
-                    } else {
-                        Log.d("Firebase", "⚠️ No se encontró ningún foodDiet con idDieta: " + idDieta );
-                        callback.onResult(new ObjectResult<>(false, "FoodDiet no encontrado", null));
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    Log.e("Firebase", "❌ Error al buscar el FoodDiet: " + e.getMessage());
-                    callback.onResult(new ObjectResult<>(false, "Error al buscar el FoodDiet: " + e.getMessage(), null));
-                });
-    }
-
-    /**
-     * Metodo que lee todas las comidas de una dieta a partir de su id de dieta y de dia
-     * @param idDieta id de la dieta
-     * @param dia  dia de la dieta
-     * @param callback parametro que convierte el metodo de asincronico en sincronico
-     * @throws FBCException excepcion propia que marca si la conexion no es buena
-     */
-    public void readFoodDietByDay(String idDieta, String dia, OnResultCallBack<ObjectResult<ArrayList<FoodDiet>>> callback) throws FBCException {
-        if (fst == null) {
-            throw new FBCException("La instancia de Firestore no puede ser nula");
-        }
-
-        fst.collection("comidaDietas")
-                .whereEqualTo("idDieta", idDieta)
-                .whereEqualTo("dia", dia)
-                .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    if (!queryDocumentSnapshots.isEmpty()) {
 
                         ArrayList<FoodDiet> foods = new ArrayList<>();
+
 
                         for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments()) {
                             FoodDiet food = document.toObject(FoodDiet.class);
@@ -596,7 +619,56 @@ public class FireBaseConnector {
                 });
     }
 
+
+    /**
+     * Metodo que lee todas las comidas de una dieta a partir de su id de dieta y de dia
+     * @param idDieta id de la dieta
+     * @param dia  dia de la dieta
+     * @param callback parametro que convierte el metodo de asincronico en sincronico
+     * @throws FBCException excepcion propia que marca si la conexion no es buena
+     */
+    public void readFoodDietByDay(String idDieta, String dia, OnResultCallBack<ObjectResult<ArrayList<FoodDiet>>> callback) throws FBCException {
+        if (fst == null) {
+            throw new FBCException("La instancia de Firestore no puede ser nula");
+        }
+
+
+        fst.collection("comidaDietas")
+                .whereEqualTo("idDieta", idDieta)
+                .whereEqualTo("dia", dia)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    if (!queryDocumentSnapshots.isEmpty()) {
+
+
+                        ArrayList<FoodDiet> foods = new ArrayList<>();
+
+
+                        for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments()) {
+                            FoodDiet food = document.toObject(FoodDiet.class);
+                            if (food != null) {
+                                Log.d("Firebase", "📖 FoodDiet encontrada: " + food.getIdAlimento());
+                                foods.add(food);
+                            }
+                            else{
+                                Log.e("Firebase", "⚠️ Documento encontrado pero no se pudo convertir a FoodDiet");
+                                callback.onResult(new ObjectResult<>(false, "Error al convertir el documento a FoodDiet", null));
+                            }
+                        }
+                    } else {
+                        Log.d("Firebase", "⚠️ No se encontró ningún foodDiet con idDieta: " + idDieta );
+                        callback.onResult(new ObjectResult<>(false, "FoodDiet no encontrado", null));
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("Firebase", "❌ Error al buscar el FoodDiet: " + e.getMessage());
+                    callback.onResult(new ObjectResult<>(false, "Error al buscar el FoodDiet: " + e.getMessage(), null));
+                });
+    }
+
+
 //--IP - 27/04/2025 -
+
 
     /**
      * ALEX-----------
@@ -607,21 +679,26 @@ public class FireBaseConnector {
      */
     public Task<User> readUserByEmail(String email) throws FBCException {
 
+
         if (fst == null) {
             throw new FBCException("La instancia de Firestore no puede ser nula");
         }
 
+
         final TaskCompletionSource<User> taskCompletionSource = new TaskCompletionSource<>();
+
 
         // vamos la coleccion de usuarios, buscamos por el campo "user" que cogemos el correo
         fst.collection("usuarios")
-                .whereEqualTo("user", email) //buscamos el usario por email
+                .whereEqualTo("name", email) //buscamos el usario por email
                 .get()
                 .addOnSuccessListener(querySnapshot -> {
                     if (!querySnapshot.isEmpty()) {
 
+
                         DocumentSnapshot document = querySnapshot.getDocuments().get(0);
                         User usuario = document.toObject(User.class);
+
 
                         if (usuario != null) {
                             Log.d("Firebase", "📖 Usuario leído: " + usuario.getName() + ", Password: " + usuario.getPsw());
@@ -640,15 +717,20 @@ public class FireBaseConnector {
                     taskCompletionSource.setException(e);  // Devolver la excepción
                 });
 
+
         return taskCompletionSource.getTask();
     }
 
 
+
+
     private void save(Client cli) throws FBCException {
+
 
         if (fst == null){
             throw new FBCException("La instancia de Firestore no puede ser nula");
         }
+
 
         // Crear un objeto Map con los datos del usuario
         HashMap<Object, Object> client = new HashMap<>();
@@ -656,6 +738,7 @@ public class FireBaseConnector {
         client.put("cli", cli.getName());
         client.put("ape", cli.getApe());
         client.put("idUsr", cli.getIdUsr());
+
 
         // Guardar en Firestore en la colección "usuarios"
         fst.collection("clientes").document(cli.getId())
@@ -668,13 +751,17 @@ public class FireBaseConnector {
                 });
     }
 
+
     public Task<Client> readClient(String id) throws FBCException {
+
 
         if (fst == null) {
             throw new FBCException("La instancia de Firestore no puede ser nula");
         }
 
+
         final TaskCompletionSource<Client> taskCompletionSource = new TaskCompletionSource<>();
+
 
         // Referencia al documento del usuario
         fst.collection("clientes").document(id).get()
@@ -696,14 +783,18 @@ public class FireBaseConnector {
                     taskCompletionSource.setException(e);  // Devolver la excepción
                 });
 
+
         return taskCompletionSource.getTask();
     }
 
+
     private  void save(Diet diet) throws FBCException {
+
 
         if (fst == null){
             throw new FBCException("La instancia de Firestore no puede ser nula");
         }
+
 
         // Crear un objeto Map con los datos del usuario
         HashMap<Object, Object> client = new HashMap<>();
@@ -711,6 +802,7 @@ public class FireBaseConnector {
         client.put("tip", diet.getTip());
         client.put("idClient", diet.getIdCliente());
         client.put("just", diet.getJust());
+
 
         // Guardar en Firestore en la colección "usuarios"
         fst.collection("dietas").document(diet.getId())
@@ -723,13 +815,17 @@ public class FireBaseConnector {
                 });
     }
 
+
     public Task<Diet> readDieta(String id) throws FBCException {
+
 
         if (fst == null) {
             throw new FBCException("La instancia de Firestore no puede ser nula");
         }
 
+
         final TaskCompletionSource<Diet> taskCompletionSource = new TaskCompletionSource<>();
+
 
         // Referencia al documento del usuario
         fst.collection("dietas").document(id).get()
@@ -751,14 +847,18 @@ public class FireBaseConnector {
                     taskCompletionSource.setException(e);  // Devolver la excepción
                 });
 
+
         return taskCompletionSource.getTask();
     }
 
+
     private void save(Food alimento) throws FBCException {
+
 
         if (fst == null) {
             throw new FBCException("La instancia de Firestore no puede ser nula");
         }
+
 
         // Crear un objeto Map con los datos del alimento
         HashMap<String, Object> food = new HashMap<>();
@@ -783,6 +883,7 @@ public class FireBaseConnector {
         food.put("calcio", alimento.getCalcio());
         food.put("potasio", alimento.getPotasio());
 
+
         // Guardar en Firestore en la colección "alimentos"
         fst.collection("alimentos").document(alimento.getId())
                 .set(food)
@@ -794,13 +895,17 @@ public class FireBaseConnector {
                 });
     }
 
+
     public Task<Food> readFood(String id) throws FBCException {
+
 
         if (fst == null) {
             throw new FBCException("La instancia de Firestore no puede ser nula");
         }
 
+
         final TaskCompletionSource<Food> taskCompletionSource = new TaskCompletionSource<>();
+
 
         // Referencia al documento del alimento
         fst.collection("alimentos").document(id).get()
@@ -822,13 +927,16 @@ public class FireBaseConnector {
                     taskCompletionSource.setException(e);
                 });
 
+
         return taskCompletionSource.getTask();
     }
+
 
     private void save(FoodDiet dietFood) throws FBCException {
         if (fst == null) {
             throw new FBCException("La instancia de Firestore no puede ser nula");
         }
+
 
         // Crear un objeto Map con los datos de la DietFood
         Map<String, Object> foodData = new HashMap<>();
@@ -838,6 +946,7 @@ public class FireBaseConnector {
         foodData.put("numeroPlato", dietFood.getNumeroPlato());
         foodData.put("dia", dietFood.getDia());
         foodData.put("nombreReceta", dietFood.getNombreReceta());
+
 
         // Guardar en Firestore en la colección "diet_food"
         fst.collection("diet_food").document(dietFood.getIdDieta() + "_" + dietFood.getIdAlimento())
@@ -850,12 +959,15 @@ public class FireBaseConnector {
                 });
     }
 
+
     private Task<FoodDiet> readDietFood(String idDieta, String idAlimento) throws FBCException {
         if (fst == null) {
             throw new FBCException("La instancia de Firestore no puede ser nula");
         }
 
+
         final TaskCompletionSource<FoodDiet> taskCompletionSource = new TaskCompletionSource<>();
+
 
         // Referencia al documento en la colección "diet_food"
         fst.collection("diet_food").document(idDieta + "_" + idAlimento).get()
@@ -876,15 +988,19 @@ public class FireBaseConnector {
                     taskCompletionSource.setException(e);
                 });
 
+
         return taskCompletionSource.getTask();
     }
 
-    private  <T> Task<List<T>> readAllFromCollection(String collectionName, Class<T> clazz) throws FBCException {
+
+    public <T> Task<List<T>> readAllFromCollection(String collectionName, Class<T> clazz) throws FBCException {
         if (fst == null) {
             throw new FBCException("La instancia de Firestore no puede ser nula");
         }
 
+
         TaskCompletionSource<List<T>> taskCompletionSource = new TaskCompletionSource<>();
+
 
         fst.collection(collectionName).get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
@@ -903,8 +1019,13 @@ public class FireBaseConnector {
                     taskCompletionSource.setException(e);
                 });
 
+
         return taskCompletionSource.getTask();
     }
+
+
+
+
 
 
 
@@ -913,94 +1034,115 @@ public class FireBaseConnector {
         return ref;
     }
 
+
     public FirebaseDatabase getBd() {
         return bd;
     }
 
+
 //++IP - 23/04/2025 -
-    /*public <T> ValidationResult saveData(Class<T> classType, ValidationResult result) {
+   /*public <T> ValidationResult saveData(Class<T> classType, ValidationResult result) {
 
-        AtomicReference<String> msg = null; //Es necesario hacerlo atomico para poder comunicarme con el en el metodo
+
+       AtomicReference<String> msg = null; //Es necesario hacerlo atomico para poder comunicarme con el en el metodo
+       *//*
+        Este tipo de variables se utilizan en el multihilo para evitar tener que utilizar syncronized y problemas de concurrencia
         *//*
-         Este tipo de variables se utilizan en el multihilo para evitar tener que utilizar syncronized y problemas de concurrencia
-         *//*
-
-        if (classType != FoodDiet.class) {
-
-            try {
-
-                if (!result.exit) {
-                    throw new Exception(result.message);
-                }
-
-                String collectionName = "";
-
-                if (classType.equals(User.class)) {
-                    collectionName = "usuarios";
-                } else if (classType.equals(Client.class)) {
-                    collectionName = "clientes";
-                } else if (classType.equals(Diet.class)) {
-                    collectionName = "dietas";
-                } else if (classType.equals(Food.class)) {
-                    collectionName = "alimentos";
-                } else if (classType.equals(FoodDiet.class)) {
-                    collectionName = "diet_food";
-                } else {
-                    throw new Exception("Tipo de dato no soportado");
-                }
-
-                *//*
-                 * Dividir segun los ats que tengan y asi puedo saber si estan repetidos o no
-                 *//*
-
-                //--
-                readAllFromCollection(collectionName, classType).
-                        addOnSuccessListener(
-                                collection -> {
-                                    for (T item : collection) {
-                                        BaseObject obj = (BaseObject) item;
-                                        if (obj.getName().equals(result.data.get("Name"))) {
-
-                                        }
-                                    }
-
-                                    String id = String.valueOf(collection.size());
-
-                                    while (id.length() < 4) {
-                                        id = "0" + id;
-                                    }
 
 
+       if (classType != FoodDiet.class) {
 
-                                }
-                        ).addOnFailureListener(
-                                e -> {
-                                    callback.onResult(false,"Error al guardar el elemento");
-                                    return;
-                                }
-                        );
-                //--
 
-            } catch (Exception e) {
-                ValidationResult validationResult = new ValidationResult();
-                validationResult.exit = false;
-                validationResult.message = e.getMessage();
-                return validationResult;
-            }
-        } else {
-            callback.onResult(false, "Tipo de dato no soportado");
-            return;
-        }
-        callback.onResult(true, "Datos guardados correctamente");
-        return;
-    }*/
+           try {
+
+
+               if (!result.exit) {
+                   throw new Exception(result.message);
+               }
+
+
+               String collectionName = "";
+
+
+               if (classType.equals(User.class)) {
+                   collectionName = "usuarios";
+               } else if (classType.equals(Client.class)) {
+                   collectionName = "clientes";
+               } else if (classType.equals(Diet.class)) {
+                   collectionName = "dietas";
+               } else if (classType.equals(Food.class)) {
+                   collectionName = "alimentos";
+               } else if (classType.equals(FoodDiet.class)) {
+                   collectionName = "diet_food";
+               } else {
+                   throw new Exception("Tipo de dato no soportado");
+               }
+
+
+               *//*
+     * Dividir segun los ats que tengan y asi puedo saber si estan repetidos o no
+     *//*
+
+
+               //--
+               readAllFromCollection(collectionName, classType).
+                       addOnSuccessListener(
+                               collection -> {
+                                   for (T item : collection) {
+                                       BaseObject obj = (BaseObject) item;
+                                       if (obj.getName().equals(result.data.get("Name"))) {
+
+
+                                       }
+                                   }
+
+
+                                   String id = String.valueOf(collection.size());
+
+
+                                   while (id.length() < 4) {
+                                       id = "0" + id;
+                                   }
+
+
+
+
+
+
+                               }
+                       ).addOnFailureListener(
+                               e -> {
+                                   callback.onResult(false,"Error al guardar el elemento");
+                                   return;
+                               }
+                       );
+               //--
+
+
+           } catch (Exception e) {
+               ValidationResult validationResult = new ValidationResult();
+               validationResult.exit = false;
+               validationResult.message = e.getMessage();
+               return validationResult;
+           }
+       } else {
+           callback.onResult(false, "Tipo de dato no soportado");
+           return;
+       }
+       callback.onResult(true, "Datos guardados correctamente");
+       return;
+   }*/
 //--IP - 23/04/2025 -
 //++IP - 25/04/2025 -
 
+
 /*private<T> ObjectRersult idUsrComparison(Class<T> classType, ValidationResult result,OnResultCallBack callback){
+
 
 }*/
 
+
 //--IP - 25/04/2025 -
+
 
 }

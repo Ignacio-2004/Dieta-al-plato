@@ -1,8 +1,13 @@
 package com.tfg.dietaalplato;
 
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.Toast;
+
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,19 +15,53 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+
+import com.tfg.dietaalplato.object.Client;
+import com.tfg.dietaalplato.utilities.FireBaseConnector;
+import com.tfg.dietaalplato.utilities.exception.FBCException;
+
+
 public class PacientesActivity extends AppCompatActivity {
+
+
+    private LinearLayout layoutClientes;
+    private FireBaseConnector fbConnector;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_pacientes);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+
+
+        layoutClientes = findViewById(R.id.layoutClientes);
+        fbConnector = new FireBaseConnector(); // tu clase personalizada para Firestore
+
+
+        try {
+            fbConnector.readAllFromCollection("clientes", Client.class)
+                    .addOnSuccessListener(clientes -> {
+                        for (Client cliente : clientes) {
+                            Button boton = new Button(this);
+                            boton.setText(cliente.getName()); // o el campo que tengas
+                            boton.setLayoutParams(new LinearLayout.LayoutParams(
+                                    LinearLayout.LayoutParams.MATCH_PARENT,
+                                    LinearLayout.LayoutParams.WRAP_CONTENT));
+
+
+                            boton.setOnClickListener(v ->
+                                    Toast.makeText(this, "Cliente: " + cliente.getName(), Toast.LENGTH_SHORT).show()
+                            );
+
+
+                            layoutClientes.addView(boton);
+                        }
+                    });
+        } catch (FBCException e) {
+            Toast.makeText(this, "Error al cargar clientes", Toast.LENGTH_SHORT).show();
+        }
     }
+
 
     public void onClickReturn(View view){
         Intent intent = new Intent(this, InicioUsuarioActivity.class );

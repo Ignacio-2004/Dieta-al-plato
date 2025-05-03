@@ -15,6 +15,7 @@ public class FoodDiet {
     private int comida; // 1: Desayuno, 2: Almuerzo, 3: Comida, 4: Merienda, 5: Cena, 6: ReCena
     private int numeroPlato;
     private int dia;
+    private int g;
     private String nombreReceta;
 
     // Constructor vacío requerido para Firestore
@@ -23,19 +24,27 @@ public class FoodDiet {
 
     // Constructor con parámetros
 
-
-    public FoodDiet(String id, String idDieta, String idAlimento, int comida, int numeroPlato, int dia, String nombreReceta) {
+    public FoodDiet(String id, String idDieta, String idAlimento, int comida, int numeroPlato, int dia, int g, String nombreReceta) {
         this.id = id;
         this.idDieta = idDieta;
         this.idAlimento = idAlimento;
         this.comida = comida;
         this.numeroPlato = numeroPlato;
         this.dia = dia;
+        this.g = g;
         this.nombreReceta = nombreReceta;
     }
 
+
     // Getters y Setters
 
+    public int getG() {
+        return g;
+    }
+
+    public void setG(int g) {
+        this.g = g;
+    }
 
     public String getId() {
         return id;
@@ -113,7 +122,7 @@ public class FoodDiet {
     public static ValidationResult toMapData(ArrayList<View> data, String idDieta,String idAlimento){
         ValidationResult result = new ValidationResult();
 
-        String[] fieldName = {"idDieta","idAlimento", "comida", "numeroPlato", "dia", "nombreReceta"};
+        String[] fieldName = {"idDieta","idAlimento", "comida", "numeroPlato", "dia", "gramos", "nombreReceta"};
 
         try{
             result.data = new HashMap<>();
@@ -125,6 +134,7 @@ public class FoodDiet {
             keys.add(((EditText) data.get(1)).getText().toString().trim());
             keys.add(((EditText) data.get(2)).getText().toString().trim());
             keys.add(((EditText) data.get(3)).getText().toString().trim());
+            keys.add(((EditText) data.get(4)).getText().toString().trim());
 
             for (int i = 0; i < keys.size()-2; i++) {
 

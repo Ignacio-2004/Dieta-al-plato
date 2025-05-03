@@ -1,8 +1,10 @@
 package com.tfg.dietaalplato;
 
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,7 +12,9 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+
 public class InicioUsuarioActivity extends AppCompatActivity {
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,15 +28,18 @@ public class InicioUsuarioActivity extends AppCompatActivity {
         });
     }
 
+
     public void onClickPatient(View view){
         Intent intent = new Intent(this, PacientesActivity.class );
         startActivity(intent);
     }
 
+
     public void onClickAlimentos(View view){
         Intent intent = new Intent(this, ComidasActivity.class );
         startActivity(intent);
     }
+
 
     public void onClickCloseSesion(View view){
         Intent intent = new Intent(this, LogIn_Activity.class );

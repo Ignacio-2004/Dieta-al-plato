@@ -19,7 +19,17 @@ import java.util.Map;
 public class ValidationResult {
     public boolean exit;
     public String message;
+
+    public ValidationResult(boolean exit, String message, Map<String, String> data) {
+        this.exit = exit;
+        this.message = message;
+        this.data = data;
+    }
+
     public Map<String, String> data;
+
+    public ValidationResult() {
+    }
 }
 
 //--IP - 23/04/2025 -
