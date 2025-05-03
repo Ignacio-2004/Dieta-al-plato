@@ -247,6 +247,65 @@ public class FireBaseConnector {
                 });
     }
 
+    public ValidationResult delete(String id)  {
+        if (fst == null) {
+            return new ValidationResult(false, "La instancia de Firestore no puede ser nula", null);
+        }
+
+        ValidationResult result = new ValidationResult();
+
+        switch (id.substring(0, 3)) {
+            case "USU":
+                if (fst.collection("usuarios").document(id).delete().isSuccessful()){
+                    result.exit = true;
+                    result.message = "Usuario eliminado correctamente";
+                }else{
+                    result.exit = false;
+                    result.message = "Error al eliminar el usuario";
+                }
+                break;
+            case "CLI":
+                if (fst.collection("clientes").document(id).delete().isSuccessful()){
+                    result.exit = true;
+                    result.message = "Cliente eliminado correctamente";
+                }else{
+                    result.exit = false;
+                    result.message = "Error al eliminar el cliente";
+                }
+                break;
+            case "DIE":
+                if (fst.collection("dietas").document(id).delete().isSuccessful()){
+                    result.exit = true;
+                    result.message = "Dieta eliminada correctamente";
+                }else{
+                    result.exit = false;
+                    result.message = "Error al eliminar la dieta";
+                }
+                break;
+            case "FDI":
+                if (fst.collection("dietaAlimentos").document(id).delete().isSuccessful()){
+                    result.exit = true;
+                    result.message = "Dieta eliminada correctamente";
+                }else{
+                    result.exit = false;
+                    result.message = "Error al eliminar la dieta";
+                }
+                break;
+            case "ALI":
+                if (fst.collection("alimentos").document(id).delete().isSuccessful()){
+                    result.exit = true;
+                    result.message = "Alimento eliminado correctamente";
+                }else{
+                    result.exit = false;
+                    result.message = "Error al eliminar el alimento";
+                }
+                break;
+            default:
+                return new ValidationResult(false, "Tipo de documento no válido", null);
+        }
+        return result;
+    }
+
 
     /**
      * Metrodo que lee una comida de un usuario desde su nombre
@@ -542,7 +601,7 @@ public class FireBaseConnector {
      * @param callback parametro que convierte el metodo de asincronico en sincronico
      * @throws FBCException excepcion propia que marca si la conexion no es buena
      */
-    public void readFoodDiet(String idDieta, String idAlimento, OnResultCallBack<ObjectResult<Food>> callback) throws FBCException {
+    public void readFoodDiet(String idDieta, String idAlimento, OnResultCallBack<ObjectResult<ArrayList<FoodDiet>>> callback) throws FBCException {
         if (fst == null) {
             throw new FBCException("La instancia de Firestore no puede ser nula");
         }
@@ -554,15 +613,21 @@ public class FireBaseConnector {
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     if (!queryDocumentSnapshots.isEmpty()) {
-                        DocumentSnapshot document = queryDocumentSnapshots.getDocuments().get(0); // El primero que encuentre
-                        Food food = document.toObject(Food.class);
-                        if (food != null) {
-                            Log.d("Firebase", "📖 FoodDiet encontrada: " + food.getName());
-                            callback.onResult(new ObjectResult<>(true, "success", food));
-                        } else {
-                            Log.e("Firebase", "⚠️ Documento encontrado pero no se pudo convertir a FoodDiet");
-                            callback.onResult(new ObjectResult<>(false, "Error al convertir el documento a FoodDiet", null));
+
+                        ArrayList<FoodDiet> foods = new ArrayList<>();
+
+                        for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments()) {
+                            FoodDiet food = document.toObject(FoodDiet.class);
+                            if (food != null) {
+                                Log.d("Firebase", "📖 FoodDiet encontrada: " + food.getIdAlimento());
+                                foods.add(food);
+                            }else{
+                                Log.e("Firebase", "⚠️ Documento encontrado pero no se pudo convertir a FoodDiet");
+                            }
                         }
+
+                        callback.onResult(new ObjectResult<>(true, "success", foods));
+
                     } else {
                         Log.d("Firebase", "⚠️ No se encontró ningún foodDiet con idDieta: " + idDieta +" y con idAlimento: "+idAlimento);
                         callback.onResult(new ObjectResult<>(false, "FoodDiet no encontrado", null));
@@ -1091,6 +1156,14 @@ public class FireBaseConnector {
                 });
             } else if (classType.equals(FoodDiet.class)) {
                 collectionName = "dietaAlimentos";
+
+                repeatObject(result, collectionName, result.data.get("idDieta"), result.data.get("idAlimento"), (ValidationResult validationResult) -> {
+                    if (!validationResult.exit) {
+                        result.exit = false;
+                        result.message = validationResult.message;
+                    }
+                });
+
             } else {
                 throw new Exception("Tipo de dato no soportado");
             }
@@ -1107,8 +1180,29 @@ public class FireBaseConnector {
                 id = "0" + id;
             }
 
-            if (collectionName.equals("dietaAlimentos")) {
-
+            switch (collectionName){
+                case "usuarios":
+                    save(new User("USU"+id, result.data.get("name"), result.data.get("psw")));
+                    break;
+                case "clientes":
+                    save(new Client("CLI"+id, result.data.get("name"), result.data.get("ape"), result.data.get("idUsr")));
+                    break;
+                case "dietas":
+                    save(new Diet("DIE"+id, result.data.get("tip"), result.data.get("idClient"), result.data.get("just"), result.data.get("idUsr")));
+                    break;
+                case "alimentos":
+                    save(new Food("ALI"+id, result.data.get("name"), result.data.get("idUsr"), result.data.get("pc"), result.data.get("energia"),
+                            result.data.get("proteina"), result.data.get("grasa"), result.data.get("ags"), result.data.get("agmi"),
+                            result.data.get("agpi"), result.data.get("colesterol"), result.data.get("hc"), result.data.get("fibra"), result.data.get("vitC"),
+                            result.data.get("vitB6"), result.data.get("vitE"), result.data.get("hierro"), result.data.get("sodio"), result.data.get("calcio"),
+                            result.data.get("potasio")));
+                    break;
+                case "dietaAlimentos":
+                    save(new FoodDiet("FDI"+id, result.data.get("idDieta"), result.data.get("idAlimento"), result.data.get("comida"),
+                            result.data.get("numeroPlato"), result.data.get("dia"), result.data.get("nombreReceta"), result.data.get("idUsr")));
+                    break;
+                default:
+                    throw new Exception("Tipo de dato no soportado");
             }
 
 
@@ -1119,6 +1213,77 @@ public class FireBaseConnector {
             validationResult.message = e.getMessage();
             return validationResult;
         }
+        return new ValidationResult(true, "Datos guardados correctamente", result.data);
+    }
+
+    public <T> ValidationResult saveData(Class<T> classType, ValidationResult result, boolean force) throws FBCException {
+
+        /*
+         * Si es false llamo al original que filtra los repetidos
+         */
+        if (!force){
+            return  saveData(classType, result);
+        }
+
+        String collectionName;
+
+        if (!result.exit) {
+            throw new FBCException(result.message);
+        }
+
+        try{
+            //Compruebo si ya hay guardado un objeto con el mismo nombre
+            if (classType.equals(User.class)) {
+                collectionName = "usuarios";
+
+                repeatObject(result, collectionName, (ValidationResult validationResult) -> {
+                    if (!validationResult.exit) {
+                        result.exit = false;
+                        result.message = validationResult.message;
+                    }
+                });
+
+            } else if (classType.equals(Client.class)) {
+                collectionName = "clientes";
+
+                repeatObject(result, collectionName, result.data.get("idUsr"), (ValidationResult validationResult) -> {
+                    if (!validationResult.exit) {
+                        delete(validationResult.message);
+                    }
+                });
+            } else if (classType.equals(Diet.class)) {
+                collectionName = "dietas";
+
+                repeatObject(result, collectionName, (ValidationResult validationResult) -> {
+                    if (!validationResult.exit) {
+                        delete(validationResult.message);
+                    }
+                });
+            } else if (classType.equals(Food.class)) {
+                collectionName = "alimentos";
+
+                repeatObject(result, collectionName,result.data.get("idUsr"), (ValidationResult validationResult) -> {
+                    if (!validationResult.exit) {
+                        delete(validationResult.message);
+                    }
+                });
+            } else if (classType.equals(FoodDiet.class)) {
+                collectionName = "dietaAlimentos";
+
+                repeatObject(result, collectionName, result.data.get("idDieta"), result.data.get("idAlimento"), (ValidationResult validationResult) -> {
+                    if (!validationResult.exit) {
+                        delete(validationResult.message);
+                    }
+                });
+
+            } else {
+                throw new FBCException("Tipo de dato no soportado");
+            }
+        }catch (FBCException e){
+            return new ValidationResult(false, e.getMessage(), result.data);
+        }
+
+        return saveData(classType, result);
 
     }
 
@@ -1131,7 +1296,7 @@ public class FireBaseConnector {
                                 users -> {
                                     for (User user : users) {
                                         if (user.getName().equals(result.data.get("name"))) {
-                                            Log.e("Firebase", "❌ El usuario ya existe");
+                                            Log.e("Firebase", user.getId());
                                             callback.onResult(new ValidationResult(false, "El usuario ya existe", result.data));
                                             return;
                                         }
@@ -1169,7 +1334,7 @@ public class FireBaseConnector {
 
                     for (Client client : result1.result) {
                         if (client.getName().equals(result.data.get("name"))) {
-                            Log.e("Firebase", "❌ El cliente ya existe");
+                            Log.e("Firebase", client.getId());
                             callback.onResult(new ValidationResult(false, "El cliente ya existe", result.data));
                             return;
                         }
@@ -1188,7 +1353,7 @@ public class FireBaseConnector {
 
                     for (Food food : result1.result) {
                         if (food.getName().equals(result.data.get("name"))) {
-                            Log.e("Firebase", "❌ El alimento ya existe");
+                            Log.e("Firebase", food.getId());
                             callback.onResult(new ValidationResult(false, "El alimento ya existe", result.data));
                             return;
                         }
@@ -1206,7 +1371,7 @@ public class FireBaseConnector {
 
                     for (Diet diet : result1.result) {
                         if (diet.getName().equals(result.data.get("name"))) {
-                            Log.e("Firebase", "❌ La dieta ya existe");
+                            Log.e("Firebase", diet.getId());
                             callback.onResult(new ValidationResult(false, "La dieta ya existe", result.data));
                             return;
                         }
@@ -1217,6 +1382,37 @@ public class FireBaseConnector {
                 });
             default:
                 Log.d("Firebase", "❌ Tipo de dato no soportado");
+        }
+
+    }
+
+    private void repeatObject(ValidationResult result, String collectionName,String idDiet, String idFood,OnResultCallBack<ValidationResult> callback) throws FBCException {
+
+        switch (collectionName){
+            case "dietaAlimentos":
+
+                readFoodDiet(idDiet, idFood,result1 -> {
+                    if (!result1.exit) {
+                        for (FoodDiet foodDiet : result1.result){
+                            if (foodDiet.getComida().equals(result.data.get("comida")) &&
+                                foodDiet.getNumeroPlato().equals(result.data.get("numeroPlato"))&&
+                                foodDiet.getDia().equals(result.data.get("dia")) &&
+                                foodDiet.getNombreReceta().equals(result.data.get("nombreReceta"))){
+
+                                Log.e("Firebase", foodDiet.getId());
+                                callback.onResult(new ValidationResult(false, "El alimento-receta ya existe", result.data));
+                                return;
+                            }
+                        }
+
+                        callback.onResult(new ValidationResult(true, String.valueOf(result1.result.size()), result.data));
+                        return;
+                    }
+                });
+                break;
+            default:
+                Log.d("Firebase", "❌ Tipo de dato no soportado");
+                callback.onResult(new ValidationResult(false, "Tipo de dato no soportado", result.data));
         }
 
     }

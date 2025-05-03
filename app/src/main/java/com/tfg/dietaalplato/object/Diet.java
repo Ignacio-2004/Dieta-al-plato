@@ -14,30 +14,26 @@ public class Diet extends BaseObject{
      * El id de esta dieta es el comienzo de todas pero el numero de la dieta (1,3,7)
      */
 
-    private int tip;
+    private String tip;
     private String idCliente;
     private String just;
 
     public Diet() {
     }
 
-    public Diet(String id, String name, int tip, String idCliente, String just) {
+    public Diet(String id, String name, String tip, String idCliente, String just) {
         super(id, name);
         this.tip = tip;
         this.idCliente = idCliente;
         this.just = just;
     }
 
-    public int getTip() {
+    public String getTip() {
         return tip;
     }
 
-    public void setTip(int tip) {
-        if (tip == 1 || tip == 3 || tip == 7) {
-            this.tip = tip;
-        } else {
-            throw new IllegalArgumentException("El valor de 'tip' debe ser 1, 3 o 7");
-        }
+    public void setTip(String tip) {
+        this.tip = tip;
     }
 
     public String getIdCliente() {

@@ -12,10 +12,10 @@ public class FoodDiet {
     private String id;
     private String idDieta;
     private String idAlimento;
-    private int comida; // 1: Desayuno, 2: Almuerzo, 3: Comida, 4: Merienda, 5: Cena, 6: ReCena
-    private int numeroPlato;
-    private int dia;
-    private int g;
+    private String comida; // 1: Desayuno, 2: Almuerzo, 3: Comida, 4: Merienda, 5: Cena, 6: ReCena
+    private String numeroPlato;
+    private String dia;
+    private String g;
     private String nombreReceta;
 
     // Constructor vacío requerido para Firestore
@@ -24,7 +24,7 @@ public class FoodDiet {
 
     // Constructor con parámetros
 
-    public FoodDiet(String id, String idDieta, String idAlimento, int comida, int numeroPlato, int dia, int g, String nombreReceta) {
+    public FoodDiet(String id, String idDieta, String idAlimento, String comida, String numeroPlato, String dia, String g, String nombreReceta) {
         this.id = id;
         this.idDieta = idDieta;
         this.idAlimento = idAlimento;
@@ -38,13 +38,6 @@ public class FoodDiet {
 
     // Getters y Setters
 
-    public int getG() {
-        return g;
-    }
-
-    public void setG(int g) {
-        this.g = g;
-    }
 
     public String getId() {
         return id;
@@ -70,31 +63,36 @@ public class FoodDiet {
         this.idAlimento = idAlimento;
     }
 
-    public int getComida() {
+    public String getComida() {
         return comida;
     }
 
-    public void setComida(int comida) {
-        if (comida < 1 || comida > 6) {
-            throw new IllegalArgumentException("El valor de comida debe estar entre 1 y 6.");
-        }
+    public void setComida(String comida) {
         this.comida = comida;
     }
 
-    public int getNumeroPlato() {
+    public String getNumeroPlato() {
         return numeroPlato;
     }
 
-    public void setNumeroPlato(int numeroPlato) {
+    public void setNumeroPlato(String numeroPlato) {
         this.numeroPlato = numeroPlato;
     }
 
-    public int getDia() {
+    public String getDia() {
         return dia;
     }
 
-    public void setDia(int dia) {
+    public void setDia(String dia) {
         this.dia = dia;
+    }
+
+    public String getG() {
+        return g;
+    }
+
+    public void setG(String g) {
+        this.g = g;
     }
 
     public String getNombreReceta() {
@@ -114,6 +112,7 @@ public class FoodDiet {
                 ", numeroPlato=" + numeroPlato +
                 ", dia=" + dia +
                 ", nombreReceta='" + nombreReceta + '\'' +
+                ", g=" + g +
                 '}';
     }
 
