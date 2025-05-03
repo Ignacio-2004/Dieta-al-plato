@@ -1,6 +1,5 @@
 package com.tfg.dietaalplato;
 
-
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,13 +9,11 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-
 
 import com.google.firebase.database.*;
 import com.tfg.dietaalplato.object.User;
@@ -24,25 +21,20 @@ import com.tfg.dietaalplato.utilities.BasketAnimation;
 import com.tfg.dietaalplato.utilities.FireBaseConnector;
 import com.tfg.dietaalplato.utilities.exception.FBCException;
 
-
 public class LogIn_Activity extends AppCompatActivity {
-
 
     private static final String TAG = "FirebaseConnection";
     private DatabaseReference databaseReference;
 
 
-
-
     //variables para gestionar los gmails y sus password
-    private EditText gmail;
+    private EditText correo;
     private EditText passw;
     private TextView text_error;
     private TextView text_passw;
     private ImageButton see_passw;
     private ImageButton hide_passw;
     private FireBaseConnector DateBase;
-
 
     @SuppressLint("StaticFieldLeak")
     @Override
@@ -58,33 +50,35 @@ public class LogIn_Activity extends AppCompatActivity {
 
 
 
-
-
-
         try {
             // inicializamos la conexión con Firebase
             DateBase = FireBaseConnector.getInstance();
             DateBase.testFirebaseConnection();
             DateBase.monitorConnectionStatus();
 
-
             // Prueba para guardar y leer un usuario (puedes quitarlo más adelante)
 //            DateBase.saveUser(new User("USE002", "Patatudo", "123456"));
 //            DateBase.readUsuario("USE002");
-
 
         } catch (FBCException e) {
             throw new RuntimeException(e);
         }
 
-
     }
-
 
     public void onClick(View view) {
        /* Intent intent = new Intent(this, InicioUsuarioActivity.class );
           startActivity(intent); */
         BasketAnimation.showAnimation(this);
+    }
+
+
+
+
+    // metodo para mostrar el dialogo cuando se hace clic sign up
+    public void signUp(View view) {
+        SignUp_Dialogo dialogo = new SignUp_Dialogo();
+        dialogo.show(getSupportFragmentManager(), "dialogoNuevoUsuario");
     }
 
 
@@ -97,11 +91,12 @@ public class LogIn_Activity extends AppCompatActivity {
 
         gmail = findViewById(R.id.text_usuario); //almacenamos lo que ha introducio el usario
         String gmail_introducido = gmail.getText().toString(); // lo ponemos en tipo String
-
+        correo = findViewById(R.id.text_usuario); //almacenamos lo que ha introducio el usario
+        String correo_introducido = correo.getText().toString(); // lo ponemos en tipo String
+        String emailRegex = "^[a-zA-Z]+(\\.[a-zA-Z]+)?@educa\\.madrid\\.org$";
 
         passw = findViewById(R.id.Password); // almacenamos lo que ha introducido el usuario
         String passwd_introducida = passw.getText().toString(); // lo ponemos en tipo String
-
 
         //Expresiones regulares para gmail y password
        /*
@@ -115,31 +110,27 @@ public class LogIn_Activity extends AppCompatActivity {
           Ejemplo válido: Develop1!
         */
         String passwRegex = "^(?=.*[A-Z])(?=.*\\d)(?=.*[!\\-_#])[A-Za-z\\d!\\-_#]{8,12}$";
-        String emailRegex = "^[a-zA-Z]+(\\.[a-zA-Z]+)?@educa\\.madrid\\.org$";
 
 
         // COMPROBAMOS CORREo
-        if (!gmail_introducido.isEmpty()) // ha puesto el usuario
+        if (!correo_introducido.isEmpty()) // ha puesto el usuario
         {
             //COMPROBAMOS QUE SEA UN CORREO CORRECTO
             //nombre.apellidos@educa.madrid.org
 
-
-            if (gmail_introducido.matches(emailRegex)) // es correcto
+            if (correo_introducido.matches(emailRegex)) // es correcto
             {
                 // VERIFICAMOS SI EL USUARIO EXISTE EN FIREBASE
-                DateBase.verifyUser(gmail_introducido)
-                        .addOnSuccessListener(userExists -> {
-                            if (userExists) {// El usuario existe ✅
-
+                DateBase.verifyUser(correo_introducido)
+                        .addOnSuccessListener(isUserExists -> {
+                            if (isUserExists) {// El usuario existe ✅
 
                                 // COMPROBAMOS PASSWORD
                                 if (!passwd_introducida.isEmpty()) {
                                     try {
-                                        DateBase.readUserByEmail(gmail_introducido)
+                                        DateBase.readUserByEmail(correo_introducido)
                                                 .addOnSuccessListener(usuario -> {
                                                     String passwDB = usuario.getPsw();  // Accedemos a la contraseña de la BD
-
 
                                                     if (passwd_introducida.equals(passwDB)) {
                                                         // Contraseña correcta
@@ -163,13 +154,11 @@ public class LogIn_Activity extends AppCompatActivity {
                                         throw new RuntimeException(e);
                                     }
 
-
                                 } else {
                                     text_error.setText("  Error: contraseña de usuario vacía.  ");
                                     text_error.setVisibility(View.VISIBLE); // el textView se puede ver
                                     mostrarTextError();// se oculta el mensaje
                                 }
-
 
                             } else { // No existe el usuario ❌
                                 text_error.setText("  Error: correo no guardado ");
@@ -184,13 +173,11 @@ public class LogIn_Activity extends AppCompatActivity {
                             mostrarTextError();
                         });
 
-
             } else {
                 text_error.setText("  Error: correo de usuario debe tener la estructura [nombre.apellidos@educa.madrid.org].  ");
                 text_error.setVisibility(View.VISIBLE); // el textView se puede ver
                 mostrarTextError();// se oculta el mensaje
             }
-
 
         } else // no ha puesto el gmail
         {
@@ -199,7 +186,6 @@ public class LogIn_Activity extends AppCompatActivity {
             mostrarTextError();// se oculta el mensaje
         }
     }
-
 
     public void mostrarTextError() {
         // ocultamos el mensaje después de 2 segundos
@@ -211,11 +197,9 @@ public class LogIn_Activity extends AppCompatActivity {
         }, 2000);
     }
 
-
     public void mostrarPassword(View view) {
         text_passw = findViewById(R.id.Password);
         text_passw.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
-
 
         see_passw = findViewById(R.id.buttonSeePasswd);
         hide_passw = findViewById(R.id.buttonHidePasswd);
@@ -223,17 +207,14 @@ public class LogIn_Activity extends AppCompatActivity {
         hide_passw.setVisibility(View.VISIBLE);
     }
 
-
     public void ocultarPassword(View view) {
         text_passw = findViewById(R.id.Password);
         text_passw.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-
 
         ImageButton see = findViewById(R.id.buttonSeePasswd);
         ImageButton hide = findViewById(R.id.buttonHidePasswd);
         see.setVisibility(View.VISIBLE);
         hide.setVisibility(View.GONE);
     }
-
 
 }
