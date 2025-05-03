@@ -88,9 +88,6 @@ public class LogIn_Activity extends AppCompatActivity {
     public void login(View view) throws FBCException {
         text_error = findViewById(R.id.text_error);// guaardamos en la variable la referencia dele textView para los errores
 
-
-        gmail = findViewById(R.id.text_usuario); //almacenamos lo que ha introducio el usario
-        String gmail_introducido = gmail.getText().toString(); // lo ponemos en tipo String
         correo = findViewById(R.id.text_usuario); //almacenamos lo que ha introducio el usario
         String correo_introducido = correo.getText().toString(); // lo ponemos en tipo String
         String emailRegex = "^[a-zA-Z]+(\\.[a-zA-Z]+)?@educa\\.madrid\\.org$";
