@@ -14,6 +14,7 @@ import com.tfg.dietaalplato.object.Diet;
 import com.tfg.dietaalplato.object.Food;
 import com.tfg.dietaalplato.object.FoodDiet;
 import com.tfg.dietaalplato.object.User;
+import com.tfg.dietaalplato.utilities.exception.ClassUtilities;
 import com.tfg.dietaalplato.utilities.exception.FBCException;
 
 
@@ -21,6 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 
 /*
@@ -247,64 +249,58 @@ public class FireBaseConnector {
                 });
     }
 
-    public ValidationResult delete(String id)  {
+    public void delete(String id, OnResultCallBack<ValidationResult> callback) {
         if (fst == null) {
-            return new ValidationResult(false, "La instancia de Firestore no puede ser nula", null);
+            callback.onResult(new ValidationResult(false, "Firestore no inicializado", null));
+            return;
         }
 
-        ValidationResult result = new ValidationResult();
+        String prefix = id.substring(0, 3);
+        String collection = null;
+        String successMsg = "Elemento eliminado correctamente";
+        String errorMsg = "Error al eliminar el elemento";
 
-        switch (id.substring(0, 3)) {
+        switch (prefix) {
             case "USU":
-                if (fst.collection("usuarios").document(id).delete().isSuccessful()){
-                    result.exit = true;
-                    result.message = "Usuario eliminado correctamente";
-                }else{
-                    result.exit = false;
-                    result.message = "Error al eliminar el usuario";
-                }
+                collection = "usuarios";
+                successMsg = "Usuario eliminado correctamente";
+                errorMsg = "Error al eliminar el usuario";
                 break;
             case "CLI":
-                if (fst.collection("clientes").document(id).delete().isSuccessful()){
-                    result.exit = true;
-                    result.message = "Cliente eliminado correctamente";
-                }else{
-                    result.exit = false;
-                    result.message = "Error al eliminar el cliente";
-                }
+                collection = "clientes";
+                successMsg = "Cliente eliminado correctamente";
+                errorMsg = "Error al eliminar el cliente";
                 break;
             case "DIE":
-                if (fst.collection("dietas").document(id).delete().isSuccessful()){
-                    result.exit = true;
-                    result.message = "Dieta eliminada correctamente";
-                }else{
-                    result.exit = false;
-                    result.message = "Error al eliminar la dieta";
-                }
+                collection = "dietas";
+                successMsg = "Dieta eliminada correctamente";
+                errorMsg = "Error al eliminar la dieta";
                 break;
             case "FDI":
-                if (fst.collection("dietaAlimentos").document(id).delete().isSuccessful()){
-                    result.exit = true;
-                    result.message = "Dieta eliminada correctamente";
-                }else{
-                    result.exit = false;
-                    result.message = "Error al eliminar la dieta";
-                }
+                collection = "dietaAlimentos";
+                successMsg = "Alimento eliminado correctamente";
+                errorMsg = "Error al eliminar el alimento";
                 break;
             case "ALI":
-                if (fst.collection("alimentos").document(id).delete().isSuccessful()){
-                    result.exit = true;
-                    result.message = "Alimento eliminado correctamente";
-                }else{
-                    result.exit = false;
-                    result.message = "Error al eliminar el alimento";
-                }
+                collection = "comidas";
+                successMsg = "Alimento eliminado correctamente";
+                errorMsg = "Error al eliminar el alimento";
                 break;
             default:
-                return new ValidationResult(false, "Tipo de documento no válido", null);
+                callback.onResult(new ValidationResult(false, "Tipo de documento no soportado", null));
+                return;
         }
-        return result;
+
+        String finalSuccessMsg = successMsg;
+        String finalErrorMsg = errorMsg;
+        fst.collection(collection).document(id).delete()
+                .addOnSuccessListener(aVoid ->
+                        callback.onResult(new ValidationResult(true, finalSuccessMsg, null))
+                ).addOnFailureListener(e ->
+                        callback.onResult(new ValidationResult(false, finalErrorMsg, null))
+                );
     }
+
 
 
     /**
@@ -1014,7 +1010,7 @@ public class FireBaseConnector {
 
 
         // Guardar en Firestore en la colección "diet_food"
-        fst.collection("diet_food").document(dietFood.getIdDieta() + "_" + dietFood.getIdAlimento())
+        fst.collection("dietaAlimentos").document(dietFood.getIdDieta() + "_" + dietFood.getIdAlimento())
                 .set(foodData)
                 .addOnSuccessListener(aVoid -> {
                     Log.d("Firebase", "✅ DietFood guardado con éxito en Firestore");
@@ -1035,7 +1031,7 @@ public class FireBaseConnector {
 
 
         // Referencia al documento en la colección "diet_food"
-        fst.collection("diet_food").document(idDieta + "_" + idAlimento).get()
+        fst.collection("dietaAlimentos").document(idDieta + "_" + idAlimento).get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
                         FoodDiet dietFood = documentSnapshot.toObject(FoodDiet.class);
@@ -1108,183 +1104,187 @@ public class FireBaseConnector {
 //++IP - 23/04/2025 -
     public <T> ValidationResult saveData(Class<T> classType, ValidationResult result) {
 
-        String collectionName;
+        ClassData classData;
+        final String TAG = "SaveData";
 
+
+        String id;
         try {
 
+            Log.d(TAG, "💾 Guardando datos...");
+
             if (!result.exit) {
-                throw new Exception(result.message);
+                Log.w(TAG, "❌ Error al validar los datos: " + result.message);
+                throw new FBCException(result.message);
             }
+
+            classData = ClassUtilities.collectionData(classType);
 
             //Compruebo si ya hay guardado un objeto con el mismo nombre
-            if (classType.equals(User.class)) {
-                collectionName = "usuarios";
 
-                repeatObject(result, collectionName, (ValidationResult validationResult) -> {
-                    if (!validationResult.exit) {
-                        result.exit = false;
-                        result.message = validationResult.message;
-                    }
-                });
+            switch (classData.key) {
+                case "USU":
+                case "DIE":
+                    repeatObject(result, classData.data, (ValidationResult validationResult) -> {
+                        if (!validationResult.exit) {
+                            result.exit = false;
+                            result.message = validationResult.message;
+                        }
+                    });
 
-            } else if (classType.equals(Client.class)) {
-                collectionName = "clientes";
+                    break;
+                case "ALI":
+                case "CLI":
+                    repeatObject(result, classData.data, result.data.get("idUsr"), (ValidationResult validationResult) -> {
+                        if (!validationResult.exit) {
+                            result.exit = false;
+                            result.message = validationResult.message;
+                        }
+                    });
 
-                repeatObject(result, collectionName, result.data.get("idUsr"), (ValidationResult validationResult) -> {
-                    if (!validationResult.exit) {
-                        result.exit = false;
-                        result.message = validationResult.message;
-                    }
-                });
-            } else if (classType.equals(Diet.class)) {
-                collectionName = "dietas";
+                    break;
+                case "FDI":
+                    repeatObject(result, classData.data, result.data.get("idDieta"), result.data.get("idAlimento"), (ValidationResult validationResult) -> {
+                        if (!validationResult.exit) {
+                            result.exit = false;
+                            result.message = validationResult.message;
+                        }
+                    });
 
-                repeatObject(result, collectionName, (ValidationResult validationResult) -> {
-                    if (!validationResult.exit) {
-                        result.exit = false;
-                        result.message = validationResult.message;
-                    }
-                });
-            } else if (classType.equals(Food.class)) {
-                collectionName = "alimentos";
+                    break;
+                default:
+                    Log.e(TAG, "❌ Tipo de dato no soportado");
+                    throw new FBCException("Tipo de dato no soportado");
 
-                repeatObject(result, collectionName,result.data.get("idUsr"), (ValidationResult validationResult) -> {
-                    if (!validationResult.exit) {
-                        result.exit = false;
-                        result.message = validationResult.message;
-                    }
-                });
-            } else if (classType.equals(FoodDiet.class)) {
-                collectionName = "dietaAlimentos";
-
-                repeatObject(result, collectionName, result.data.get("idDieta"), result.data.get("idAlimento"), (ValidationResult validationResult) -> {
-                    if (!validationResult.exit) {
-                        result.exit = false;
-                        result.message = validationResult.message;
-                    }
-                });
-
-            } else {
-                throw new Exception("Tipo de dato no soportado");
             }
 
-            /*En este punto tenfo que crear otro metodo que lo guarde a fuejo, lo que no se es si ifirebase me lo sobre escribe o si tengo que borrarlo y escribirlo de nuevo*/
-
             if (!result.exit) {
+                Log.w(TAG, "Ya existe un objeto con los mismos credenciales: " + result.message);
                 return new ValidationResult(false, result.message, result.data);
             }
 
-            String id = result.message.toString().trim();
+            id = ClassUtilities.generateId(classData, result.message.toString().trim());
 
-            while (id.length()<4){
-                id = "0" + id;
-            }
-
-            switch (collectionName){
+            switch (classData.data) {
                 case "usuarios":
-                    save(new User("USU"+id, result.data.get("name"), result.data.get("psw")));
+                    save(new User(id, result.data.get("name"), result.data.get("psw")));
                     break;
                 case "clientes":
-                    save(new Client("CLI"+id, result.data.get("name"), result.data.get("ape"), result.data.get("idUsr")));
+                    save(new Client(id, result.data.get("name"), result.data.get("ape"), result.data.get("idUsr")));
                     break;
                 case "dietas":
-                    save(new Diet("DIE"+id, result.data.get("tip"), result.data.get("idClient"), result.data.get("just"), result.data.get("idUsr")));
+                    save(new Diet(id, result.data.get("tip"), result.data.get("idClient"), result.data.get("just"), result.data.get("idUsr")));
                     break;
                 case "alimentos":
-                    save(new Food("ALI"+id, result.data.get("name"), result.data.get("idUsr"), result.data.get("pc"), result.data.get("energia"),
+                    save(new Food(id, result.data.get("name"), result.data.get("idUsr"), result.data.get("pc"), result.data.get("energia"),
                             result.data.get("proteina"), result.data.get("grasa"), result.data.get("ags"), result.data.get("agmi"),
                             result.data.get("agpi"), result.data.get("colesterol"), result.data.get("hc"), result.data.get("fibra"), result.data.get("vitC"),
                             result.data.get("vitB6"), result.data.get("vitE"), result.data.get("hierro"), result.data.get("sodio"), result.data.get("calcio"),
                             result.data.get("potasio")));
                     break;
                 case "dietaAlimentos":
-                    save(new FoodDiet("FDI"+id, result.data.get("idDieta"), result.data.get("idAlimento"), result.data.get("comida"),
+                    save(new FoodDiet(id, result.data.get("idDieta"), result.data.get("idAlimento"), result.data.get("comida"),
                             result.data.get("numeroPlato"), result.data.get("dia"), result.data.get("nombreReceta"), result.data.get("idUsr")));
                     break;
                 default:
-                    throw new Exception("Tipo de dato no soportado");
+                    Log.e(TAG, "❌ Tipo de dato no soportado");
+                    throw new FBCException("Tipo de dato no soportado");
             }
 
+            Log.d(TAG, "✅ Datos guardados correctamente. ID: " + id);
+            Log.d(TAG, "📂 Tipo de colección: " + classData.data);
+            Log.d(TAG, "🏁 Fin del proceso");
+            return new ValidationResult(true, "success", result.data);
 
-
-        } catch (Exception e) {
-            ValidationResult validationResult = new ValidationResult();
-            validationResult.exit = false;
-            validationResult.message = e.getMessage();
-            return validationResult;
+        } catch (FBCException e) {
+            Log.e(TAG, "❌ Error al guardar los datos: " + e.getMessage());
+            Log.d(TAG, "🏁 Fin del proceso");
+            return new ValidationResult(false, e.getMessage(), result.data);
         }
-        return new ValidationResult(true, "Datos guardados correctamente", result.data);
     }
 
     public <T> ValidationResult saveData(Class<T> classType, ValidationResult result, boolean force) throws FBCException {
+
+        final String TAG = "SaveDataForce";
 
         /*
          * Si es false llamo al original que filtra los repetidos
          */
         if (!force){
+            Log.d(TAG, "force = false, derivando al metodo principal ...");
             return  saveData(classType, result);
         }
 
         String collectionName;
-
-        if (!result.exit) {
-            throw new FBCException(result.message);
-        }
+        ClassData classData;
+        AtomicReference<ValidationResult> deleteResult = new AtomicReference<>(new ValidationResult());
 
         try{
-            //Compruebo si ya hay guardado un objeto con el mismo nombre
-            if (classType.equals(User.class)) {
-                collectionName = "usuarios";
+            Log.d(TAG, "💾 Guardando datos...");
 
-                repeatObject(result, collectionName, (ValidationResult validationResult) -> {
-                    if (!validationResult.exit) {
-                        result.exit = false;
-                        result.message = validationResult.message;
-                    }
-                });
-
-            } else if (classType.equals(Client.class)) {
-                collectionName = "clientes";
-
-                repeatObject(result, collectionName, result.data.get("idUsr"), (ValidationResult validationResult) -> {
-                    if (!validationResult.exit) {
-                        delete(validationResult.message);
-                    }
-                });
-            } else if (classType.equals(Diet.class)) {
-                collectionName = "dietas";
-
-                repeatObject(result, collectionName, (ValidationResult validationResult) -> {
-                    if (!validationResult.exit) {
-                        delete(validationResult.message);
-                    }
-                });
-            } else if (classType.equals(Food.class)) {
-                collectionName = "alimentos";
-
-                repeatObject(result, collectionName,result.data.get("idUsr"), (ValidationResult validationResult) -> {
-                    if (!validationResult.exit) {
-                        delete(validationResult.message);
-                    }
-                });
-            } else if (classType.equals(FoodDiet.class)) {
-                collectionName = "dietaAlimentos";
-
-                repeatObject(result, collectionName, result.data.get("idDieta"), result.data.get("idAlimento"), (ValidationResult validationResult) -> {
-                    if (!validationResult.exit) {
-                        delete(validationResult.message);
-                    }
-                });
-
-            } else {
-                throw new FBCException("Tipo de dato no soportado");
+            if (!result.exit) {
+                Log.w(TAG, "❌ Error al validar los datos: " + result.message);
+                throw new FBCException(result.message);
             }
+
+            classData = ClassUtilities.collectionData(classType);
+            //Compruebo si ya hay guardado un objeto con el mismo nombre
+
+            switch (classData.key) {
+                case "USU":
+                case "DIE":
+                    repeatObject(result, classData.data, (ValidationResult validationResult) -> {
+                        if (!validationResult.exit) {
+                            delete(validationResult.data.get("id"), (ValidationResult validationResult1) -> {
+                                deleteResult.set(validationResult1);
+                            });
+                        }
+                    });
+
+                    break;
+                case "ALI":
+                case "CLI":
+                    repeatObject(result, classData.data, result.data.get("idUsr"), (ValidationResult validationResult) -> {
+                        if (!validationResult.exit) {
+                            delete(validationResult.data.get("id"), (ValidationResult validationResult1) -> {
+                                deleteResult.set(validationResult1);
+                            });
+                        }
+                    });
+
+                    break;
+                case "FDI":
+                    repeatObject(result, classData.data, result.data.get("idDieta"), result.data.get("idAlimento"), (ValidationResult validationResult) -> {
+                        if (!validationResult.exit) {
+                            delete(validationResult.data.get("id"), (ValidationResult validationResult1) -> {
+                                deleteResult.set(validationResult1);
+                            });
+                        }
+                    });
+
+                    break;
+                default:
+                    Log.e(TAG, "❌ Tipo de dato no soportado");
+                    throw new FBCException("Tipo de dato no soportado");
+            }
+
         }catch (FBCException e){
             return new ValidationResult(false, e.getMessage(), result.data);
         }
 
-        return saveData(classType, result);
-
+        if (deleteResult.get().message == null){
+            Log.d(TAG, "🔍 No había objeto duplicado para eliminar. Guardando sin eliminar.");
+            Log.d(TAG, "🏁 Fin del proceso forzado");
+            return saveData(classType, result);
+        }else if(deleteResult.get().exit){
+            Log.d(TAG, "✅ Objeto repetido eliminado");
+            Log.d(TAG, "🏁 Fin del proceso forzado, redirigiendo al principal ...");
+            return saveData(classType, result);
+        }else{
+            Log.d(TAG, "❌ Error al eliminar el objeto repetido");
+            Log.d(TAG, "🏁 Fin del proceso forzado");
+            return deleteResult.get();
+        }
     }
 
     private void repeatObject(ValidationResult result, String collectionName,OnResultCallBack<ValidationResult> callback) throws FBCException {
@@ -1416,6 +1416,7 @@ public class FireBaseConnector {
         }
 
     }
+
 
 //--IP - 23/04/2025 -
 //++IP - 25/04/2025 -
