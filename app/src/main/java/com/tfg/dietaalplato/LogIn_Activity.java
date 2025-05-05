@@ -50,15 +50,15 @@ public class LogIn_Activity extends AppCompatActivity {
 
 
 
+        // Prueba para guardar y leer un usuario (puedes quitarlo más adelante)
+        //  DateBase.saveUser(new User("USE002", "Patatudo", "123456"));
+        //  DateBase.readUsuario("USE002");
         try {
             // inicializamos la conexión con Firebase
             DateBase = FireBaseConnector.getInstance();
             DateBase.testFirebaseConnection();
             DateBase.monitorConnectionStatus();
 
-            // Prueba para guardar y leer un usuario (puedes quitarlo más adelante)
-//            DateBase.saveUser(new User("USE002", "Patatudo", "123456"));
-//            DateBase.readUsuario("USE002");
 
         } catch (FBCException e) {
             throw new RuntimeException(e);
@@ -89,11 +89,11 @@ public class LogIn_Activity extends AppCompatActivity {
         text_error = findViewById(R.id.text_error);// guaardamos en la variable la referencia dele textView para los errores
 
         correo = findViewById(R.id.text_usuario); //almacenamos lo que ha introducio el usario
-        String correo_introducido = correo.getText().toString(); // lo ponemos en tipo String
+        String correo_introducido = correo.getText().toString().trim().toLowerCase(); // lo ponemos en tipo String
         String emailRegex = "^[a-zA-Z]+(\\.[a-zA-Z]+)?@educa\\.madrid\\.org$";
 
         passw = findViewById(R.id.Password); // almacenamos lo que ha introducido el usuario
-        String passwd_introducida = passw.getText().toString(); // lo ponemos en tipo String
+        String passwd_introducida = passw.getText().toString().trim(); // lo ponemos en tipo String
 
         //Expresiones regulares para gmail y password
        /*
@@ -129,17 +129,27 @@ public class LogIn_Activity extends AppCompatActivity {
                                                 .addOnSuccessListener(usuario -> {
                                                     String passwDB = usuario.getPsw();  // Accedemos a la contraseña de la BD
 
-                                                    if (passwd_introducida.equals(passwDB)) {
-                                                        // Contraseña correcta
-                                                        Intent i = new Intent(this, InicioUsuarioActivity.class);
-                                                        startActivity(i);
-                                                        finish(); // Cerramos Login para que no se pueda volver atrás
-                                                    } else {
-                                                        // Contraseña incorrecta
-                                                        text_error.setText("Contraseña incorrecta.");
+                                                    if(passwRegex.matches(passwDB)){
+                                                        if (passwd_introducida.equals(passwDB)) {
+                                                            // Contraseña correcta
+                                                            Intent i = new Intent(this, InicioUsuarioActivity.class);
+                                                            startActivity(i);
+                                                            finish(); // Cerramos Login para que no se pueda volver atrás
+                                                        } else {
+                                                            // Contraseña incorrecta
+                                                            text_error.setText("Contraseña incorrecta.");
+                                                            text_error.setVisibility(View.VISIBLE);
+                                                            mostrarTextError();
+                                                        }
+
+                                                    }
+                                                    else {
+                                                        text_error.setText(" Error: La contraseña debe tener entre 8 y 12 caracteres, con al menos una mayúscula, un número y un símbolo especial (- _ # !).");
                                                         text_error.setVisibility(View.VISIBLE);
                                                         mostrarTextError();
                                                     }
+
+
                                                 })
                                                 .addOnFailureListener(e -> {
                                                     // Usuario no encontrado o error en la base de datos
@@ -158,7 +168,7 @@ public class LogIn_Activity extends AppCompatActivity {
                                 }
 
                             } else { // No existe el usuario ❌
-                                text_error.setText("  Error: correo no guardado ");
+                                text_error.setText("  Error: correo no resgistrado ");
                                 text_error.setVisibility(View.VISIBLE); // el textView se puede ver
                                 mostrarTextError();// se oculta el mensaje
                             }

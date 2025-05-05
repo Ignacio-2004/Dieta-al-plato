@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:padding="16dp">
 
-    <!-- Campo de correo -->
+    <!-- texto de correo -->
     <EditText
         android:id="@+id/editTextCorreo"
         android:layout_width="match_parent"
@@ -13,7 +13,7 @@
         android:hint="@string/correo_educamadrid"
         android:inputType="textEmailAddress" />
 
-    <!-- Campo de contraseña -->
+    <!-- texto de password -->
     <EditText
         android:id="@+id/editTextPassword"
         android:layout_width="match_parent"
@@ -21,7 +21,7 @@
         android:hint="@string/contrase_a"
         android:inputType="textPassword" />
 
-    <!-- Campo de confirmación de contraseña -->
+    <!--  confirmar paswwd -->
     <EditText
         android:id="@+id/editTextConfirmPassword"
         android:layout_width="match_parent"
@@ -29,19 +29,32 @@
         android:hint="@string/confirmar_contrase_a"
         android:inputType="textPassword" />
 
-    <!-- Botón para confirmar -->
+    <!-- boton para confirmar -->
     <Button
         android:id="@+id/buttonConfirmar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/crear_cuenta"
+        android:backgroundTint="#027C68"
         android:onClick="onConfirmarClick" />
 
-    <!-- Botón para cancelar -->
+    <!-- boton para cancelar -->
     <Button
         android:id="@+id/buttonCancelar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/cancelar"
-        android:onClick="onCancelarClick" />
+        android:onClick="onCancelarClick"
+        android:backgroundTint="#027C68"/>
+
+    <!--  texto para errores -->
+    <TextView
+        android:id="@+id/textError"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/holo_red_dark"
+        android:textSize="14sp"
+        android:paddingTop="8dp"
+        android:visibility="gone"
+        android:text="Aquí se mostrará el error si hay alguno" />
 </LinearLayout>
