@@ -16,6 +16,7 @@ import com.tfg.dietaalplato.utilities.FireBaseConnector;
 import com.tfg.dietaalplato.utilities.ValidationResult;
 import com.tfg.dietaalplato.utilities.exception.FBCException;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class SignUp_Dialogo extends DialogFragment {
@@ -62,45 +63,69 @@ public class SignUp_Dialogo extends DialogFragment {
                                // GUARDAMOS AL USUARIO
 
                                // CREAMOS HASHMAP
+                               //++IP -05/05/2025-
+
+                               ArrayList<View> views = new ArrayList<>();
+
+                               views.add(correo);
+                               views.add(password);
+
+                               ValidationResult userData = User.toMapData(views);
+
+                               //--IP -05/05/2025-
+
+                               /* Alex 05/05/2025
                                HashMap<String, String> userData = new HashMap<>();
                                userData.put("name", correo_introducido);
                                userData.put("psw", passw_introducida);
+                                */
 
-                               try {
+                               //try {
                                    // inicializamos la conexión con Firebase
                                    DateBase = FireBaseConnector.getInstance();
-                                   DateBase.testFirebaseConnection();
-                                   DateBase.monitorConnectionStatus();
 
+/*                                 Esto lo comento (Ignacio) para no consuimir datos de la tablet y que valla mas fluido
+                                   DateBase.testFirebaseConnection();
+                                   DateBase.monitorConnectionStatus();*/
+
+                                   /* Alex 05/05/2025
                                    // llamamos al metodo saveData pero sin forzar a sobreescribir ya que ya comprobamos que no haya un usuario con ese correo
                                    ValidationResult result = new ValidationResult();
                                    result.exit = true; // Datos validados
                                    result.message = correo_introducido;
                                    result.data = userData;
+                                    */
+
 
                                    // guardamos los datos en la base de datos
-                                   ValidationResult saveResult = DateBase.saveData(User.class, result, false);
+                                   //++IP -05/05/2025-
+                                   DateBase.saveData(User.class, userData, (ValidationResult validationResult) -> {
+                                       /* Alex 05/05/2025
+                                        ValidationResult saveResult = DateBase.saveData(User.class, result);*/
 
-                                   // comprobamos que se haya guardado correctamente
-                                   if (saveResult.exit) {
-                                       textError.setText("Usuario guardado correctamente.");
-                                       textError.setVisibility(View.VISIBLE);
-                                       mostrarTextError();
+                                       // comprobamos que se haya guardado correctamente
 
-                                       dismiss();
-                                   } else {
-                                       textError.setText("Error al guardar los datos: " + saveResult.message);
-                                       textError.setVisibility(View.VISIBLE);
-                                       mostrarTextError();
-                                   }
+                                       if (validationResult.exit) {
+                                           textError.setText("Usuario guardado correctamente.");
+                                           textError.setVisibility(View.VISIBLE);
+                                           mostrarTextError();
 
-                               } catch (FBCException e) {
-                                   textError.setText("Error de conexión con Firebase: " + e.getMessage());
-                                   textError.setVisibility(View.VISIBLE);
-                                   mostrarTextError();
-                               }
+                                           dismiss();
+                                       } else {
+                                           textError.setText("Error al guardar los datos: " + validationResult.message);
+                                           textError.setVisibility(View.VISIBLE);
+                                           mostrarTextError();
+                                       }
 
-                               dismiss(); // Cerrar el diálogo
+                                       /*} catch (FBCException e) {
+                                           textError.setText("Error de conexión con Firebase: " + e.getMessage());
+                                           textError.setVisibility(View.VISIBLE);
+                                           mostrarTextError();
+                                       }*/
+
+                                       dismiss(); // Cerrar el diálogo
+                                   });
+                                   //--IP -05/05/2025
                            }
                            else {
                                textError.setText("Las contraseñas no coinciden");

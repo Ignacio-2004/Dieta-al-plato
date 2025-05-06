@@ -14,7 +14,6 @@ import com.tfg.dietaalplato.object.Diet;
 import com.tfg.dietaalplato.object.Food;
 import com.tfg.dietaalplato.object.FoodDiet;
 import com.tfg.dietaalplato.object.User;
-import com.tfg.dietaalplato.utilities.exception.ClassUtilities;
 import com.tfg.dietaalplato.utilities.exception.FBCException;
 
 
@@ -166,7 +165,7 @@ public class FireBaseConnector {
         // Crear un objeto Map con los datos del usuario
         HashMap<Object, Object> usuario = new HashMap<>();
         usuario.put("id", user.getId());
-        usuario.put("user", user.getName());
+        usuario.put("name", user.getName());
         usuario.put("psw", user.getPsw());
 
 
@@ -1062,6 +1061,7 @@ public class FireBaseConnector {
 
         TaskCompletionSource<List<T>> taskCompletionSource = new TaskCompletionSource<>();
 
+        Log.d("Firebase", "📂 Leyendo colección: " + collectionName);
 
         fst.collection(collectionName).get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
@@ -1102,10 +1102,12 @@ public class FireBaseConnector {
 
 
 //++IP - 23/04/2025 -
-    public <T> ValidationResult saveData(Class<T> classType, ValidationResult result) {
+    public <T> void saveData(Class<T> classType, ValidationResult result,OnResultCallBack<ValidationResult> finalresoult) {
 
         ClassData classData;
         final String TAG = "SaveData";
+        AtomicReference<Integer> rawId = new AtomicReference<>(-1);
+        ValidationResult saveResoult;
 
 
         String id;
@@ -1129,6 +1131,8 @@ public class FireBaseConnector {
                         if (!validationResult.exit) {
                             result.exit = false;
                             result.message = validationResult.message;
+                        }else{
+                            finalresoult.onResult(save(result, classData, validationResult.message));
                         }
                     });
 
@@ -1139,6 +1143,8 @@ public class FireBaseConnector {
                         if (!validationResult.exit) {
                             result.exit = false;
                             result.message = validationResult.message;
+                        }else{
+                            finalresoult.onResult(save(result, classData, validationResult.message));
                         }
                     });
 
@@ -1148,6 +1154,8 @@ public class FireBaseConnector {
                         if (!validationResult.exit) {
                             result.exit = false;
                             result.message = validationResult.message;
+                        }else{
+                            finalresoult.onResult(save(result, classData, validationResult.message));
                         }
                     });
 
@@ -1158,12 +1166,24 @@ public class FireBaseConnector {
 
             }
 
+        } catch (FBCException e) {
+            Log.e(TAG, "❌ Error al guardar los datos: " + e.getMessage());
+            Log.d(TAG, "🏁 Fin del proceso");
+            finalresoult.onResult(new ValidationResult(false, e.getMessage(), result.data));
+        }
+    }
+
+    private ValidationResult save(ValidationResult result, ClassData classData, String rawId) {
+
+        String id;
+
+        try{
             if (!result.exit) {
                 Log.w(TAG, "Ya existe un objeto con los mismos credenciales: " + result.message);
                 return new ValidationResult(false, result.message, result.data);
             }
 
-            id = ClassUtilities.generateId(classData, result.message.toString().trim());
+            id = ClassUtilities.generateId(classData, rawId);
 
             switch (classData.data) {
                 case "usuarios":
@@ -1195,15 +1215,14 @@ public class FireBaseConnector {
             Log.d(TAG, "📂 Tipo de colección: " + classData.data);
             Log.d(TAG, "🏁 Fin del proceso");
             return new ValidationResult(true, "success", result.data);
-
-        } catch (FBCException e) {
+        }catch (FBCException e){
             Log.e(TAG, "❌ Error al guardar los datos: " + e.getMessage());
             Log.d(TAG, "🏁 Fin del proceso");
             return new ValidationResult(false, e.getMessage(), result.data);
         }
     }
 
-    public <T> ValidationResult saveData(Class<T> classType, ValidationResult result, boolean force) throws FBCException {
+    public <T> void saveData(Class<T> classType, ValidationResult result, boolean force, OnResultCallBack<ValidationResult> finalresoult) throws FBCException {
 
         final String TAG = "SaveDataForce";
 
@@ -1212,7 +1231,9 @@ public class FireBaseConnector {
          */
         if (!force){
             Log.d(TAG, "force = false, derivando al metodo principal ...");
-            return  saveData(classType, result);
+            saveData(classType, result, resoult -> {
+                finalresoult.onResult(result);
+            });
         }
 
         String collectionName;
@@ -1269,27 +1290,32 @@ public class FireBaseConnector {
             }
 
         }catch (FBCException e){
-            return new ValidationResult(false, e.getMessage(), result.data);
+            finalresoult.onResult(new ValidationResult(false, e.getMessage(), result.data));
         }
 
         if (deleteResult.get().message == null){
             Log.d(TAG, "🔍 No había objeto duplicado para eliminar. Guardando sin eliminar.");
             Log.d(TAG, "🏁 Fin del proceso forzado");
-            return saveData(classType, result);
+            saveData(classType, result, resoult -> {
+                finalresoult.onResult(result);
+            });
         }else if(deleteResult.get().exit){
             Log.d(TAG, "✅ Objeto repetido eliminado");
             Log.d(TAG, "🏁 Fin del proceso forzado, redirigiendo al principal ...");
-            return saveData(classType, result);
+            saveData(classType, result, resoult -> {
+                finalresoult.onResult(result);
+            });
         }else{
             Log.d(TAG, "❌ Error al eliminar el objeto repetido");
             Log.d(TAG, "🏁 Fin del proceso forzado");
-            return deleteResult.get();
+            finalresoult.onResult(new ValidationResult(false, deleteResult.get().message, result.data));
         }
     }
 
     private void repeatObject(ValidationResult result, String collectionName,OnResultCallBack<ValidationResult> callback) throws FBCException {
 
         switch (collectionName){
+            case "dietas":
             case "usuarios":
 
                 readAllFromCollection(collectionName, User.class).addOnSuccessListener(

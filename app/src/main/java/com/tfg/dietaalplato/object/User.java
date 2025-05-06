@@ -48,7 +48,7 @@ public class User extends BaseObject {
     public static ValidationResult toMapData(ArrayList<View> data){
         ValidationResult result = new ValidationResult();
 
-        String[] fieldName = {"Name", "psw"};
+        String[] fieldName = {"name", "psw"};
 
         try{
             result.data = new HashMap<>();

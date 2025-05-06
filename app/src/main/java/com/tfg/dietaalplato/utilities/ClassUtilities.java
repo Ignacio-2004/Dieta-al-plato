@@ -1,7 +1,6 @@
-package com.tfg.dietaalplato.utilities.exception;
+package com.tfg.dietaalplato.utilities;
 
 import com.tfg.dietaalplato.object.*;
-import com.tfg.dietaalplato.utilities.ClassData;
 
 public class  ClassUtilities {
 
@@ -11,14 +10,16 @@ public class  ClassUtilities {
         if (classType.equals(Diet.class)) data = new ClassData("DIE","dietas");
         else if (classType.equals(Client.class)) data = new ClassData("CLI","clientes");
         else if (classType.equals(User.class)) data = new ClassData("USU","usuarios");
-        else if (classType.equals(Food.class)) data = new ClassData("ALI","comidas");
-        else if (classType.equals(FoodDiet.class)) data = new ClassData("FDI","dietaAlimentos");
+        else if (classType.equals(Food.class)) data = new ClassData("ALI","alimentos");
+        else if (classType.equals(FoodDiet.class)) data = new ClassData("FDI","comidaDietas");
         else data = new ClassData("Error","Dato no soportado");
 
         return data;
     }
 
     public static String generateId(ClassData classData, String amount){
+
+        amount = String.valueOf(Integer.parseInt(amount)+1);
 
         while (amount.length()<4){
             amount = "0" + amount;
