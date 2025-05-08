@@ -1,14 +1,15 @@
-package com.tfg.dietaalplato.object;
+package com.tfg.dietaalplato.firebase.tables;
 
 import android.view.View;
 import android.widget.EditText;
 
+import com.tfg.dietaalplato.firebase.tables.parents.BaseObject;
 import com.tfg.dietaalplato.utilities.ValidationResult;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Diet extends BaseObject{
+public class Diet extends BaseObject {
 
     /**
      * El id de esta dieta es el comienzo de todas pero el numero de la dieta (1,3,7)

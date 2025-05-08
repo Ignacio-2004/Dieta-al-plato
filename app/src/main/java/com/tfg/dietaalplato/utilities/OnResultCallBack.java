@@ -1,7 +1,5 @@
 package com.tfg.dietaalplato.utilities;
 
-import com.tfg.dietaalplato.utilities.exception.FBCException;
-
 /**
   Interfaz funcional utilizada para manejar resultados asíncronos.
 

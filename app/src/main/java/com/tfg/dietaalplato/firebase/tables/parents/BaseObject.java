@@ -1,4 +1,4 @@
-package com.tfg.dietaalplato.object;
+package com.tfg.dietaalplato.firebase.tables.parents;
 //++IP - 24/04/2025 -
 
 /**

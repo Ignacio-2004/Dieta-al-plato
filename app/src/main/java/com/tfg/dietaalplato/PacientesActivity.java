@@ -9,16 +9,12 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 
-import com.tfg.dietaalplato.object.Client;
-import com.tfg.dietaalplato.utilities.FireBaseConnector;
-import com.tfg.dietaalplato.utilities.exception.FBCException;
+import com.tfg.dietaalplato.firebase.tables.Client;
+import com.tfg.dietaalplato.firebase.conectors.FireBaseConnector;
+import com.tfg.dietaalplato.firebase.exceptions.FBCException;
 
 
 public class PacientesActivity extends AppCompatActivity {

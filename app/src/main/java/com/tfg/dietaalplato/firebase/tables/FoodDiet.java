@@ -1,14 +1,15 @@
-package com.tfg.dietaalplato.object;
+package com.tfg.dietaalplato.firebase.tables;
 
 import android.view.View;
 import android.widget.EditText;
 
+import com.tfg.dietaalplato.firebase.tables.parents.BaseObject;
 import com.tfg.dietaalplato.utilities.ValidationResult;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class FoodDiet extends BaseObject{
+public class FoodDiet extends BaseObject {
 
     private String idDieta;
     private String idAlimento;

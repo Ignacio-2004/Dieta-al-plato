@@ -1,6 +1,10 @@
 package com.tfg.dietaalplato.utilities;
 
-import com.tfg.dietaalplato.object.*;
+import com.tfg.dietaalplato.firebase.tables.Client;
+import com.tfg.dietaalplato.firebase.tables.Diet;
+import com.tfg.dietaalplato.firebase.tables.Food;
+import com.tfg.dietaalplato.firebase.tables.FoodDiet;
+import com.tfg.dietaalplato.firebase.tables.User;
 
 public class  ClassUtilities {
 

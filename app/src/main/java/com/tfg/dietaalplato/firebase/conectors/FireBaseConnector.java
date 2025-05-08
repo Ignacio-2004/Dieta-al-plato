@@ -1,4 +1,4 @@
-package com.tfg.dietaalplato.utilities;
+package com.tfg.dietaalplato.firebase.conectors;
 
 
 import android.util.Log;
@@ -6,22 +6,23 @@ import android.util.Log;
 
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
-import com.google.android.gms.tasks.Tasks;
-import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.*;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.tfg.dietaalplato.object.BaseObject;
-import com.tfg.dietaalplato.object.Client;
-import com.tfg.dietaalplato.object.Diet;
-import com.tfg.dietaalplato.object.Food;
-import com.tfg.dietaalplato.object.FoodDiet;
-import com.tfg.dietaalplato.object.User;
-import com.tfg.dietaalplato.utilities.exception.FBCException;
-import com.tfg.dietaalplato.utilities.exception.ComplexFBCE;
+import com.tfg.dietaalplato.firebase.tables.parents.BaseObject;
+import com.tfg.dietaalplato.firebase.tables.Client;
+import com.tfg.dietaalplato.firebase.tables.Diet;
+import com.tfg.dietaalplato.firebase.tables.Food;
+import com.tfg.dietaalplato.firebase.tables.FoodDiet;
+import com.tfg.dietaalplato.firebase.tables.User;
+import com.tfg.dietaalplato.utilities.ClassData;
+import com.tfg.dietaalplato.utilities.ClassUtilities;
+import com.tfg.dietaalplato.utilities.ObjectResult;
+import com.tfg.dietaalplato.utilities.OnResultCallBack;
+import com.tfg.dietaalplato.utilities.ValidationResult;
+import com.tfg.dietaalplato.firebase.exceptions.FBCException;
+import com.tfg.dietaalplato.firebase.exceptions.ComplexFBCE;
 
-
-import org.checkerframework.checker.units.qual.C;
 
 import java.util.HashMap;
 import java.util.Map;

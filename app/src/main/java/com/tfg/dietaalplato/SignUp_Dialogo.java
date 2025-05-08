@@ -12,14 +12,11 @@ import android.widget.TextView;
 import androidx.fragment.app.DialogFragment;
 
 import com.google.firebase.FirebaseApp;
-import com.google.firebase.database.DatabaseError;
-import com.tfg.dietaalplato.object.User;
-import com.tfg.dietaalplato.utilities.FireBaseConnector;
+import com.tfg.dietaalplato.firebase.tables.User;
+import com.tfg.dietaalplato.firebase.conectors.FireBaseConnector;
 import com.tfg.dietaalplato.utilities.ValidationResult;
-import com.tfg.dietaalplato.utilities.exception.FBCException;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class SignUp_Dialogo extends DialogFragment {
     private TextView textError;

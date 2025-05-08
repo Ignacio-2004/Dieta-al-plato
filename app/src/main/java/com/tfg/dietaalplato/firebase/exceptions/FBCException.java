@@ -1,4 +1,4 @@
-package com.tfg.dietaalplato.utilities.exception;
+package com.tfg.dietaalplato.firebase.exceptions;
 
 public class FBCException extends Exception{
     public FBCException(String message){

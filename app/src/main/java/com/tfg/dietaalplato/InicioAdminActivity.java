@@ -8,9 +8,9 @@ import android.widget.Toast;
 
 
 import androidx.appcompat.app.AppCompatActivity;
-import com.tfg.dietaalplato.object.User;
-import com.tfg.dietaalplato.utilities.FireBaseConnector;
-import com.tfg.dietaalplato.utilities.exception.FBCException;
+import com.tfg.dietaalplato.firebase.tables.User;
+import com.tfg.dietaalplato.firebase.conectors.FireBaseConnector;
+import com.tfg.dietaalplato.firebase.exceptions.FBCException;
 
 
 public class InicioAdminActivity extends AppCompatActivity {

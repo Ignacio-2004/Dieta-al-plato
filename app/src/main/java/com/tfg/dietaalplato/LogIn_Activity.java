@@ -16,10 +16,9 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.google.firebase.database.*;
-import com.tfg.dietaalplato.object.User;
 import com.tfg.dietaalplato.utilities.BasketAnimation;
-import com.tfg.dietaalplato.utilities.FireBaseConnector;
-import com.tfg.dietaalplato.utilities.exception.FBCException;
+import com.tfg.dietaalplato.firebase.conectors.FireBaseConnector;
+import com.tfg.dietaalplato.firebase.exceptions.FBCException;
 
 public class LogIn_Activity extends AppCompatActivity {
 
