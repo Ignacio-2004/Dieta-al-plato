@@ -1,4 +1,4 @@
-package com.tfg.dietaalplato.utilities;
+package com.tfg.dietaalplato.firebase.utilities;
 
 import com.tfg.dietaalplato.firebase.tables.Client;
 import com.tfg.dietaalplato.firebase.tables.Diet;

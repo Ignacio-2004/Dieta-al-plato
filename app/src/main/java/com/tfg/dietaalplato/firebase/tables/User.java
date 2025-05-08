@@ -4,7 +4,7 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.tfg.dietaalplato.firebase.tables.parents.BaseObject;
-import com.tfg.dietaalplato.utilities.ValidationResult;
+import com.tfg.dietaalplato.firebase.utilities.ValidationResult;
 
 import java.util.ArrayList;
 import java.util.HashMap;

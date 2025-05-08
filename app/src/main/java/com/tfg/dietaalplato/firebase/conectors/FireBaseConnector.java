@@ -15,11 +15,11 @@ import com.tfg.dietaalplato.firebase.tables.Diet;
 import com.tfg.dietaalplato.firebase.tables.Food;
 import com.tfg.dietaalplato.firebase.tables.FoodDiet;
 import com.tfg.dietaalplato.firebase.tables.User;
-import com.tfg.dietaalplato.utilities.ClassData;
-import com.tfg.dietaalplato.utilities.ClassUtilities;
-import com.tfg.dietaalplato.utilities.ObjectResult;
-import com.tfg.dietaalplato.utilities.OnResultCallBack;
-import com.tfg.dietaalplato.utilities.ValidationResult;
+import com.tfg.dietaalplato.firebase.utilities.ClassData;
+import com.tfg.dietaalplato.firebase.utilities.ClassUtilities;
+import com.tfg.dietaalplato.firebase.utilities.ObjectResult;
+import com.tfg.dietaalplato.firebase.utilities.OnResultCallBack;
+import com.tfg.dietaalplato.firebase.utilities.ValidationResult;
 import com.tfg.dietaalplato.firebase.exceptions.FBCException;
 import com.tfg.dietaalplato.firebase.exceptions.ComplexFBCE;
 

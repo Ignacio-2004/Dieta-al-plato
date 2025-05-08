@@ -1,4 +1,4 @@
-package com.tfg.dietaalplato.utilities;
+package com.tfg.dietaalplato.firebase.utilities;
 //++IP - 25/04/2025 -
 
 /**

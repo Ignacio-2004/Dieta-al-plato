@@ -14,7 +14,7 @@ import androidx.fragment.app.DialogFragment;
 import com.google.firebase.FirebaseApp;
 import com.tfg.dietaalplato.firebase.tables.User;
 import com.tfg.dietaalplato.firebase.conectors.FireBaseConnector;
-import com.tfg.dietaalplato.utilities.ValidationResult;
+import com.tfg.dietaalplato.firebase.utilities.ValidationResult;
 
 import java.util.ArrayList;
 
