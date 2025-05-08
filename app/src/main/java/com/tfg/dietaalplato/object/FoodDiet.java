@@ -8,15 +8,14 @@ import com.tfg.dietaalplato.utilities.ValidationResult;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class FoodDiet {
-    private String id;
+public class FoodDiet extends BaseObject{
+
     private String idDieta;
     private String idAlimento;
     private String comida; // 1: Desayuno, 2: Almuerzo, 3: Comida, 4: Merienda, 5: Cena, 6: ReCena
     private String numeroPlato;
     private String dia;
     private String g;
-    private String nombreReceta;
 
     // Constructor vacío requerido para Firestore
     public FoodDiet() {
@@ -25,27 +24,19 @@ public class FoodDiet {
     // Constructor con parámetros
 
     public FoodDiet(String id, String idDieta, String idAlimento, String comida, String numeroPlato, String dia, String g, String nombreReceta) {
-        this.id = id;
+
+        super(id,nombreReceta);
         this.idDieta = idDieta;
         this.idAlimento = idAlimento;
         this.comida = comida;
         this.numeroPlato = numeroPlato;
         this.dia = dia;
         this.g = g;
-        this.nombreReceta = nombreReceta;
+
     }
 
 
     // Getters y Setters
-
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
 
     public String getIdDieta() {
         return idDieta;
@@ -95,23 +86,16 @@ public class FoodDiet {
         this.g = g;
     }
 
-    public String getNombreReceta() {
-        return nombreReceta;
-    }
-
-    public void setNombreReceta(String nombreReceta) {
-        this.nombreReceta = nombreReceta;
-    }
-
     @Override
     public String toString() {
         return "DietFood{" +
+                "id='" + getId() + '\'' +
                 "idDieta='" + idDieta + '\'' +
                 ", idAlimento='" + idAlimento + '\'' +
                 ", comida=" + comida +
                 ", numeroPlato=" + numeroPlato +
                 ", dia=" + dia +
-                ", nombreReceta='" + nombreReceta + '\'' +
+                ", nombreReceta='" + getName() + '\'' +
                 ", g=" + g +
                 '}';
     }
@@ -146,7 +130,7 @@ public class FoodDiet {
             }
 
             for (int i = 0; i < keys.size(); i++) {
-                result.data.put(fieldName[i], keys.get(i));
+                result.data.put(fieldName[i], keys.get(i).toLowerCase());
             }
 
             result.exit = true;

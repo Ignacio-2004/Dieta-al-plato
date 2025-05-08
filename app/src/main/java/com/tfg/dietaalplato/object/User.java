@@ -67,9 +67,8 @@ public class User extends BaseObject {
                 }
             }
 
-            for (int i = 0; i < keys.size(); i++) {
-                result.data.put(fieldName[i], keys.get(i));
-            }
+            result.data.put(fieldName[0], keys.get(0).toLowerCase());
+            result.data.put(fieldName[1], keys.get(1));
 
             result.exit = true;
             result.message = "Datos validos";

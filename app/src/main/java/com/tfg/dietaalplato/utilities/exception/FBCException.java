@@ -4,4 +4,6 @@ public class FBCException extends Exception{
     public FBCException(String message){
         super(message);
     }
+    public FBCException(){}
+
 }

@@ -17,15 +17,15 @@ public class  ClassUtilities {
         return data;
     }
 
-    public static String generateId(ClassData classData, String amount){
+    public static String generateId(ClassData classData, int amount){
 
-        amount = String.valueOf(Integer.parseInt(amount)+1);
+       String id = String.valueOf(amount+1);
 
-        while (amount.length()<4){
-            amount = "0" + amount;
+        while (id.length()<4){
+            id = "0" + id;
         }
 
-        return classData.key+amount;
+        return classData.key+id;
 
     }
 

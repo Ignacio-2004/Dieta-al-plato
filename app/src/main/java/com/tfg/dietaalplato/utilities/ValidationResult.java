@@ -19,14 +19,13 @@ import java.util.Map;
 public class ValidationResult {
     public boolean exit;
     public String message;
+    public Map<String, String> data;
 
     public ValidationResult(boolean exit, String message, Map<String, String> data) {
         this.exit = exit;
         this.message = message;
         this.data = data;
     }
-
-    public Map<String, String> data;
 
     public ValidationResult() {
     }

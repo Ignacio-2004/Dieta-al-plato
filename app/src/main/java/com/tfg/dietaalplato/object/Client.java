@@ -73,7 +73,7 @@ public class Client extends BaseObject {
             }
 
             for (int i = 0; i < keys.size(); i++) {
-                result.data.put(fieldName[i], keys.get(i));
+                result.data.put(fieldName[i], keys.get(i).toLowerCase());
             }
 
             result.exit = true;

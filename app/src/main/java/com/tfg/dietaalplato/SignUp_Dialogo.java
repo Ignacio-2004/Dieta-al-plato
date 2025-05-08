@@ -3,6 +3,7 @@ package com.tfg.dietaalplato;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Button;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 
 import androidx.fragment.app.DialogFragment;
 
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DatabaseError;
 import com.tfg.dietaalplato.object.User;
 import com.tfg.dietaalplato.utilities.FireBaseConnector;
@@ -98,34 +100,28 @@ public class SignUp_Dialogo extends DialogFragment {
 
 
                                    // guardamos los datos en la base de datos
-                                   //++IP -05/05/2025-
-                                   DateBase.saveData(User.class, userData, (ValidationResult validationResult) -> {
-                                       /* Alex 05/05/2025
-                                        ValidationResult saveResult = DateBase.saveData(User.class, result);*/
+                                   //++IP -07/05/2025-
 
-                                       // comprobamos que se haya guardado correctamente
+                                   if (FirebaseApp.getApps(this.getActivity()).isEmpty()) {
+                                       Log.e("FireBase", "Firebase no se ha inicializado");
+                                   } else {
+                                       Log.d("FireBase", "✅ Firebase está inicializado");
+                                   }
 
-                                       if (validationResult.exit) {
-                                           textError.setText("Usuario guardado correctamente.");
-                                           textError.setVisibility(View.VISIBLE);
-                                           mostrarTextError();
-
-                                           dismiss();
-                                       } else {
-                                           textError.setText("Error al guardar los datos: " + validationResult.message);
-                                           textError.setVisibility(View.VISIBLE);
-                                           mostrarTextError();
-                                       }
-
-                                       /*} catch (FBCException e) {
-                                           textError.setText("Error de conexión con Firebase: " + e.getMessage());
-                                           textError.setVisibility(View.VISIBLE);
-                                           mostrarTextError();
-                                       }*/
-
-                                       dismiss(); // Cerrar el diálogo
-                                   });
-                                   //--IP -05/05/2025
+                                   DateBase.saveData(User.class,userData).addOnSuccessListener(
+                                           aVoid -> {
+                                               textError.setText("Usuario guardado correctamente.");
+                                               textError.setVisibility(View.VISIBLE);
+                                               mostrarTextError();
+                                           }
+                                   ).addOnFailureListener(
+                                           e -> {
+                                               textError.setText("Error al guardar los datos: " + e.getMessage());
+                                               textError.setVisibility(View.VISIBLE);
+                                               mostrarTextError();
+                                           }
+                                   );
+                                   //--IP -07/05/2025
                            }
                            else {
                                textError.setText("Las contraseñas no coinciden");

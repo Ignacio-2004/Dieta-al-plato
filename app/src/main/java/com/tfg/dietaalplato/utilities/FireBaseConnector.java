@@ -6,16 +6,22 @@ import android.util.Log;
 
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
+import com.google.android.gms.tasks.Tasks;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.*;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.tfg.dietaalplato.object.BaseObject;
 import com.tfg.dietaalplato.object.Client;
 import com.tfg.dietaalplato.object.Diet;
 import com.tfg.dietaalplato.object.Food;
 import com.tfg.dietaalplato.object.FoodDiet;
 import com.tfg.dietaalplato.object.User;
 import com.tfg.dietaalplato.utilities.exception.FBCException;
+import com.tfg.dietaalplato.utilities.exception.ComplexFBCE;
 
+
+import org.checkerframework.checker.units.qual.C;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -154,7 +160,7 @@ public class FireBaseConnector {
     }
 
 
-    private void save(User user) throws FBCException {
+    private Task<ObjectResult<User>> save(User user) throws FBCException {
 
 
         if (fst == null){
@@ -168,16 +174,19 @@ public class FireBaseConnector {
         usuario.put("name", user.getName());
         usuario.put("psw", user.getPsw());
 
-
+        TaskCompletionSource<ObjectResult<User>> callback = new TaskCompletionSource<>();
         // Guardar en Firestore en la colección "usuarios"
         fst.collection("usuarios").document(user.getId())
                 .set(usuario)
                 .addOnSuccessListener(aVoid -> {
                     Log.d("Firebase", "✅ Usuario guardado con éxito en Firestore");
+                    callback.setResult(new ObjectResult<>(true, "success", user));
                 })
                 .addOnFailureListener(e -> {
                     Log.e("Firebase", "❌ Error al guardar usuario: " + e.getMessage());
+                    callback.setException(new ComplexFBCE(new ObjectResult<>(false, "Error al guardar usuario: " + e.getMessage(), user)));
                 });
+        return callback.getTask();
     }
 
 
@@ -248,10 +257,12 @@ public class FireBaseConnector {
                 });
     }
 
-    public void delete(String id, OnResultCallBack<ValidationResult> callback) {
+    public Task<ValidationResult> delete(String id) {
+        TaskCompletionSource<ValidationResult> taskCompletionSource = new TaskCompletionSource<>();
+
         if (fst == null) {
-            callback.onResult(new ValidationResult(false, "Firestore no inicializado", null));
-            return;
+            taskCompletionSource.setResult(new ValidationResult(false, "Firestore no inicializado", null));
+            return taskCompletionSource.getTask();
         }
 
         String prefix = id.substring(0, 3);
@@ -286,18 +297,19 @@ public class FireBaseConnector {
                 errorMsg = "Error al eliminar el alimento";
                 break;
             default:
-                callback.onResult(new ValidationResult(false, "Tipo de documento no soportado", null));
-                return;
+                taskCompletionSource.setResult(new ValidationResult(false, "Prefijo no soportado", null));
+                return taskCompletionSource.getTask();
         }
 
         String finalSuccessMsg = successMsg;
         String finalErrorMsg = errorMsg;
         fst.collection(collection).document(id).delete()
                 .addOnSuccessListener(aVoid ->
-                        callback.onResult(new ValidationResult(true, finalSuccessMsg, null))
+                        taskCompletionSource.setResult(new ValidationResult(true, finalSuccessMsg, null))
                 ).addOnFailureListener(e ->
-                        callback.onResult(new ValidationResult(false, finalErrorMsg, null))
+                        taskCompletionSource.setResult(new ValidationResult(false, finalErrorMsg, null))
                 );
+        return taskCompletionSource.getTask();
     }
 
 
@@ -784,7 +796,7 @@ public class FireBaseConnector {
 
 
 
-    private void save(Client cli) throws FBCException {
+    private Task<ObjectResult<Client>> save(Client cli) throws FBCException {
 
 
         if (fst == null){
@@ -799,16 +811,19 @@ public class FireBaseConnector {
         client.put("ape", cli.getApe());
         client.put("idUsr", cli.getIdUsr());
 
-
+        TaskCompletionSource<ObjectResult<Client>> callback = new TaskCompletionSource<>();
         // Guardar en Firestore en la colección "usuarios"
         fst.collection("clientes").document(cli.getId())
                 .set(client)
                 .addOnSuccessListener(aVoid -> {
                     Log.d("Firebase", "✅ Cliente guardado con éxito en Firestore");
+                    callback.setResult(new ObjectResult<>(true, "success", cli));
                 })
                 .addOnFailureListener(e -> {
                     Log.e("Firebase", "❌ Error al guardar Cliente: " + e.getMessage());
+                    callback.setException(new ComplexFBCE(new ObjectResult<>(false, "Error al guardar Cliente: " + e.getMessage(), null)));
                 });
+        return callback.getTask();
     }
 
 
@@ -848,7 +863,7 @@ public class FireBaseConnector {
     }
 
 
-    private  void save(Diet diet) throws FBCException {
+    private  Task<ObjectResult<Diet>> save(Diet diet) throws FBCException {
 
 
         if (fst == null){
@@ -863,16 +878,19 @@ public class FireBaseConnector {
         client.put("idClient", diet.getIdCliente());
         client.put("just", diet.getJust());
 
-
+        TaskCompletionSource<ObjectResult<Diet>> callback = new TaskCompletionSource<>();
         // Guardar en Firestore en la colección "usuarios"
         fst.collection("dietas").document(diet.getId())
                 .set(client)
                 .addOnSuccessListener(aVoid -> {
                     Log.d("Firebase", "✅ Dieta guardado con éxito en Firestore");
+                   callback.setResult(new ObjectResult<>(true, "success", diet));
                 })
                 .addOnFailureListener(e -> {
                     Log.e("Firebase", "❌ Error al guardar Dieta: " + e.getMessage());
+                    callback.setException(new ComplexFBCE(new ObjectResult<>(false, "Error al guardar Dieta: " + e.getMessage(), null)));
                 });
+        return callback.getTask();
     }
 
 
@@ -912,7 +930,7 @@ public class FireBaseConnector {
     }
 
 
-    private void save(Food alimento) throws FBCException {
+    private Task<ObjectResult<Food>> save(Food alimento) throws FBCException {
 
 
         if (fst == null) {
@@ -943,16 +961,19 @@ public class FireBaseConnector {
         food.put("calcio", alimento.getCalcio());
         food.put("potasio", alimento.getPotasio());
 
-
+        TaskCompletionSource<ObjectResult<Food>> callback = new TaskCompletionSource<>();
         // Guardar en Firestore en la colección "alimentos"
         fst.collection("alimentos").document(alimento.getId())
                 .set(food)
                 .addOnSuccessListener(aVoid -> {
                     Log.d("Firebase", "✅ Alimento guardado con éxito en Firestore");
+                    callback.setResult(new ObjectResult<>(true, "success", alimento));
                 })
                 .addOnFailureListener(e -> {
                     Log.e("Firebase", "❌ Error al guardar Alimento: " + e.getMessage());
+                    callback.setException(new ComplexFBCE(new ObjectResult<>(false, "Error al guardar Alimento: " + e.getMessage(), null)));
                 });
+        return callback.getTask();
     }
 
 
@@ -992,7 +1013,7 @@ public class FireBaseConnector {
     }
 
 
-    private void save(FoodDiet dietFood) throws FBCException {
+    private Task<ObjectResult<FoodDiet>> save(FoodDiet dietFood) throws FBCException {
         if (fst == null) {
             throw new FBCException("La instancia de Firestore no puede ser nula");
         }
@@ -1005,18 +1026,21 @@ public class FireBaseConnector {
         foodData.put("comida", dietFood.getComida());
         foodData.put("numeroPlato", dietFood.getNumeroPlato());
         foodData.put("dia", dietFood.getDia());
-        foodData.put("nombreReceta", dietFood.getNombreReceta());
+        foodData.put("nombreReceta", dietFood.getName());
 
-
+        TaskCompletionSource<ObjectResult<FoodDiet>> callback = new TaskCompletionSource<>();
         // Guardar en Firestore en la colección "diet_food"
         fst.collection("dietaAlimentos").document(dietFood.getIdDieta() + "_" + dietFood.getIdAlimento())
                 .set(foodData)
                 .addOnSuccessListener(aVoid -> {
                     Log.d("Firebase", "✅ DietFood guardado con éxito en Firestore");
+                    callback.setResult(new ObjectResult<>(true, "success", dietFood));
                 })
                 .addOnFailureListener(e -> {
                     Log.e("Firebase", "❌ Error al guardar DietFood: " + e.getMessage());
+                    callback.setException(new ComplexFBCE(new ObjectResult<>(false, "Error al guardar DietFood: " + e.getMessage(), null)));
                 });
+        return callback.getTask();
     }
 
 
@@ -1063,6 +1087,7 @@ public class FireBaseConnector {
 
         Log.d("Firebase", "📂 Leyendo colección: " + collectionName);
 
+        testFirebaseConnection();
         fst.collection(collectionName).get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     List<T> itemList = new ArrayList<>();
@@ -1074,22 +1099,15 @@ public class FireBaseConnector {
                     }
                     Log.d("Firebase", "📖 Se leyeron " + itemList.size() + " documentos de " + collectionName);
                     taskCompletionSource.setResult(itemList);
+                    return;
                 })
                 .addOnFailureListener(e -> {
                     Log.e("Firebase", "❌ Error al leer la colección " + collectionName + ": " + e.getMessage());
                     taskCompletionSource.setException(e);
+                    return;
                 });
-
-
         return taskCompletionSource.getTask();
     }
-
-
-
-
-
-
-
 
     public DatabaseReference getRef() {
         return ref;
@@ -1102,12 +1120,20 @@ public class FireBaseConnector {
 
 
 //++IP - 23/04/2025 -
-    public <T> void saveData(Class<T> classType, ValidationResult result,OnResultCallBack<ValidationResult> finalresoult) {
+
+    /**
+     * Metodo principal para guardar los datos en la base de datos
+     * @param classType clase a guardar
+     * @param result datos a guardar
+     * @return Task<ObjectResult<BaseObject>>
+     * @param <T> clase a guardar
+     */
+    public <T> Task<ObjectResult<BaseObject>> saveData(Class<T> classType, ValidationResult result) {
 
         ClassData classData;
         final String TAG = "SaveData";
         AtomicReference<Integer> rawId = new AtomicReference<>(-1);
-        ValidationResult saveResoult;
+        TaskCompletionSource<ObjectResult<BaseObject>> finalresoult = new TaskCompletionSource<>();
 
 
         String id;
@@ -1116,8 +1142,8 @@ public class FireBaseConnector {
             Log.d(TAG, "💾 Guardando datos...");
 
             if (!result.exit) {
-                Log.w(TAG, "❌ Error al validar los datos: " + result.message);
-                throw new FBCException(result.message);
+                Log.d(TAG, "❌ Error al validar los datos: " + result.message);
+                throw new ComplexFBCE(new ObjectResult<>(false, result.message, result));
             }
 
             classData = ClassUtilities.collectionData(classType);
@@ -1126,85 +1152,199 @@ public class FireBaseConnector {
 
             switch (classData.key) {
                 case "USU":
-                case "DIE":
-                    repeatObject(result, classData.data, (ValidationResult validationResult) -> {
-                        if (!validationResult.exit) {
-                            result.exit = false;
-                            result.message = validationResult.message;
-                        }else{
-                            finalresoult.onResult(save(result, classData, validationResult.message));
-                        }
-                    });
+                    repeatObject(result, classData.data).addOnSuccessListener(
+                            validationResult -> {
+                                if (!validationResult.exit) {
+                                    result.exit = false;
+                                    result.message = validationResult.message;
+                                }else{
+                                    /*Cambiar resultmensaje*/
+                                    save(result,classData, validationResult.message).addOnSuccessListener(
+                                            saveResult ->{
+                                                finalresoult.setResult(saveResult);
+                                            }
+                                    ).addOnFailureListener(
+                                            e -> {
+                                                finalresoult.setException(new ComplexFBCE(new ObjectResult<>(false, e.getMessage(), result)));
+                                            }
+                                    );
+                                }
+                            }
+                    ).addOnFailureListener(
+                            e -> {
+                                result.exit = false;
+                                result.message = e.getMessage();
+                            }
+                    );
 
+                    break;
+                case "DIE":
+                    repeatObject(result, classData.data, result.data.get("idCliente")).addOnSuccessListener(
+                            validationResult -> {
+                                if (!validationResult.exit) {
+                                    result.exit = false;
+                                    result.message = validationResult.message;
+                                }else{
+                                    save(result,classData, result.message).addOnSuccessListener(
+                                            saveResult ->{
+                                                finalresoult.setResult(saveResult);
+                                            }
+                                    ).addOnFailureListener(
+                                            e -> {
+                                                finalresoult.setException(new ComplexFBCE(new ObjectResult<>(false, e.getMessage(), result)));
+                                            }
+                                    );
+                                }
+                            }
+                    ).addOnFailureListener(
+                            e -> {
+                                result.exit = false;
+                                result.message = e.getMessage();
+                            }
+                    );
                     break;
                 case "ALI":
                 case "CLI":
-                    repeatObject(result, classData.data, result.data.get("idUsr"), (ValidationResult validationResult) -> {
-                        if (!validationResult.exit) {
-                            result.exit = false;
-                            result.message = validationResult.message;
-                        }else{
-                            finalresoult.onResult(save(result, classData, validationResult.message));
-                        }
-                    });
-
+                    repeatObject(result, classData.data, result.data.get("idUsr")).addOnSuccessListener(
+                            validationResult -> {
+                                if (!validationResult.exit) {
+                                    result.exit = false;
+                                    result.message = validationResult.message;
+                                }else{
+                                    save(result,classData, result.message).addOnSuccessListener(
+                                            saveResult ->{
+                                                finalresoult.setResult(saveResult);
+                                            }
+                                    ).addOnFailureListener(
+                                            e -> {
+                                                finalresoult.setException(new ComplexFBCE(new ObjectResult<>(false, e.getMessage(), result)));
+                                            }
+                                    );
+                                }
+                            }
+                    ).addOnFailureListener(
+                            e -> {
+                                result.exit = false;
+                                result.message = e.getMessage();
+                            }
+                    );
                     break;
                 case "FDI":
-                    repeatObject(result, classData.data, result.data.get("idDieta"), result.data.get("idAlimento"), (ValidationResult validationResult) -> {
-                        if (!validationResult.exit) {
-                            result.exit = false;
-                            result.message = validationResult.message;
-                        }else{
-                            finalresoult.onResult(save(result, classData, validationResult.message));
-                        }
-                    });
+                    repeatObject(result, classData.data, result.data.get("idDieta"), result.data.get("idAlimento")).addOnSuccessListener(
+                            validationResult -> {
+                                if (!validationResult.exit) {
+                                    result.exit = false;
+                                    result.message = validationResult.message;
+                                } else {
+                                    save(result,classData, result.message).addOnSuccessListener(
+                                            saveResult ->{
+                                                finalresoult.setResult(saveResult);
+                                            }
+                                    ).addOnFailureListener(
+                                            e -> {
+                                                finalresoult.setException(new ComplexFBCE(new ObjectResult<>(false, e.getMessage(), result)));
+                                            }
+                                    );
+                                }
+                            }
+                    ).addOnFailureListener(
+                            e -> {
+                                result.exit = false;
+                                result.message = e.getMessage();
+                            }
+                    );
 
                     break;
                 default:
                     Log.e(TAG, "❌ Tipo de dato no soportado");
-                    throw new FBCException("Tipo de dato no soportado");
+                    throw new ComplexFBCE(new ObjectResult<>(false, "Tipo de dato no soportado", null));
 
             }
 
         } catch (FBCException e) {
-            Log.e(TAG, "❌ Error al guardar los datos: " + e.getMessage());
+            Log.d(TAG, "❌ Error al guardar los datos: " + e.getMessage());
             Log.d(TAG, "🏁 Fin del proceso");
-            finalresoult.onResult(new ValidationResult(false, e.getMessage(), result.data));
+            finalresoult.setException(e);
         }
+        return finalresoult.getTask();
     }
 
-    private ValidationResult save(ValidationResult result, ClassData classData, String rawId) {
+    private Task<ObjectResult<BaseObject>> save(ValidationResult result, ClassData classData, String rawId) {
 
         String id;
+        TaskCompletionSource<ObjectResult<BaseObject>> taskCompletionSource = new TaskCompletionSource<>();
 
         try{
             if (!result.exit) {
                 Log.w(TAG, "Ya existe un objeto con los mismos credenciales: " + result.message);
-                return new ValidationResult(false, result.message, result.data);
+                taskCompletionSource.setResult(new ObjectResult<>(false, result.message, null));
+                return taskCompletionSource.getTask();
             }
 
-            id = ClassUtilities.generateId(classData, rawId);
+            id = ClassUtilities.generateId(classData, Integer.parseInt(rawId));
 
             switch (classData.data) {
                 case "usuarios":
-                    save(new User(id, result.data.get("name"), result.data.get("psw")));
+                    save(new User(id, result.data.get("name"), result.data.get("psw"))).addOnSuccessListener(
+                            userResult -> {
+                                taskCompletionSource.setResult(new ObjectResult<>(userResult.exit, userResult.message, userResult.result));
+                            }
+                    ).addOnFailureListener(
+                            e -> {
+                                taskCompletionSource.setException(new ComplexFBCE(new ObjectResult<>(false, e.getMessage(), result)));
+
+                            }
+                    );
+
                     break;
                 case "clientes":
-                    save(new Client(id, result.data.get("name"), result.data.get("ape"), result.data.get("idUsr")));
+                    save(new Client(id, result.data.get("name"), result.data.get("ape"), result.data.get("idUsr"))).addOnSuccessListener(
+                            clientResult -> {
+                                taskCompletionSource.setResult(new ObjectResult<>(clientResult.exit, clientResult.message, clientResult.result));
+                            }
+                    ).addOnFailureListener(
+                            e -> {
+                                taskCompletionSource.setException(new ComplexFBCE(new ObjectResult<>(false, e.getMessage(), result)));
+                            }
+                    );
                     break;
                 case "dietas":
-                    save(new Diet(id, result.data.get("tip"), result.data.get("idClient"), result.data.get("just"), result.data.get("idUsr")));
+                    save(new Diet(id, result.data.get("tip"), result.data.get("idClient"), result.data.get("just"), result.data.get("idUsr"))).addOnSuccessListener(
+                            dietResult -> {
+                                taskCompletionSource.setResult(new ObjectResult<>(dietResult.exit, dietResult.message, dietResult.result));
+                            }
+                    ).addOnFailureListener(
+                            e -> {
+                                taskCompletionSource.setException(new ComplexFBCE(new ObjectResult<>(false, e.getMessage(), result)));
+                            }
+                    );
                     break;
                 case "alimentos":
                     save(new Food(id, result.data.get("name"), result.data.get("idUsr"), result.data.get("pc"), result.data.get("energia"),
                             result.data.get("proteina"), result.data.get("grasa"), result.data.get("ags"), result.data.get("agmi"),
                             result.data.get("agpi"), result.data.get("colesterol"), result.data.get("hc"), result.data.get("fibra"), result.data.get("vitC"),
                             result.data.get("vitB6"), result.data.get("vitE"), result.data.get("hierro"), result.data.get("sodio"), result.data.get("calcio"),
-                            result.data.get("potasio")));
+                            result.data.get("potasio"))).addOnSuccessListener(
+                                    foodResult -> {
+                                        taskCompletionSource.setResult(new ObjectResult<>(foodResult.exit, foodResult.message, foodResult.result));
+                                    }
+                    ).addOnFailureListener(
+                            e -> {
+                                taskCompletionSource.setException(new ComplexFBCE(new ObjectResult<>(false, e.getMessage(), result)));
+                            }
+                    );
                     break;
                 case "dietaAlimentos":
                     save(new FoodDiet(id, result.data.get("idDieta"), result.data.get("idAlimento"), result.data.get("comida"),
-                            result.data.get("numeroPlato"), result.data.get("dia"), result.data.get("nombreReceta"), result.data.get("idUsr")));
+                            result.data.get("numeroPlato"), result.data.get("dia"), result.data.get("nombreReceta"), result.data.get("idUsr"))).addOnSuccessListener(
+                                    foodDietResult -> {
+                                        taskCompletionSource.setResult(new ObjectResult<>(foodDietResult.exit, foodDietResult.message, foodDietResult.result));
+                                    }
+                    ).addOnFailureListener(
+                            e -> {
+                                taskCompletionSource.setException(new ComplexFBCE(new ObjectResult<>(false, e.getMessage(), result)));
+                            }
+                    );
                     break;
                 default:
                     Log.e(TAG, "❌ Tipo de dato no soportado");
@@ -1214,38 +1354,49 @@ public class FireBaseConnector {
             Log.d(TAG, "✅ Datos guardados correctamente. ID: " + id);
             Log.d(TAG, "📂 Tipo de colección: " + classData.data);
             Log.d(TAG, "🏁 Fin del proceso");
-            return new ValidationResult(true, "success", result.data);
         }catch (FBCException e){
             Log.e(TAG, "❌ Error al guardar los datos: " + e.getMessage());
             Log.d(TAG, "🏁 Fin del proceso");
-            return new ValidationResult(false, e.getMessage(), result.data);
+            taskCompletionSource.setException(new ComplexFBCE(new ObjectResult<>(false, e.getMessage(), null)));
         }
+        return taskCompletionSource.getTask();
     }
 
-    public <T> void saveData(Class<T> classType, ValidationResult result, boolean force, OnResultCallBack<ValidationResult> finalresoult) throws FBCException {
+    /**
+     * Metodo secundario para guardar los datos en la base de datos forzando sobreescribir en el caso de que ya exista un objeto con los mismos credenciales
+     * @param classType clase a guardar
+     * @param result datos a guardar
+     * @param force forzar a sobreescribir
+     * @return Task<ObjectResult<BaseObject>>
+     * @param <T> clase a guardar
+     * @throws FBCException excepcion
+     */
+    public <T> Task<ObjectResult<BaseObject>> saveData(Class<T> classType, ValidationResult result, boolean force) throws FBCException {
 
         final String TAG = "SaveDataForce";
+        AtomicReference<TaskCompletionSource<ObjectResult<BaseObject>>> taskCompletionSource = new AtomicReference<>(new TaskCompletionSource<>());
 
         /*
          * Si es false llamo al original que filtra los repetidos
          */
         if (!force){
             Log.d(TAG, "force = false, derivando al metodo principal ...");
-            saveData(classType, result, resoult -> {
-                finalresoult.onResult(result);
-            });
+            saveData(classType, result).addOnSuccessListener(
+                    validationResult -> {
+                        taskCompletionSource.get().setResult(new ObjectResult<>(validationResult.exit, validationResult.message, validationResult.result));
+                    }
+            );
         }
 
-        String collectionName;
         ClassData classData;
         AtomicReference<ValidationResult> deleteResult = new AtomicReference<>(new ValidationResult());
 
         try{
-            Log.d(TAG, "💾 Guardando datos...");
+            Log.d(TAG, "💾 Guardando datos forzados...");
 
             if (!result.exit) {
                 Log.w(TAG, "❌ Error al validar los datos: " + result.message);
-                throw new FBCException(result.message);
+                throw new ComplexFBCE(new ObjectResult<>(false, result.message, result));
             }
 
             classData = ClassUtilities.collectionData(classType);
@@ -1253,166 +1404,219 @@ public class FireBaseConnector {
 
             switch (classData.key) {
                 case "USU":
-                case "DIE":
-                    repeatObject(result, classData.data, (ValidationResult validationResult) -> {
-                        if (!validationResult.exit) {
-                            delete(validationResult.data.get("id"), (ValidationResult validationResult1) -> {
-                                deleteResult.set(validationResult1);
-                            });
+                    repeatObject(result, classData.data).addOnSuccessListener( validationResult -> {
+                        if (validationResult.exit) {
+                            delete(validationResult.data.get("id")).addOnSuccessListener(
+                                    validationResult1 -> {
+                                        taskCompletionSource.set(finalResultOfForce(validationResult1, classType));
+                                    }
+                            );
                         }
                     });
+
+                    break;
+                case "DIE":
+                    repeatObject(result, classData.data, result.data.get("idCliente")).addOnSuccessListener(
+                            validationResult -> {
+                                if (!validationResult.exit) {
+                                    delete(validationResult.data.get("id")).addOnSuccessListener(
+                                            validationResult1 -> {
+                                                taskCompletionSource.set(finalResultOfForce(validationResult1,classType));
+                                            });
+                                }
+                            }
+                    );
 
                     break;
                 case "ALI":
                 case "CLI":
-                    repeatObject(result, classData.data, result.data.get("idUsr"), (ValidationResult validationResult) -> {
-                        if (!validationResult.exit) {
-                            delete(validationResult.data.get("id"), (ValidationResult validationResult1) -> {
-                                deleteResult.set(validationResult1);
-                            });
-                        }
-                    });
+                    repeatObject(result, classData.data, result.data.get("idUsr")).addOnSuccessListener(
+                            validationResult -> {
+                                if (!validationResult.exit) {
+                                   delete(validationResult.data.get("id")).addOnSuccessListener(
+                                           validationResult1 -> {
+                                               taskCompletionSource.set(finalResultOfForce(validationResult1,classType));
+                                           }
+                                   );
+                                }
+                            }
+                    );
 
                     break;
                 case "FDI":
-                    repeatObject(result, classData.data, result.data.get("idDieta"), result.data.get("idAlimento"), (ValidationResult validationResult) -> {
-                        if (!validationResult.exit) {
-                            delete(validationResult.data.get("id"), (ValidationResult validationResult1) -> {
-                                deleteResult.set(validationResult1);
-                            });
-                        }
-                    });
+                    repeatObject(result, classData.data, result.data.get("idDieta"), result.data.get("idAlimento")).addOnSuccessListener(
+                            validationResult -> {
+                                if (!validationResult.exit) {
+                                    delete(validationResult.data.get("id")).addOnSuccessListener(
+                                            validationResult1 -> {
+                                                taskCompletionSource.set(finalResultOfForce(validationResult1,classType));
+                                            }
+                                    );
+                                }
+                            }
+                    );
 
                     break;
                 default:
                     Log.e(TAG, "❌ Tipo de dato no soportado");
-                    throw new FBCException("Tipo de dato no soportado");
+                    throw new ComplexFBCE(new ObjectResult<>(false, "Tipo de dato no soportado", result));
             }
 
         }catch (FBCException e){
-            finalresoult.onResult(new ValidationResult(false, e.getMessage(), result.data));
+            taskCompletionSource.get().setException(e);
         }
 
-        if (deleteResult.get().message == null){
+        return taskCompletionSource.get().getTask();
+
+    }
+
+    private TaskCompletionSource<ObjectResult<BaseObject>> finalResultOfForce(ValidationResult result, Class<?> classType){
+
+        TaskCompletionSource<ObjectResult<BaseObject>> taskResult = new TaskCompletionSource<>();
+
+        if (result.message == null){
             Log.d(TAG, "🔍 No había objeto duplicado para eliminar. Guardando sin eliminar.");
             Log.d(TAG, "🏁 Fin del proceso forzado");
-            saveData(classType, result, resoult -> {
-                finalresoult.onResult(result);
-            });
-        }else if(deleteResult.get().exit){
+            saveData(classType, result).addOnSuccessListener(
+                    validationResult -> {
+                        taskResult.setResult(validationResult);
+                    }
+            ).addOnFailureListener(
+                    e -> {
+                        taskResult.setException(e);
+                    }
+            );
+        }else if(result.exit){
             Log.d(TAG, "✅ Objeto repetido eliminado");
             Log.d(TAG, "🏁 Fin del proceso forzado, redirigiendo al principal ...");
-            saveData(classType, result, resoult -> {
-                finalresoult.onResult(result);
-            });
+            saveData(classType, result).addOnSuccessListener(
+                    validationResult -> {
+                        taskResult.setResult(validationResult);
+                    }
+            ).addOnFailureListener(
+                    e -> {
+                        taskResult.setException(e);
+                    }
+            );
         }else{
             Log.d(TAG, "❌ Error al eliminar el objeto repetido");
             Log.d(TAG, "🏁 Fin del proceso forzado");
-            finalresoult.onResult(new ValidationResult(false, deleteResult.get().message, result.data));
+            saveData(classType, result).addOnSuccessListener(
+                    validationResult -> {
+                        taskResult.setResult(validationResult);
+                    }
+            ).addOnFailureListener(
+                    e -> {
+                        taskResult.setException(e);
+                    }
+            );;
         }
+
+        return taskResult;
     }
 
-    private void repeatObject(ValidationResult result, String collectionName,OnResultCallBack<ValidationResult> callback) throws FBCException {
+    private Task<ValidationResult> repeatObject(ValidationResult result, String collectionName) throws FBCException {
 
-        switch (collectionName){
-            case "dietas":
-            case "usuarios":
+        TaskCompletionSource<ValidationResult> taskCompletionSource = new TaskCompletionSource<>();
+        if (collectionName.equals("usuarios")) {
+            /*No lee la coleccion*/
+            readAllFromCollection(collectionName, User.class).addOnSuccessListener(
+                            users -> {
 
-                readAllFromCollection(collectionName, User.class).addOnSuccessListener(
-                                users -> {
-                                    for (User user : users) {
-                                        if (user.getName().equals(result.data.get("name"))) {
-                                            Log.e("Firebase", user.getId());
-                                            callback.onResult(new ValidationResult(false, "El usuario ya existe", result.data));
-                                            return;
-                                        }
+                                for (User user : users) {
+                                    if (user.getName().equals(result.data.get("name"))) {
+                                        Log.e("Firebase", user.getId());
+                                        taskCompletionSource.setResult(new ValidationResult(false, "El usuario ya existe", result.data));
+                                        return;
                                     }
-
-                                    callback.onResult(new ValidationResult(true, String.valueOf(users.size()), result.data));
-                                    return;
-
                                 }
-                        )
-                        .addOnFailureListener(
-                                e ->{
-                                    Log.e("Firebase", "❌ Error al leer la colección " + collectionName + ": " + e.getMessage());
-                                    callback.onResult(new ValidationResult(false, "Error al leer la colección " + collectionName + ": " + e.getMessage(), result.data));
-                                    return;
-                                }
-                        );
-                break;
-            default:
-                Log.d("Firebase", "❌ Tipo de dato no soportado");
+                                taskCompletionSource.setResult(new ValidationResult(true, String.valueOf(users.size()), result.data));
+                            }
+                    )
+                    .addOnFailureListener(
+                            e -> {
+                                Log.d("Firebase", "❌ Error al leer la colección " + collectionName + ": " + e.getMessage());
+                                taskCompletionSource.setException(new ComplexFBCE(new ObjectResult<>(false, e.getMessage(), result.data)));
+                            }
+                    );
+        } else {
+            Log.d("Firebase", "❌ Tipo de dato no soportado");
+            taskCompletionSource.setException(new ComplexFBCE(new ObjectResult<>(false, "Tipo de dato no soportado", result.data)));
         }
-
+        return taskCompletionSource.getTask();
     }
 
-    private void repeatObject(ValidationResult result, String collectionName,String idExt,OnResultCallBack<ValidationResult> callback) throws FBCException {
+    private Task<ValidationResult> repeatObject(ValidationResult result, String collectionName,String idExt) throws FBCException {
+
+        TaskCompletionSource<ValidationResult> taskCompletionSource = new TaskCompletionSource<>();
 
         switch (collectionName){
             case "clientes":
 
                 readClientFromUser(idExt, result1 -> {
                     if (!result1.exit) {
-                        callback.onResult(new ValidationResult(false, result1.message, result.data));
+                        taskCompletionSource.setResult(new ValidationResult(false, result1.message, result.data));
                         return;
                     }
 
                     for (Client client : result1.result) {
                         if (client.getName().equals(result.data.get("name"))) {
                             Log.e("Firebase", client.getId());
-                            callback.onResult(new ValidationResult(false, "El cliente ya existe", result.data));
+                            taskCompletionSource.setResult(new ValidationResult(false, "El cliente ya existe", result.data));
                             return;
                         }
                     }
 
-                    callback.onResult(new ValidationResult(true, String.valueOf(result1.result.size()), result.data));
+                    taskCompletionSource.setResult(new ValidationResult(true, String.valueOf(result1.result.size()), result.data));
                     return;
                 });
                 break;
             case "alimentos":
                 readAllFoodFromUser(idExt, result1 -> {
                     if (!result1.exit) {
-                        callback.onResult(new ValidationResult(false, result1.message, result.data));
+                        taskCompletionSource.setResult(new ValidationResult(false, result1.message, result.data));
                         return;
                     }
 
                     for (Food food : result1.result) {
                         if (food.getName().equals(result.data.get("name"))) {
                             Log.e("Firebase", food.getId());
-                            callback.onResult(new ValidationResult(false, "El alimento ya existe", result.data));
+                            taskCompletionSource.setResult(new ValidationResult(false, "El alimento ya existe", result.data));
                             return;
                         }
                     }
 
-                    callback.onResult(new ValidationResult(true, String.valueOf(result1.result.size()), result.data));
+                    taskCompletionSource.setResult(new ValidationResult(true, String.valueOf(result1.result.size()), result.data));
                     return;
                 });
             case "dietas":
                 readDietFromUser(idExt, result1 -> {
                     if (!result1.exit) {
-                        callback.onResult(new ValidationResult(false, result1.message, result.data));
+                        taskCompletionSource.setResult(new ValidationResult(false, result1.message, result.data));
                         return;
                     }
 
                     for (Diet diet : result1.result) {
                         if (diet.getName().equals(result.data.get("name"))) {
                             Log.e("Firebase", diet.getId());
-                            callback.onResult(new ValidationResult(false, "La dieta ya existe", result.data));
+                            taskCompletionSource.setResult(new ValidationResult(false, "La dieta ya existe", result.data));
                             return;
                         }
                     }
 
-                    callback.onResult(new ValidationResult(true, String.valueOf(result1.result.size()), result.data));
+                    taskCompletionSource.setResult(new ValidationResult(true, String.valueOf(result1.result.size()), result.data));
                     return;
                 });
             default:
                 Log.d("Firebase", "❌ Tipo de dato no soportado");
+                taskCompletionSource.setException(new ComplexFBCE(new ObjectResult<>(false, "Tipo de dato no soportado", result.data)));
         }
-
+        return taskCompletionSource.getTask();
     }
 
-    private void repeatObject(ValidationResult result, String collectionName,String idDiet, String idFood,OnResultCallBack<ValidationResult> callback) throws FBCException {
+    private Task<ValidationResult> repeatObject(ValidationResult result, String collectionName,String idDiet, String idFood) throws FBCException {
+
+        TaskCompletionSource<ValidationResult> taskCompletionSource = new TaskCompletionSource<>();
 
         switch (collectionName){
             case "dietaAlimentos":
@@ -1423,38 +1627,28 @@ public class FireBaseConnector {
                             if (foodDiet.getComida().equals(result.data.get("comida")) &&
                                 foodDiet.getNumeroPlato().equals(result.data.get("numeroPlato"))&&
                                 foodDiet.getDia().equals(result.data.get("dia")) &&
-                                foodDiet.getNombreReceta().equals(result.data.get("nombreReceta"))){
+                                foodDiet.getName().equals(result.data.get("nombreReceta"))){
 
                                 Log.e("Firebase", foodDiet.getId());
-                                callback.onResult(new ValidationResult(false, "El alimento-receta ya existe", result.data));
+                                taskCompletionSource.setResult(new ValidationResult(false, "El alimento ya existe", result.data));
                                 return;
                             }
                         }
 
-                        callback.onResult(new ValidationResult(true, String.valueOf(result1.result.size()), result.data));
+                        taskCompletionSource.setResult(new ValidationResult(true, String.valueOf(result1.result.size()), result.data));
                         return;
                     }
                 });
                 break;
             default:
                 Log.d("Firebase", "❌ Tipo de dato no soportado");
-                callback.onResult(new ValidationResult(false, "Tipo de dato no soportado", result.data));
+                taskCompletionSource.setException(new ComplexFBCE(new ObjectResult<>(false, "Tipo de dato no soportado", result.data)));
         }
-
+        return taskCompletionSource.getTask();
     }
 
 
 //--IP - 23/04/2025 -
-//++IP - 25/04/2025 -
-
-/*private<T> ObjectRersult idUsrComparison(Class<T> classType, ValidationResult result,OnResultCallBack callback){
-
-}*/
-
-//--IP - 25/04/2025 -
-
-
-//--IP - 25/04/2025 -
 
 
 }
