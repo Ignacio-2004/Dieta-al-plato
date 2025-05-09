@@ -128,12 +128,18 @@ public class LogIn_Activity extends AppCompatActivity {
                                                 .addOnSuccessListener(usuario -> {
                                                     String passwDB = usuario.getPsw();  // Accedemos a la contraseña de la BD
 
-                                                    if(passwRegex.matches(passwDB)){
+                                                    if(passwDB.matches(passwRegex)){ // Contraseña correcta
                                                         if (passwd_introducida.equals(passwDB)) {
-                                                            // Contraseña correcta
-                                                            Intent i = new Intent(this, InicioUsuarioActivity.class);
-                                                            startActivity(i);
-                                                            finish(); // Cerramos Login para que no se pueda volver atrás
+                                                            if (correo_introducido.equals("admin.admin@educa.madrid.org")){
+                                                                Intent i = new Intent(this, InicioAdminActivity.class);
+                                                                startActivity(i);
+                                                                finish(); // Cerramos Login para que no se pueda volver atrás
+                                                            }
+                                                            else {
+                                                                Intent i = new Intent(this, InicioUsuarioActivity.class);
+                                                                startActivity(i);
+                                                                finish(); // Cerramos Login para que no se pueda volver atrás
+                                                            }
                                                         } else {
                                                             // Contraseña incorrecta
                                                             text_error.setText("Contraseña incorrecta.");
