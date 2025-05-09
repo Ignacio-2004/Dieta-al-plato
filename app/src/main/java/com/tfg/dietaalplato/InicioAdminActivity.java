@@ -8,6 +8,8 @@ import android.widget.Toast;
 
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.tfg.dietaalplato.firebase.conectors.tools.FireBaseReader;
 import com.tfg.dietaalplato.firebase.tables.User;
 import com.tfg.dietaalplato.firebase.conectors.FireBaseConnector;
 import com.tfg.dietaalplato.firebase.exceptions.FBCException;
@@ -31,7 +33,7 @@ public class InicioAdminActivity extends AppCompatActivity {
 
 
         try {
-            fbConnector.readAllFromCollection("usuarios", User.class)
+            FireBaseReader.readAllFromCollection("usuarios", User.class)
                     .addOnSuccessListener(usuarios -> {
                         for (User usuario : usuarios) {
                             Button botonUsuario = new Button(this);

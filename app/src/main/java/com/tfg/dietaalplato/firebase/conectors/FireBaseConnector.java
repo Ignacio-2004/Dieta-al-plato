@@ -58,7 +58,7 @@ import java.util.List;
 */
 
 
-public class FireBaseConnector {
+ public class FireBaseConnector {
 
 
     private static FireBaseConnector instance;
@@ -66,7 +66,7 @@ public class FireBaseConnector {
 
     private DatabaseReference ref;
     private FirebaseDatabase bd;
-    private FirebaseFirestore fst;
+    private static FirebaseFirestore fst;
     private static final String TAG = "Firebase";
 
 
@@ -84,7 +84,7 @@ public class FireBaseConnector {
         return instance;
     }
 
-    public FirebaseFirestore getFirestore() {
+    public static FirebaseFirestore getFirestore() {
         return fst;
     }
 
@@ -336,137 +336,6 @@ public class FireBaseConnector {
 
 
 
-    public static Task<ValidationResult> repeatObject(ValidationResult result, String collectionName) throws FBCException {
-
-        TaskCompletionSource<ValidationResult> taskCompletionSource = new TaskCompletionSource<>();
-        if (collectionName.equals("usuarios")) {
-            /*No lee la coleccion*/
-            readAllFromCollection(collectionName, User.class).addOnSuccessListener(
-                            users -> {
-
-                                for (User user : users) {
-                                    if (user.getName().equals(result.data.get("name"))) {
-                                        Log.e("Firebase", user.getId());
-                                        taskCompletionSource.setResult(new ValidationResult(false, "El usuario ya existe", result.data));
-                                        return;
-                                    }
-                                }
-                                taskCompletionSource.setResult(new ValidationResult(true, String.valueOf(users.size()), result.data));
-                            }
-                    )
-                    .addOnFailureListener(
-                            e -> {
-                                Log.d("Firebase", "❌ Error al leer la colección " + collectionName + ": " + e.getMessage());
-                                taskCompletionSource.setException(new ComplexFBCE(new ObjectResult<>(false, e.getMessage(), result.data)));
-                            }
-                    );
-        } else {
-            Log.d("Firebase", "❌ Tipo de dato no soportado");
-            taskCompletionSource.setException(new ComplexFBCE(new ObjectResult<>(false, "Tipo de dato no soportado", result.data)));
-        }
-        return taskCompletionSource.getTask();
-    }
-
-    public static Task<ValidationResult> repeatObject(ValidationResult result, String collectionName,String idExt) throws FBCException {
-
-        TaskCompletionSource<ValidationResult> taskCompletionSource = new TaskCompletionSource<>();
-
-        switch (collectionName){
-            case "clientes":
-
-                readClientFromUser(idExt, result1 -> {
-                    if (!result1.exit) {
-                        taskCompletionSource.setResult(new ValidationResult(false, result1.message, result.data));
-                        return;
-                    }
-
-                    for (Client client : result1.result) {
-                        if (client.getName().equals(result.data.get("name"))) {
-                            Log.e("Firebase", client.getId());
-                            taskCompletionSource.setResult(new ValidationResult(false, "El cliente ya existe", result.data));
-                            return;
-                        }
-                    }
-
-                    taskCompletionSource.setResult(new ValidationResult(true, String.valueOf(result1.result.size()), result.data));
-                    return;
-                });
-                break;
-            case "alimentos":
-                readAllFoodFromUser(idExt, result1 -> {
-                    if (!result1.exit) {
-                        taskCompletionSource.setResult(new ValidationResult(false, result1.message, result.data));
-                        return;
-                    }
-
-                    for (Food food : result1.result) {
-                        if (food.getName().equals(result.data.get("name"))) {
-                            Log.e("Firebase", food.getId());
-                            taskCompletionSource.setResult(new ValidationResult(false, "El alimento ya existe", result.data));
-                            return;
-                        }
-                    }
-
-                    taskCompletionSource.setResult(new ValidationResult(true, String.valueOf(result1.result.size()), result.data));
-                    return;
-                });
-            case "dietas":
-                readDietFromUser(idExt, result1 -> {
-                    if (!result1.exit) {
-                        taskCompletionSource.setResult(new ValidationResult(false, result1.message, result.data));
-                        return;
-                    }
-
-                    for (Diet diet : result1.result) {
-                        if (diet.getName().equals(result.data.get("name"))) {
-                            Log.e("Firebase", diet.getId());
-                            taskCompletionSource.setResult(new ValidationResult(false, "La dieta ya existe", result.data));
-                            return;
-                        }
-                    }
-
-                    taskCompletionSource.setResult(new ValidationResult(true, String.valueOf(result1.result.size()), result.data));
-                    return;
-                });
-            default:
-                Log.d("Firebase", "❌ Tipo de dato no soportado");
-                taskCompletionSource.setException(new ComplexFBCE(new ObjectResult<>(false, "Tipo de dato no soportado", result.data)));
-        }
-        return taskCompletionSource.getTask();
-    }
-
-    public static Task<ValidationResult> repeatObject(ValidationResult result, String collectionName,String idDiet, String idFood) throws FBCException {
-
-        TaskCompletionSource<ValidationResult> taskCompletionSource = new TaskCompletionSource<>();
-
-        switch (collectionName){
-            case "dietaAlimentos":
-
-                readFoodDiet(idDiet, idFood,result1 -> {
-                    if (!result1.exit) {
-                        for (FoodDiet foodDiet : result1.result){
-                            if (foodDiet.getComida().equals(result.data.get("comida")) &&
-                                foodDiet.getNumeroPlato().equals(result.data.get("numeroPlato"))&&
-                                foodDiet.getDia().equals(result.data.get("dia")) &&
-                                foodDiet.getName().equals(result.data.get("nombreReceta"))){
-
-                                Log.e("Firebase", foodDiet.getId());
-                                taskCompletionSource.setResult(new ValidationResult(false, "El alimento ya existe", result.data));
-                                return;
-                            }
-                        }
-
-                        taskCompletionSource.setResult(new ValidationResult(true, String.valueOf(result1.result.size()), result.data));
-                        return;
-                    }
-                });
-                break;
-            default:
-                Log.d("Firebase", "❌ Tipo de dato no soportado");
-                taskCompletionSource.setException(new ComplexFBCE(new ObjectResult<>(false, "Tipo de dato no soportado", result.data)));
-        }
-        return taskCompletionSource.getTask();
-    }
 
 
 //--IP - 23/04/2025 -

@@ -3,11 +3,15 @@ package com.tfg.dietaalplato.firebase.tables;
 import android.view.View;
 import android.widget.EditText;
 
+import com.tfg.dietaalplato.firebase.conectors.tools.FireBaseValidator;
+import com.tfg.dietaalplato.firebase.exceptions.FBCException;
 import com.tfg.dietaalplato.firebase.tables.parents.BaseObject;
+import com.tfg.dietaalplato.firebase.utilities.TablesNames;
 import com.tfg.dietaalplato.firebase.utilities.ValidationResult;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class User extends BaseObject {
 
@@ -82,6 +86,19 @@ public class User extends BaseObject {
         }
 
         return result;
+    }
+
+    public boolean exist() throws  FBCException {
+
+        AtomicBoolean booleanAtomic = new AtomicBoolean(false);
+
+        FireBaseValidator.exist(getName(),String.valueOf(TablesNames.usuarios), result -> {
+            if (result){
+                booleanAtomic.set(true);
+            }
+        });
+
+        return booleanAtomic.get();
     }
 
 //--IP - 23/04/2025 -

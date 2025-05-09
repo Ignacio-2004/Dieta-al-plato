@@ -11,11 +11,11 @@ public class  ClassUtilities {
     public static ClassData collectionData(Class<?> classType){
        ClassData data = null;
 
-        if (classType.equals(Diet.class)) data = new ClassData("DIE","dietas");
-        else if (classType.equals(Client.class)) data = new ClassData("CLI","clientes");
-        else if (classType.equals(User.class)) data = new ClassData("USU","usuarios");
-        else if (classType.equals(Food.class)) data = new ClassData("ALI","alimentos");
-        else if (classType.equals(FoodDiet.class)) data = new ClassData("FDI","comidaDietas");
+        if (classType.equals(Diet.class)) data = new ClassData(String.valueOf(IdNames.DIE),String.valueOf(TablesNames.dietas));
+        else if (classType.equals(Client.class)) data = new ClassData(String.valueOf(IdNames.CLI),String.valueOf(TablesNames.clientes));
+        else if (classType.equals(User.class)) data = new ClassData(String.valueOf(IdNames.USU),String.valueOf(TablesNames.usuarios));
+        else if (classType.equals(Food.class)) data = new ClassData(String.valueOf(IdNames.ALI),String.valueOf(TablesNames.alimentos));
+        else if (classType.equals(FoodDiet.class)) data = new ClassData(String.valueOf(IdNames.FDI),String.valueOf(TablesNames.comidaDietas));
         else data = new ClassData("Error","Dato no soportado");
 
         return data;

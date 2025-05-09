@@ -1,6 +1,7 @@
 package com.tfg.dietaalplato.firebase.conectors.tools;
 
 import static com.tfg.dietaalplato.firebase.conectors.FireBaseConnector.*;
+import static com.tfg.dietaalplato.firebase.conectors.tools.FireBaseValidator.repeatObject;
 
 import android.util.Log;
 
