@@ -57,7 +57,7 @@ public class Client extends BaseObject {
     public static ValidationResult toMapData(ArrayList<View> data, String idUsr){
         ValidationResult result = new ValidationResult();
 
-        String[] fieldName = {"Name", "ape", "idUsr"};
+        String[] fieldName = {"name", "ape", "idUsr"};
 
         try{
             result.data = new HashMap<>();

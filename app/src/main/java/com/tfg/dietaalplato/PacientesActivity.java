@@ -3,6 +3,7 @@ package com.tfg.dietaalplato;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -22,7 +23,6 @@ public class PacientesActivity extends AppCompatActivity {
 
 
     private LinearLayout layoutClientes;
-    private FireBaseConnector fbConnector;
 
 
     @Override
@@ -32,28 +32,31 @@ public class PacientesActivity extends AppCompatActivity {
 
 
         layoutClientes = findViewById(R.id.layoutClientes);
-        fbConnector = new FireBaseConnector(); // tu clase personalizada para Firestore
 
 
         try {
-            FireBaseReader.readAllFromCollection("clientes", Client.class)
-                    .addOnSuccessListener(clientes -> {
-                        for (Client cliente : clientes) {
-                            Button boton = new Button(this);
-                            boton.setText(cliente.getName()); // o el campo que tengas
-                            boton.setLayoutParams(new LinearLayout.LayoutParams(
-                                    LinearLayout.LayoutParams.MATCH_PARENT,
-                                    LinearLayout.LayoutParams.WRAP_CONTENT));
+            FireBaseReader.readClientFromUser("USU0002").addOnSuccessListener(
+                  clientes ->{
+                      for (Client cliente : clientes.result) {
+                          Button boton = new Button(this);
+                          boton.setText(cliente.getName()); // o el campo que tengas
+                          boton.setLayoutParams(new LinearLayout.LayoutParams(
+                                  LinearLayout.LayoutParams.MATCH_PARENT,
+                                  LinearLayout.LayoutParams.WRAP_CONTENT));
 
 
-                            boton.setOnClickListener(v ->
-                                    Toast.makeText(this, "Cliente: " + cliente.getName(), Toast.LENGTH_SHORT).show()
-                            );
+                          boton.setOnClickListener(v ->{
+                                      Log.d("Cliente", "Nombre del cliente: " + cliente.getName());
 
+                                      Intent intent = new Intent(this, DietasActivity.class);
+                                      startActivity(intent);
 
-                            layoutClientes.addView(boton);
-                        }
-                    });
+                                  }
+                          );
+                          layoutClientes.addView(boton);
+                      }
+                  }
+            );
         } catch (FBCException e) {
             Toast.makeText(this, "Error al cargar clientes", Toast.LENGTH_SHORT).show();
         }

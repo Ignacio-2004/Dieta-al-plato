@@ -7,6 +7,7 @@ import com.google.android.gms.tasks.TaskCompletionSource;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.tfg.dietaalplato.firebase.conectors.FireBaseConnector;
+import com.tfg.dietaalplato.firebase.exceptions.ComplexFBCE;
 import com.tfg.dietaalplato.firebase.exceptions.FBCException;
 import com.tfg.dietaalplato.firebase.tables.Client;
 import com.tfg.dietaalplato.firebase.tables.Diet;
@@ -15,6 +16,9 @@ import com.tfg.dietaalplato.firebase.tables.FoodDiet;
 import com.tfg.dietaalplato.firebase.tables.User;
 import com.tfg.dietaalplato.firebase.utilities.ObjectResult;
 import com.tfg.dietaalplato.firebase.utilities.OnResultCallBack;
+import com.tfg.dietaalplato.firebase.utilities.TablesNames;
+
+import org.checkerframework.checker.units.qual.C;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,7 +72,7 @@ public class FireBaseReader {
         FirebaseFirestore fst = FireBaseConnector.getInstance().getFirestore();
 
 
-        fst.collection("comidas")
+        fst.collection(String.valueOf(TablesNames.clientes))
                 .whereEqualTo("name", name).whereEqualTo("idUser", idUser)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
@@ -96,15 +100,14 @@ public class FireBaseReader {
 
     /**
      * Metodo que lee todas las comida de un usuario
-     * @param idUser id del usuario al que le pertenece las comidas
-     * @param callback parametro que convierte el metodo de asincronico en sincronico
+     * @param idUser id del usuario al que le pertenece las comida
      * @throws FBCException excepcion propia que marca si la conexion no es buena
      */
-    public static void readAllFoodFromUser(String idUser, OnResultCallBack<ObjectResult<ArrayList<Food>>> callback) throws FBCException {
+    public static Task<ObjectResult<ArrayList<Food>>> readAllFoodFromUser(String idUser) throws FBCException {
         FirebaseFirestore fst = FireBaseConnector.getInstance().getFirestore();
 
-
-        fst.collection("comidas")
+        TaskCompletionSource<ObjectResult<ArrayList<Food>>> taskCompletionSource = new TaskCompletionSource<>();
+        fst.collection(String.valueOf(TablesNames.alimentos))
                 .whereEqualTo("idUser", idUser)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
@@ -122,34 +125,34 @@ public class FireBaseReader {
 
 
                         if (!foods.isEmpty()) {
-                            callback.onResult(new ObjectResult<>(true, "success", foods));
+                            taskCompletionSource.setResult(new ObjectResult<>(true, "success", foods));
                         }else{
-                            callback.onResult(new ObjectResult<>(false, "No se encontraron comidas", null));
+                            taskCompletionSource.setResult(new ObjectResult<>(false, "No se encontraron comidas", null));
                         }
 
 
                     } else {
                         Log.d("Firebase", "⚠️ No se encontró ningúna comida que pertenezca al usuario: " +idUser);
-                        callback.onResult(new ObjectResult<>(false, "Comida no encontrada", null));
+                        taskCompletionSource.setException(new ComplexFBCE(new ObjectResult<>(false, "Comida no encontrada", null)));
                     }
                 })
                 .addOnFailureListener(e -> {
                     Log.e("Firebase", "❌ Error al buscar la comida por nombre: " + e.getMessage());
-                    callback.onResult(new ObjectResult<>(false, "Error al buscar la comida: " + e.getMessage(), null));
+                    taskCompletionSource.setException(new ComplexFBCE( new ObjectResult<>(false, "Error al buscar la comida: " + e.getMessage(), null)));
                 });
+        return taskCompletionSource.getTask();
     }
 
 
     /**
      * Metodo que lee las dietas de un cliente
      * @param idCli cleinte al que pertenecen las dietas
-     * @param callback parametro que convierte el metodo de asincronico en sincronico
      * @throws FBCException excepcion propia que marca si la conexion no es buena
      */
-    public static void readDietFromUser(String idCli, OnResultCallBack<ObjectResult<ArrayList<Diet>>> callback) throws FBCException {
+    public static Task<ObjectResult<ArrayList<Diet>>> readDietFromUser(String idCli) throws FBCException {
         FirebaseFirestore fst = FireBaseConnector.getInstance().getFirestore();
 
-
+        TaskCompletionSource<ObjectResult<ArrayList<Diet>>> taskCompletionSource = new TaskCompletionSource<>();
         fst.collection("dietas")
                 .whereEqualTo("idCliente", idCli)
                 .get()
@@ -172,21 +175,22 @@ public class FireBaseReader {
 
 
                         if (!diets.isEmpty()){
-                            callback.onResult(new ObjectResult<>(true, "success", diets));
+                            taskCompletionSource.setResult(new ObjectResult<>(true, "success", diets));
                         }else{
-                            callback.onResult(new ObjectResult<>(false, "No se encontraron dietas", null));
+                            taskCompletionSource.setResult(new ObjectResult<>(false, "No se encontraron dietas", null));
                         }
 
 
                     } else {
                         Log.d("Firebase", "⚠️ No se encontró ningúna dieta para el cliente con id: " + idCli);
-                        callback.onResult(new ObjectResult<>(false, "Dieta no encontrada", null));
+                        taskCompletionSource.setException(new ComplexFBCE(new ObjectResult<>(false, "Dieta no encontrada", null)));
                     }
                 })
                 .addOnFailureListener(e -> {
                     Log.e("Firebase", "❌ Error al buscar la dieta por el cliente: " + e.getMessage());
-                    callback.onResult(new ObjectResult<>(false, "Error al buscar la dieta: " + e.getMessage(), null));
+                    taskCompletionSource.setException(new ComplexFBCE(new ObjectResult<>(false, "Error al buscar la dieta: " + e.getMessage(), null)));
                 });
+        return taskCompletionSource.getTask();
     }
 
 
@@ -285,14 +289,15 @@ public class FireBaseReader {
     /**
      * Metodo que lee todos los clientes a partir de su id de usuario
      * @param idUsr id del usuario
-     * @param callback parametro que convierte el metodo de asincronico en sincronico
+
      * @throws FBCException excepcion propia que marca si la conexion no es buena
      */
-    public static void readClientFromUser(String idUsr, OnResultCallBack<ObjectResult<ArrayList<Client>>> callback) throws FBCException {
+    public static Task<ObjectResult<ArrayList<Client>>> readClientFromUser(String idUsr) throws FBCException {
         FirebaseFirestore fst = FireBaseConnector.getInstance().getFirestore();
 
+        TaskCompletionSource<ObjectResult<ArrayList<Client>>> taskCompletionSource = new TaskCompletionSource<>();
 
-        fst.collection("cliente")
+        fst.collection("clientes")
                 .whereEqualTo("idUsr", idUsr)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
@@ -314,21 +319,22 @@ public class FireBaseReader {
 
 
                         if (!clients.isEmpty()){
-                            callback.onResult(new ObjectResult<>(true, "success", clients));
+                            taskCompletionSource.setResult(new ObjectResult<>(true, "success", clients));
                         }else{
-                            callback.onResult(new ObjectResult<>(false, "No se encontraron clientes", null));
+                            taskCompletionSource.setResult(new ObjectResult<>(false, "No se encontraron clientes", null));
                         }
 
 
                     } else {
                         Log.d("Firebase", "⚠️ No se encontró ningún cliente que pertenezca al usuario: "+idUsr);
-                        callback.onResult(new ObjectResult<>(false, "Cliente no encontrado", null));
+                        taskCompletionSource.setException(new ComplexFBCE( new ObjectResult<>(false, "Cliente no encontrado", null)));
                     }
                 })
                 .addOnFailureListener(e -> {
                     Log.e("Firebase", "❌ Error al buscar el cliente: " + e.getMessage());
-                    callback.onResult(new ObjectResult<>(false, "Error al buscar el cliente: " + e.getMessage(), null));
+                    taskCompletionSource.setException(new ComplexFBCE( new ObjectResult<>(false, "Error al buscar el cliente: " + e.getMessage(), null)));
                 });
+        return taskCompletionSource.getTask();
     }
 
 

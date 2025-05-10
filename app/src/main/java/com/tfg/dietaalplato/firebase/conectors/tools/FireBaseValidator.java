@@ -101,60 +101,66 @@ public class FireBaseValidator {
         switch (collectionName){
             case "clientes":
 
-                readClientFromUser(idExt, result1 -> {
-                    if (!result1.exit) {
-                        taskCompletionSource.setResult(new ValidationResult(false, result1.message, result.data));
-                        return;
-                    }
+                readClientFromUser(idExt).addOnSuccessListener(
+                        clientes -> {
+                            if (!clientes.exit) {
+                                taskCompletionSource.setResult(new ValidationResult(false, clientes.message, result.data));
+                                return;
+                            }
 
-                    for (Client client : result1.result) {
-                        if (client.getName().equals(result.data.get("name"))) {
-                            Log.e("Firebase", client.getId());
-                            taskCompletionSource.setResult(new ValidationResult(false, "El cliente ya existe", result.data));
+                            for (Client client : clientes.result) {
+                                if (client.getName().equals(result.data.get("name"))) {
+                                    Log.e("Firebase", client.getId());
+                                    taskCompletionSource.setResult(new ValidationResult(false, "El cliente ya existe", result.data));
+                                    return;
+                                }
+                            }
+
+                            taskCompletionSource.setResult(new ValidationResult(true, String.valueOf(clientes.result.size()), result.data));
                             return;
                         }
-                    }
-
-                    taskCompletionSource.setResult(new ValidationResult(true, String.valueOf(result1.result.size()), result.data));
-                    return;
-                });
+                );
                 break;
             case "alimentos":
-                readAllFoodFromUser(idExt, result1 -> {
-                    if (!result1.exit) {
-                        taskCompletionSource.setResult(new ValidationResult(false, result1.message, result.data));
-                        return;
-                    }
+                readAllFoodFromUser(idExt).addOnSuccessListener(
+                        foods ->{
+                            if (!foods.exit) {
+                                taskCompletionSource.setResult(new ValidationResult(false, foods.message, result.data));
+                                return;
+                            }
 
-                    for (Food food : result1.result) {
-                        if (food.getName().equals(result.data.get("name"))) {
-                            Log.e("Firebase", food.getId());
-                            taskCompletionSource.setResult(new ValidationResult(false, "El alimento ya existe", result.data));
+                            for (Food food : foods.result) {
+                                if (food.getName().equals(result.data.get("name"))) {
+                                    Log.e("Firebase", food.getId());
+                                    taskCompletionSource.setResult(new ValidationResult(false, "El alimento ya existe", result.data));
+                                    return;
+                                }
+                            }
+
+                            taskCompletionSource.setResult(new ValidationResult(true, String.valueOf(foods.result.size()), result.data));
                             return;
                         }
-                    }
-
-                    taskCompletionSource.setResult(new ValidationResult(true, String.valueOf(result1.result.size()), result.data));
-                    return;
-                });
+                );
             case "dietas":
-                readDietFromUser(idExt, result1 -> {
-                    if (!result1.exit) {
-                        taskCompletionSource.setResult(new ValidationResult(false, result1.message, result.data));
-                        return;
-                    }
+                readDietFromUser(idExt).addOnSuccessListener(
+                        dietas -> {
+                            if (!dietas.exit) {
+                                taskCompletionSource.setResult(new ValidationResult(false, dietas.message, result.data));
+                                return;
+                            }
 
-                    for (Diet diet : result1.result) {
-                        if (diet.getName().equals(result.data.get("name"))) {
-                            Log.e("Firebase", diet.getId());
-                            taskCompletionSource.setResult(new ValidationResult(false, "La dieta ya existe", result.data));
+                            for (Diet diet : dietas.result) {
+                                if (diet.getName().equals(result.data.get("name"))) {
+                                    Log.e("Firebase", diet.getId());
+                                    taskCompletionSource.setResult(new ValidationResult(false, "La dieta ya existe", result.data));
+                                    return;
+                                }
+                            }
+
+                            taskCompletionSource.setResult(new ValidationResult(true, String.valueOf(dietas.result.size()), result.data));
                             return;
                         }
-                    }
-
-                    taskCompletionSource.setResult(new ValidationResult(true, String.valueOf(result1.result.size()), result.data));
-                    return;
-                });
+                );
             default:
                 Log.d("Firebase", "❌ Tipo de dato no soportado");
                 taskCompletionSource.setException(new ComplexFBCE(new ObjectResult<>(false, "Tipo de dato no soportado", result.data)));
