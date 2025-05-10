@@ -12,9 +12,10 @@ import android.widget.TextView;
 import androidx.fragment.app.DialogFragment;
 
 import com.google.firebase.FirebaseApp;
+import com.tfg.dietaalplato.firebase.conectors.tools.FireBaseWriter;
 import com.tfg.dietaalplato.firebase.tables.User;
 import com.tfg.dietaalplato.firebase.conectors.FireBaseConnector;
-import com.tfg.dietaalplato.utilities.ValidationResult;
+import com.tfg.dietaalplato.firebase.utilities.ValidationResult;
 
 import java.util.ArrayList;
 
@@ -105,7 +106,7 @@ public class SignUp_Dialogo extends DialogFragment {
                                        Log.d("FireBase", "✅ Firebase está inicializado");
                                    }
 
-                                   DateBase.saveData(User.class,userData).addOnSuccessListener(
+                                   FireBaseWriter.saveData(User.class,userData).addOnSuccessListener(
                                            aVoid -> {
                                                textError.setText("Usuario guardado correctamente.");
                                                textError.setVisibility(View.VISIBLE);

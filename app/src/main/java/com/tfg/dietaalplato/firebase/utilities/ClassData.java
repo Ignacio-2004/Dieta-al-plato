@@ -1,4 +1,4 @@
-package com.tfg.dietaalplato.utilities;
+package com.tfg.dietaalplato.firebase.utilities;
 
 public class ClassData {
 

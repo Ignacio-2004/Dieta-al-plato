@@ -1,4 +1,4 @@
-package com.tfg.dietaalplato.utilities;
+package com.tfg.dietaalplato.firebase.utilities;
 
 /**
   Interfaz funcional utilizada para manejar resultados asíncronos.

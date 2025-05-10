@@ -16,6 +16,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.google.firebase.database.*;
+import com.tfg.dietaalplato.firebase.conectors.tools.FireBaseReader;
 import com.tfg.dietaalplato.utilities.BasketAnimation;
 import com.tfg.dietaalplato.firebase.conectors.FireBaseConnector;
 import com.tfg.dietaalplato.firebase.exceptions.FBCException;
@@ -124,7 +125,7 @@ public class LogIn_Activity extends AppCompatActivity {
                                 // COMPROBAMOS PASSWORD
                                 if (!passwd_introducida.isEmpty()) {
                                     try {
-                                        DateBase.readUserByEmail(correo_introducido)
+                                        FireBaseReader.readUserByEmail(correo_introducido)
                                                 .addOnSuccessListener(usuario -> {
                                                     String passwDB = usuario.getPsw();  // Accedemos a la contraseña de la BD
 
