@@ -69,4 +69,9 @@ public class PacientesActivity extends AppCompatActivity {
         Intent intent = new Intent(this, InicioUsuarioActivity.class );
         startActivity(intent);
     }
+
+    public void onClickAddClient(View view){
+        ClientCreator_Dialogo dialogo = new ClientCreator_Dialogo();
+        dialogo.show(getSupportFragmentManager(), "dialogoNuevoCliente");
+    }
 }

@@ -30,7 +30,7 @@ public class SignUp_Dialogo extends DialogFragment {
 
         // se inicia los campos
         final EditText correo = view.findViewById(R.id.editTextCorreo);
-        final EditText password = view.findViewById(R.id.editTextPassword);
+        final EditText password = view.findViewById(R.id.editTextContraseña);
         final EditText confirmPassword = view.findViewById(R.id.editTextConfirmPassword);
         textError = view.findViewById(R.id.textError);
 

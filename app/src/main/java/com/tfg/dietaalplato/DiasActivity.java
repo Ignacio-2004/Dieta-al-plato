@@ -29,7 +29,6 @@ public class DiasActivity extends AppCompatActivity {
 
 
         layoutDias = findViewById(R.id.layoutDias);
-        fbConnector = new FireBaseConnector(); // instanciar tu clase
 
 
         try {

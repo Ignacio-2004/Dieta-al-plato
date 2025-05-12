@@ -41,7 +41,8 @@ public class FireBaseReader {
         SaveData saveData = SaveData.getInstance();
 
         /*Comprobar que no haya en el cache*/
-        if (saveData.getUser() != null){
+        if (saveData.getUser() != null && saveData.getUser().getName().equals(name)){
+            Log.d(TAG,"📖 Usuario encontrado en cache: " + saveData.getUser().getName() + ", Password: " + saveData.getUser().getPsw());
             taskCompletionSource.setResult(new ObjectResult<>(true, "success", saveData.getUser()));
             return taskCompletionSource.getTask();
         }
@@ -56,6 +57,10 @@ public class FireBaseReader {
                         if (usuario != null) {
                             /*Cache collection*/
                             saveData.setUser(usuario);
+
+                            if (saveData.getUser()!=new User("","","")|| saveData.getUser()==null){
+                                Log.d(TAG, "📖 Usuario guardado en cache: " + saveData.getUser().getName() + ", Password: " + saveData.getUser().getPsw());
+                            }
 
                             Log.d(TAG, "📖 Usuario encontrado: " + usuario.getName() + ", Password: " + usuario.getPsw());
                             taskCompletionSource.setResult(new ObjectResult<>(true, "success", usuario));
@@ -87,6 +92,7 @@ public class FireBaseReader {
         SaveData saveData = SaveData.getInstance();
 
         if (saveData.getFoods().isLoaded() && saveData.getFoods().contains(name)){
+            Log.d(TAG, "📖 Comida encontrada en cache: " + name);
             taskCompletionSource.setResult(new ObjectResult<>(true, "success", saveData.getFoods().get(name)));
             return taskCompletionSource.getTask();
         };
@@ -130,6 +136,7 @@ public class FireBaseReader {
         TaskCompletionSource<ObjectResult<Map<String,Food>>> taskCompletionSource = new TaskCompletionSource<>();
 
         if (saveData.getFoods().isLoaded()){
+            Log.d(TAG, "📖 Comidas encontradas en cache");
             taskCompletionSource.setResult(new ObjectResult<>(true, "success", saveData.getFoods().getCollection()));
             return taskCompletionSource.getTask();
         };
@@ -141,7 +148,6 @@ public class FireBaseReader {
                     if (!queryDocumentSnapshots.isEmpty()) {
                         Map<String,Food> foods = new HashMap<>();
                         CacheCollection<Food> foodsCache = new CacheCollection<>();
-                        foodsCache.setLoaded(true);
                         for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments()) {
                             Food food = document.toObject(Food.class);
                             if (food != null) {
@@ -154,9 +160,14 @@ public class FireBaseReader {
                         }
 
 
-                        saveData.setCollectionFood(foodsCache);
-
                         if (!foods.isEmpty()) {
+                            foodsCache.setLoaded(true);
+                            saveData.setCollectionFood(foodsCache);
+
+                            if ((saveData.getFoods()!= null && !saveData.getFoods().isEmpty()) && saveData.getFoods().isLoaded()){
+                                Log.d(TAG, "📖 Comidas guardadas en cache");
+                            }
+
                             taskCompletionSource.setResult(new ObjectResult<>(true, "success", foods));
                         }else{
                             taskCompletionSource.setResult(new ObjectResult<>(false, "No se encontraron comidas", null));
@@ -190,6 +201,7 @@ public class FireBaseReader {
          * Coimprobamos que este cargado y si tiene la clave del cliente
          */
         if (saveData.getDiets().isLoaded()&&saveData.getDiets().contains(idCli)){
+            Log.d(TAG, "📖 Dietas encontradas en cache");
             taskCompletionSource.setResult(new ObjectResult<>(true, "success", saveData.getDietsOfClient(idCli)));
             return taskCompletionSource.getTask();
         };
@@ -219,6 +231,11 @@ public class FireBaseReader {
                         if (!dietsCache.isEmpty()){
                             dietsCache.setLoaded(true);
                             dietsCache.add(idCli,diets);
+
+                            if ((saveData.getDiets()!= null && !saveData.getDiets().isEmpty()) && saveData.getDiets().isLoaded()){
+                                Log.d(TAG, "📖 Dietas guardadas en cache");
+                            }
+
                             taskCompletionSource.setResult(new ObjectResult<>(true, "success", diets));
                         }else{
                             taskCompletionSource.setResult(new ObjectResult<>(false, "No se encontraron dietas", null));
@@ -250,6 +267,7 @@ public class FireBaseReader {
         SaveData saveData = SaveData.getInstance();
 
         if (saveData.getDiets().contains(idCli)){
+            Log.d(TAG, "📖 Dieta encontrada en cache");
             taskCompletionSource.setResult(new ObjectResult<>(true, "success", saveData.getDiet(idCli,name)));
             return taskCompletionSource.getTask();
         };
@@ -309,6 +327,7 @@ public class FireBaseReader {
         SaveData saveData = SaveData.getInstance();
 
         if (saveData.getClients().isLoaded()&&saveData.getClients().contains(name+" "+ape)){
+            Log.d(TAG, "📖 Cliente encontrado en cache");
             taskCompletionSource.setResult(new ObjectResult<>(true, "success", saveData.getClients().get(name+" "+ape)));
             return taskCompletionSource.getTask();
         };
@@ -354,6 +373,7 @@ public class FireBaseReader {
         TaskCompletionSource<ObjectResult<ArrayList<Client>>> taskCompletionSource = new TaskCompletionSource<>();
 
         if (saveData.getClients().isLoaded()){
+            Log.d(TAG, "📖 Clientes encontrados en cache");
             taskCompletionSource.setResult(new ObjectResult<>(true, "success", saveData.getClients().getAllAsArrayList()));
             return taskCompletionSource.getTask();
         };
@@ -382,6 +402,11 @@ public class FireBaseReader {
                         if (!clients.isEmpty()){
                             clientsCache.setLoaded(true);
                             saveData.setCollectionClient(clientsCache);
+
+                            if ((saveData.getClients()!= null && !saveData.getClients().isEmpty()) && saveData.getClients().isLoaded()){
+                                Log.d(TAG, "📖 Clientes guardados en cache");
+                            }
+
                             taskCompletionSource.setResult(new ObjectResult<>(true, "success", clients));
                         }else{
                             taskCompletionSource.setResult(new ObjectResult<>(false, "No se encontraron clientes", null));
@@ -413,6 +438,7 @@ public class FireBaseReader {
         SaveData saveData = SaveData.getInstance();
 
         if (saveData.getFoodDiets().isLoaded() && saveData.getFoodDiets().contains(idDieta)) {
+            Log.d(TAG, "📖 FoodDiet encontrada en cache");
 
             Collection<ArrayList<FoodDiet>> foodDiets = saveData.getFoodDietsOfDiet(idDieta).values();
 
@@ -420,6 +446,7 @@ public class FireBaseReader {
                 for (FoodDiet foodDiet : lista) {
                     if (foodDiet.getIdAlimento().equals(idAlimento)) {
                         taskCompletionSource.setResult(new ObjectResult<>(true, "success", foodDiet));
+                        Log.d("Firebase", "📖 FoodDiet encontrada: " + foodDiet.getIdAlimento());
                         return taskCompletionSource.getTask();
                     }
                 }
@@ -476,6 +503,7 @@ public class FireBaseReader {
 
         // Si ya está en caché, devolvemos directamente
         if (saveData.getFoodDiets().isLoaded() && saveData.getFoodDiets().contains(idDieta)) {
+            Log.d(TAG, "📖 FoodDiets encontradas en cache");
             taskCompletionSource.setResult(new ObjectResult<>(true, "success", saveData.getFoodDiets().get(idDieta)));
             return taskCompletionSource.getTask();
         }
@@ -504,6 +532,10 @@ public class FireBaseReader {
                             // Guardamos en la caché
                             saveData.getFoodDiets().add(idDieta, agrupado);
                             saveData.getFoodDiets().setLoaded(true);
+
+                            if ((saveData.getFoodDiets()!= null && !saveData.getFoodDiets().isEmpty()) && saveData.getFoodDiets().isLoaded()){
+                                Log.d(TAG, "📖 FoodDiets guardadas en cache");
+                            }
 
                             taskCompletionSource.setResult(new ObjectResult<>(true, "success", agrupado));
                         }else{
@@ -537,6 +569,7 @@ public class FireBaseReader {
         TaskCompletionSource<ObjectResult<Map<String,ArrayList<FoodDiet>>>> taskCompletionSource = new TaskCompletionSource<>();
 
         if (saveData.getFoodDiets().isLoaded() && saveData.getFoodDiets().contains(idDieta)) {
+            Log.d(TAG, "📖 FoodDiets encontradas en cache");
 
             Collection<ArrayList<FoodDiet>> listaDeListas = saveData.getFoodDietsOfDiet(idDieta).values();
             Map<String, ArrayList<FoodDiet>> resultados = new HashMap<>();
@@ -547,6 +580,7 @@ public class FireBaseReader {
                         String nombre = foodDiet.getName();
                         resultados.putIfAbsent(nombre, new ArrayList<>());
                         resultados.get(nombre).add(foodDiet);
+                        Log.d(TAG, "📖 FoodDiet añadida: " + foodDiet.getId());
                     }
                 }
             }
@@ -620,6 +654,7 @@ public class FireBaseReader {
         SaveData saveData = SaveData.getInstance();
 
         if (saveData.getUser() != null&&saveData.getUser().getName().equals(email)){
+            Log.d(TAG, "📖 Usuario encontrado en cache");
             TaskCompletionSource<User> taskCompletionSource = new TaskCompletionSource<>();
             taskCompletionSource.setResult(saveData.getUser());
             return taskCompletionSource.getTask();
@@ -642,6 +677,12 @@ public class FireBaseReader {
 
 
                         if (usuario != null) {
+                            saveData.setUser(usuario);
+
+                            if (saveData.getUser() != null && saveData.getUser()!= new User("","","")){
+                                Log.d(TAG, "📖 Usuario guardado en cache");
+                            }
+
                             Log.d("Firebase", "📖 Usuario leído: " + usuario.getName() + ", Password: " + usuario.getPsw());
                             taskCompletionSource.setResult(usuario);  // Devolver el objeto User
                         } else {
@@ -677,12 +718,19 @@ public class FireBaseReader {
         final TaskCompletionSource<FoodDiet> taskCompletionSource = new TaskCompletionSource<>();
 
         if (saveData.getFoodDiets().isLoaded() && saveData.getFoodDiets().contains(idDieta)) {
+            Log.d(TAG, "📖 FoodDiet encontrada en cache");
             Collection<ArrayList<FoodDiet>> listaDeListas = saveData.getFoodDietsOfDiet(idDieta).values();
             for (ArrayList<FoodDiet> lista : listaDeListas) {
                 for (FoodDiet foodDiet : lista) {
                     if (foodDiet.getIdAlimento().equals(idAlimento)) {
-                        taskCompletionSource.setResult(foodDiet);
-                        return taskCompletionSource.getTask();
+                        if (foodDiet != null) {
+                            Log.d("Firebase", "📖 FoodDiet encontrada: " + foodDiet.getIdAlimento());
+                            taskCompletionSource.setResult(foodDiet);
+                            return taskCompletionSource.getTask();
+                        }else{
+                            Log.e("Firebase", "⚠️ Documento encontrado pero no se pudo convertir a FoodDiet");
+                            taskCompletionSource.setException(new Exception("Error al convertir documento a FoodDiet"));
+                        }
                     }
                 }
             }

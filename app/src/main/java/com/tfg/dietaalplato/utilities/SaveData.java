@@ -184,7 +184,7 @@ public class SaveData {
     }
 
     public void clear(){
-        user = new User();
+        user = new User("","","");
         clients.clear();
         foods.clear();
         diets.clear();
