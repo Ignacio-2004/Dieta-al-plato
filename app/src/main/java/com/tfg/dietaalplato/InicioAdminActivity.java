@@ -31,7 +31,6 @@ public class InicioAdminActivity extends AppCompatActivity {
 
 
         layoutUsuarios = findViewById(R.id.layoutUsuarios);
-        fbConnector = new FireBaseConnector(); // instanciar tu clase
 
 
         try {
