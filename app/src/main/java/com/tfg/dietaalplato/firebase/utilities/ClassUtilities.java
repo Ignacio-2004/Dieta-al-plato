@@ -33,5 +33,25 @@ public class  ClassUtilities {
 
     }
 
+    public static String generateId(ClassData classData, int amount, int idNumExt){
+
+        String id = String.valueOf(amount+1);
+        String idExt = String.valueOf(idNumExt);
+
+        while (id.length()<4){
+            id = "0" + id;
+        }
+
+        if (idNumExt!=-1){
+            while (idExt.length()<4){
+                idExt = "0" + idExt;
+            }
+
+            return classData.key+idNumExt+id;
+        }else{
+            return classData.key+id;
+        }
+
+    }
 
 }

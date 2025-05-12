@@ -68,7 +68,7 @@ public class FireBaseWriter {
                                     result.exit = false;
                                     result.message = validationResult.message;
                                 }else{
-                                    save(result,classData, validationResult.message).addOnSuccessListener(
+                                    save(result,classData, validationResult.message,"-1").addOnSuccessListener(
                                             saveResult ->{
                                                 finalresoult.setResult(saveResult);
                                             }
@@ -94,7 +94,7 @@ public class FireBaseWriter {
                                     result.exit = false;
                                     result.message = validationResult.message;
                                 }else{
-                                    save(result,classData, result.message).addOnSuccessListener(
+                                    save(result,classData, result.message,result.data.get("idCliente")).addOnSuccessListener(
                                             saveResult ->{
                                                 finalresoult.setResult(saveResult);
                                             }
@@ -120,7 +120,7 @@ public class FireBaseWriter {
                                     result.exit = false;
                                     result.message = validationResult.message;
                                 }else{
-                                    save(result,classData, result.message).addOnSuccessListener(
+                                    save(result,classData, result.message,result.data.get("idUsr")).addOnSuccessListener(
                                             saveResult ->{
                                                 finalresoult.setResult(saveResult);
                                             }
@@ -145,7 +145,7 @@ public class FireBaseWriter {
                                     result.exit = false;
                                     result.message = validationResult.message;
                                 } else {
-                                    save(result,classData, result.message).addOnSuccessListener(
+                                    save(result,classData, result.message,result.data.get("idDieta")).addOnSuccessListener(
                                             saveResult ->{
                                                 finalresoult.setResult(saveResult);
                                             }
@@ -286,7 +286,7 @@ public class FireBaseWriter {
 
     }
 
-    private static Task<ObjectResult<BaseObject>> save(ValidationResult result, ClassData classData, String rawId) {
+    private static Task<ObjectResult<BaseObject>> save(ValidationResult result, ClassData classData, String rawId, String idExt) {
 
         String id;
         TaskCompletionSource<ObjectResult<BaseObject>> taskCompletionSource = new TaskCompletionSource<>();
@@ -299,7 +299,7 @@ public class FireBaseWriter {
                 return taskCompletionSource.getTask();
             }
 
-            id = ClassUtilities.generateId(classData, Integer.parseInt(rawId));
+            id = ClassUtilities.generateId(classData, Integer.parseInt(rawId), Integer.parseInt(idExt));
 
             switch (classData.data) {
                 case "usuarios":
