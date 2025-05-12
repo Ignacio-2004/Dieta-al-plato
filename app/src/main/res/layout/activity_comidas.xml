@@ -21,76 +21,180 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="?attr/homeAsUpIndicator" />
 
-    <!-- botón desayuno -->
-
-    <!-- botón almuerzo -->
-
-    <!-- botón cena -->
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/boton_desayuno"
-        android:layout_width="370dp"
-        android:layout_height="42dp"
-        android:layout_marginTop="252dp"
-        android:background="@drawable/esquinas_redondeadas_boton_verde"
-        android:text="Desayuno"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.103"
+    <ImageButton
+        android:id="@+id/desayuno_boton"
+        android:layout_width="265dp"
+        android:layout_height="260dp"
+        android:layout_marginStart="108dp"
+        android:backgroundTint="#F2A396"
+        android:elevation="10dp"
+        android:scaleType="fitCenter"
+        app:layout_constraintEnd_toStartOf="@+id/almuerzo_boton"
+        app:layout_constraintHorizontal_bias="0.141"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/almuerzo_boton"
+        app:srcCompat="@drawable/desayuno" />
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/boton_almuerzo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/esquinas_redondeadas_boton_verde"
-        android:text="Almuerzo"
+    <ImageButton
+        android:id="@+id/almuerzo_boton"
+        android:layout_width="265dp"
+        android:layout_height="260dp"
+        android:backgroundTint="#B8D2B5"
+        android:elevation="10dp"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.52"
         app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="204dp" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.192"
+        app:srcCompat="@drawable/almuerzo" />
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/boton_cena"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/esquinas_redondeadas_boton_verde"
-        android:text="cena"
-        app:layout_constraintTop_toBottomOf="@+id/boton_merienda"
-        tools:layout_editor_absoluteX="838dp" />
-
-    <!-- botón comida -->
-
-    <!-- botón recena -->
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/boton_comida"
-        android:layout_width="381dp"
-        android:layout_height="258dp"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/esquinas_redondeadas_boton_verde"
-        android:text="Comida"
+    <ImageButton
+        android:id="@+id/comida_boton"
+        android:layout_width="265dp"
+        android:layout_height="260dp"
+        android:backgroundTint="#26B5FA"
+        android:elevation="10dp"
+        android:scaleType="fitCenter"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.912"
+        app:layout_constraintHorizontal_bias="0.493"
+        app:layout_constraintStart_toEndOf="@+id/almuerzo_boton"
+        app:layout_constraintTop_toTopOf="@+id/almuerzo_boton"
+        app:srcCompat="@drawable/comida" />
+
+    <ImageButton
+        android:id="@+id/merienda_boton"
+        android:layout_width="265dp"
+        android:layout_height="260dp"
+        android:layout_marginTop="69dp"
+        android:layout_marginBottom="107dp"
+        android:backgroundTint="#D0628D"
+        android:elevation="10dp"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/desayuno_boton"
+        app:srcCompat="@drawable/merienda"
+        tools:layout_editor_absoluteX="127dp"
+        tools:ignore="MissingConstraints" />
+
+    <ImageButton
+        android:id="@+id/recena_boton"
+        android:layout_width="265dp"
+        android:layout_height="260dp"
+        android:layout_marginTop="69dp"
+        android:layout_marginBottom="107dp"
+        android:backgroundTint="#7369D8"
+        android:elevation="10dp"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/comida_boton"
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@drawable/recena"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="892dp" />
+
+    <ImageButton
+        android:id="@+id/cena_boton"
+        android:layout_width="265dp"
+        android:layout_height="260dp"
+        android:layout_marginTop="69dp"
+        android:layout_marginBottom="107dp"
+        android:backgroundTint="#D3B8D0"
+        android:elevation="10dp"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/almuerzo_boton"
+        app:srcCompat="@drawable/cena"
+        tools:layout_editor_absoluteX="508dp"
+        tools:ignore="MissingConstraints" />
+
+    <TextView
+        android:id="@+id/desayuno_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="200dp"
+        android:layout_marginTop="14dp"
+        android:layout_marginBottom="14dp"
+        android:fontFamily="@font/alfa_slab_one"
+        android:text="DESAYUNO"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/merienda_boton"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/boton_almuerzo" />
+        app:layout_constraintTop_toBottomOf="@+id/desayuno_boton"
+        app:layout_constraintVertical_bias="0.357" />
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/boton_recena"
+    <TextView
+        android:id="@+id/almuerzo_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/esquinas_redondeadas_boton_verde"
-        android:text="recena"
-        app:layout_constraintTop_toBottomOf="@+id/boton_cena"
-        tools:layout_editor_absoluteX="607dp" />
+        android:layout_marginTop="14dp"
+        android:layout_marginBottom="14dp"
+        android:fontFamily="@font/alfa_slab_one"
+        android:text="ALMUERZO"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/cena_boton"
+        app:layout_constraintTop_toBottomOf="@+id/almuerzo_boton"
+        app:layout_constraintVertical_bias="0.357"
+        tools:layout_editor_absoluteX="577dp" />
 
-    <!-- botón merienda -->
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/boton_merienda"
+    <TextView
+        android:id="@+id/comida_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/esquinas_redondeadas_boton_verde"
-        android:text="Merienda"
-        app:layout_constraintTop_toBottomOf="@+id/boton_comida"
-        tools:layout_editor_absoluteX="700dp" />
+        android:layout_marginTop="14dp"
+        android:layout_marginEnd="212dp"
+        android:layout_marginBottom="14dp"
+        android:fontFamily="@font/alfa_slab_one"
+        android:text="COMIDA"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/recena_boton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/comida_boton"
+        app:layout_constraintVertical_bias="0.375" />
+
+    <TextView
+        android:id="@+id/merienda_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="200dp"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/alfa_slab_one"
+        android:text="MERIENDA"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/merienda_boton" />
+
+    <TextView
+        android:id="@+id/cena_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="267dp"
+        android:layout_marginTop="14dp"
+        android:layout_marginEnd="283dp"
+        android:fontFamily="@font/alfa_slab_one"
+        android:text="CENA"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/recena_textview"
+        app:layout_constraintHorizontal_bias="0.534"
+        app:layout_constraintStart_toEndOf="@+id/merienda_textview"
+        app:layout_constraintTop_toBottomOf="@+id/cena_boton" />
+
+    <TextView
+        android:id="@+id/recena_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
+        android:layout_marginEnd="204dp"
+        android:fontFamily="@font/alfa_slab_one"
+        android:text="RE-CENA"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/recena_boton" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
