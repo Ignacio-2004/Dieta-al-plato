@@ -1,7 +1,13 @@
 package com.tfg.dietaalplato.utilities.tipe_collection;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+/**
+ * Esta clase nacio por la necesidad de tener una lista con una Key de los objetos qu epertenecen al usuario logado, era necesaria por el enfoque que hemos dado a SaveData, ya que las listas se van rellenando en el timepo y no nada mas se logea el usuario, por eso la necesidad del usuario
+ * @param <T> El tipo de objeto que se almacena en la colección.
+ */
 
 public class CacheCollection<T> {
 
@@ -62,5 +68,9 @@ public class CacheCollection<T> {
         collection.clear();
         collection.putAll(newCollection);
         isLoaded = true;
+    }
+
+    public ArrayList<T> getAllAsArrayList() {
+        return new ArrayList<>(collection.values());
     }
 }

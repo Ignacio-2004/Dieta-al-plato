@@ -20,6 +20,7 @@ import com.tfg.dietaalplato.firebase.utilities.ClassData;
 import com.tfg.dietaalplato.firebase.utilities.ClassUtilities;
 import com.tfg.dietaalplato.firebase.utilities.ObjectResult;
 import com.tfg.dietaalplato.firebase.utilities.ValidationResult;
+import com.tfg.dietaalplato.utilities.SaveData;
 
 
 import java.util.HashMap;
@@ -289,6 +290,7 @@ public class FireBaseWriter {
 
         String id;
         TaskCompletionSource<ObjectResult<BaseObject>> taskCompletionSource = new TaskCompletionSource<>();
+        SaveData saveData = SaveData.getInstance();
 
         try{
             if (!result.exit) {
@@ -317,6 +319,7 @@ public class FireBaseWriter {
                     save(new Client(id, result.data.get("name"), result.data.get("ape"), result.data.get("idUsr"))).addOnSuccessListener(
                             clientResult -> {
                                 taskCompletionSource.setResult(new ObjectResult<>(clientResult.exit, clientResult.message, clientResult.result));
+                                saveData.addClient(clientResult.result);
                             }
                     ).addOnFailureListener(
                             e -> {
@@ -328,6 +331,7 @@ public class FireBaseWriter {
                     save(new Diet(id, result.data.get("tip"), result.data.get("idClient"), result.data.get("just"), result.data.get("idUsr"))).addOnSuccessListener(
                             dietResult -> {
                                 taskCompletionSource.setResult(new ObjectResult<>(dietResult.exit, dietResult.message, dietResult.result));
+                                saveData.addDiet(dietResult.result);
                             }
                     ).addOnFailureListener(
                             e -> {
@@ -343,6 +347,7 @@ public class FireBaseWriter {
                             result.data.get("potasio"))).addOnSuccessListener(
                             foodResult -> {
                                 taskCompletionSource.setResult(new ObjectResult<>(foodResult.exit, foodResult.message, foodResult.result));
+                                saveData.addFood(foodResult.result);
                             }
                     ).addOnFailureListener(
                             e -> {
@@ -355,6 +360,7 @@ public class FireBaseWriter {
                             result.data.get("numeroPlato"), result.data.get("dia"), result.data.get("nombreReceta"), result.data.get("idUsr"))).addOnSuccessListener(
                             foodDietResult -> {
                                 taskCompletionSource.setResult(new ObjectResult<>(foodDietResult.exit, foodDietResult.message, foodDietResult.result));
+                                saveData.addFoodDiet(foodDietResult.result);
                             }
                     ).addOnFailureListener(
                             e -> {

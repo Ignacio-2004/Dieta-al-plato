@@ -73,13 +73,17 @@ public class Diet extends BaseObject {
     public static ValidationResult toMapData(ArrayList<View> data, String idCliente){
         ValidationResult result = new ValidationResult();
 
-        String[] fieldName = {"Name","tip", "idCliente", "just"};
+        String[] fieldName = {"name","tip", "idCliente", "just"};
 
         try{
             result.data = new HashMap<>();
 
             ArrayList<String> keys = new ArrayList<>();
-            keys.add(data.get(0).getTag().toString().trim());
+            if (data.get(0).getTag().toString().trim().equals("1")){
+                keys.add("Dieta de "+data.get(0).getTag().toString().trim()+" dias.");
+            }else{
+                keys.add("Dieta de "+data.get(0).getTag().toString().trim()+" dia.");
+            }
             keys.add(((EditText) data.get(1)).getText().toString().trim());
             keys.add(idCliente);
             keys.add(((EditText) data.get(3)).getText().toString().trim());

@@ -3,8 +3,9 @@ package com.tfg.dietaalplato.firebase.conectors.tools;
 import static com.tfg.dietaalplato.firebase.conectors.tools.FireBaseReader.readAllFoodFromUser;
 import static com.tfg.dietaalplato.firebase.conectors.tools.FireBaseReader.readAllFromCollection;
 import static com.tfg.dietaalplato.firebase.conectors.tools.FireBaseReader.readClientFromUser;
-import static com.tfg.dietaalplato.firebase.conectors.tools.FireBaseReader.readDietFromUser;
+import static com.tfg.dietaalplato.firebase.conectors.tools.FireBaseReader.readDietFromClient;
 import static com.tfg.dietaalplato.firebase.conectors.tools.FireBaseReader.readFoodDiet;
+import static com.tfg.dietaalplato.firebase.conectors.tools.FireBaseReader.readFoodDietByDiet;
 
 import android.util.Log;
 
@@ -17,11 +18,12 @@ import com.tfg.dietaalplato.firebase.tables.Diet;
 import com.tfg.dietaalplato.firebase.tables.Food;
 import com.tfg.dietaalplato.firebase.tables.FoodDiet;
 import com.tfg.dietaalplato.firebase.tables.User;
-import com.tfg.dietaalplato.firebase.tables.parents.BaseObject;
 import com.tfg.dietaalplato.firebase.utilities.ObjectResult;
 import com.tfg.dietaalplato.firebase.utilities.OnResultCallBack;
 import com.tfg.dietaalplato.firebase.utilities.ValidationResult;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -125,35 +127,34 @@ public class FireBaseValidator {
                 readAllFoodFromUser(idExt).addOnSuccessListener(
                         foods ->{
                             if (!foods.exit) {
-                                taskCompletionSource.setResult(new ValidationResult(false, foods.message, result.data));
+                                Map<String, Food> foodsCollection = foods.result;
+
+                                for (Food food : foodsCollection.values()) {
+                                    if (food.getName().equals(result.data.get("name"))) {
+                                        Log.e("Firebase", food.getId());
+                                        taskCompletionSource.setResult(new ValidationResult(false, "El alimento ya existe", result.data));
+                                        return;
+                                    }
+                                }
+
+                                taskCompletionSource.setResult(new ValidationResult(true, String.valueOf(foodsCollection.size()), result.data));
                                 return;
                             }
-
-                            for (Food food : foods.result) {
-                                if (food.getName().equals(result.data.get("name"))) {
-                                    Log.e("Firebase", food.getId());
-                                    taskCompletionSource.setResult(new ValidationResult(false, "El alimento ya existe", result.data));
-                                    return;
-                                }
-                            }
-
-                            taskCompletionSource.setResult(new ValidationResult(true, String.valueOf(foods.result.size()), result.data));
-                            return;
                         }
                 );
             case "dietas":
-                readDietFromUser(idExt).addOnSuccessListener(
+                readDietFromClient(idExt).addOnSuccessListener(
                         dietas -> {
                             if (!dietas.exit) {
-                                taskCompletionSource.setResult(new ValidationResult(false, dietas.message, result.data));
-                                return;
-                            }
 
-                            for (Diet diet : dietas.result) {
-                                if (diet.getName().equals(result.data.get("name"))) {
-                                    Log.e("Firebase", diet.getId());
-                                    taskCompletionSource.setResult(new ValidationResult(false, "La dieta ya existe", result.data));
-                                    return;
+                                ArrayList<Diet> diets = new ArrayList<>(dietas.result.values());
+
+                                for (Diet diet : diets){
+                                    if (diet.getName().equals(result.data.get("name"))) {
+                                        Log.e("Firebase", diet.getId());
+                                        taskCompletionSource.setResult(new ValidationResult(false, "La dieta ya existe", result.data));
+                                        return;
+                                    }
                                 }
                             }
 
@@ -203,23 +204,28 @@ public class FireBaseValidator {
         switch (collectionName){
             case "dietaAlimentos":
 
-                readFoodDiet(idDiet, idFood,result1 -> {
-                    if (!result1.exit) {
-                        for (FoodDiet foodDiet : result1.result){
-                            if (foodDiet.getComida().equals(result.data.get("comida")) &&
-                                    foodDiet.getNumeroPlato().equals(result.data.get("numeroPlato"))&&
-                                    foodDiet.getDia().equals(result.data.get("dia")) &&
-                                    foodDiet.getName().equals(result.data.get("nombreReceta"))){
+                readFoodDietByDiet(idDiet).addOnSuccessListener(
+                        foodDiets -> {
+                            if (!foodDiets.exit) {
+                                Map<String, ArrayList<FoodDiet>> foodDietsCollection = foodDiets.result;
 
-                                Log.e("Firebase", foodDiet.getId());
-                                taskCompletionSource.setResult(new ValidationResult(false, "El alimento ya existe", result.data));
+                                for (ArrayList<FoodDiet> foodDiet : foodDietsCollection.values()) {
+                                    for (FoodDiet foodDiet1 : foodDiet) {
+                                        if (foodDiet1.getIdAlimento().equals(idFood)) {
+                                            Log.e("Firebase", foodDiet1.getId());
+                                            taskCompletionSource.setResult(new ValidationResult(false, "La relacion ya existe", result.data));
+                                            return;
+                                        }
+                                    }
+                                }
+                                taskCompletionSource.setResult(new ValidationResult(true, String.valueOf(foodDietsCollection.size()), result.data));
                                 return;
                             }
                         }
-
-                        taskCompletionSource.setResult(new ValidationResult(true, String.valueOf(result1.result.size()), result.data));
-                        return;
-                    }
+                ).addOnFailureListener(
+                        e -> {
+                            taskCompletionSource.setException(new ComplexFBCE(new ObjectResult<>(false, e.getMessage(), result.data)));
+                            return;
                 });
                 break;
             default:

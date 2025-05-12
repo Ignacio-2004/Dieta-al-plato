@@ -1,5 +1,6 @@
 package com.tfg.dietaalplato.firebase.conectors.tools;
 
+import android.nfc.Tag;
 import android.util.Log;
 
 import com.google.android.gms.tasks.Task;
@@ -17,24 +18,33 @@ import com.tfg.dietaalplato.firebase.tables.User;
 import com.tfg.dietaalplato.firebase.utilities.ObjectResult;
 import com.tfg.dietaalplato.firebase.utilities.OnResultCallBack;
 import com.tfg.dietaalplato.firebase.utilities.TablesNames;
-
-import org.checkerframework.checker.units.qual.C;
+import com.tfg.dietaalplato.utilities.SaveData;
+import com.tfg.dietaalplato.utilities.tipe_collection.CacheCollection;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class FireBaseReader {
     private static final String TAG = "FireBase/Reader";
 
     /**
-     * Metodo que lee un usario desde su nombre
+     * Metodo que lee un usario desde su nombre (Fill)
      * @param name nombre del usuario
-     * @param callback parametro que convierte el metodo de asincronico en sincronico
      * @throws FBCException excepcion propia que marca si la conexion no es buena
      */
-    public static void readUser(String name, OnResultCallBack<ObjectResult<User>> callback) throws FBCException {
+    public static Task<ObjectResult<User>> readUser(String name) throws FBCException {
         FirebaseFirestore fst = FireBaseConnector.getInstance().getFirestore();
+        TaskCompletionSource<ObjectResult<User>> taskCompletionSource = new TaskCompletionSource<>();
+        SaveData saveData = SaveData.getInstance();
 
+        /*Comprobar que no haya en el cache*/
+        if (saveData.getUser() != null){
+            taskCompletionSource.setResult(new ObjectResult<>(true, "success", saveData.getUser()));
+            return taskCompletionSource.getTask();
+        }
 
         fst.collection("usuarios")
                 .whereEqualTo("name", name)
@@ -44,32 +54,42 @@ public class FireBaseReader {
                         DocumentSnapshot document = queryDocumentSnapshots.getDocuments().get(0); // El primero que encuentre
                         User usuario = document.toObject(User.class);
                         if (usuario != null) {
-                            Log.d("Firebase", "📖 Usuario encontrado: " + usuario.getName() + ", Password: " + usuario.getPsw());
-                            callback.onResult(new ObjectResult<>(true, "success", usuario));
+                            /*Cache collection*/
+                            saveData.setUser(usuario);
+
+                            Log.d(TAG, "📖 Usuario encontrado: " + usuario.getName() + ", Password: " + usuario.getPsw());
+                            taskCompletionSource.setResult(new ObjectResult<>(true, "success", usuario));
                         } else {
-                            Log.e("Firebase", "⚠️ Documento encontrado pero no se pudo convertir a User");
-                            callback.onResult(new ObjectResult<>(false, "Error al convertir el documento a usuario", null));
+                            Log.e(TAG, "⚠️ Documento encontrado pero no se pudo convertir a User");
+                            taskCompletionSource.setException(new ComplexFBCE(new ObjectResult<>(false, "Error al convertir el documento a usuario", null)));
                         }
                     } else {
-                        Log.d("Firebase", "⚠️ No se encontró ningún usuario con el nombre: " + name);
-                        callback.onResult(new ObjectResult<>(false, "Usuario no encontrado", null));
+                        Log.d(TAG, "⚠️ No se encontró ningún usuario con el nombre: " + name);
+                        taskCompletionSource.setException(new ComplexFBCE(new ObjectResult<>(false, "Usuario no encontrado", null)));
                     }
                 })
                 .addOnFailureListener(e -> {
-                    Log.e("Firebase", "❌ Error al buscar usuario por nombre: " + e.getMessage());
-                    callback.onResult(new ObjectResult<>(false, "Error al buscar usuario: " + e.getMessage(), null));
+                    Log.e(TAG, "❌ Error al buscar usuario por nombre: " + e.getMessage());
+                    taskCompletionSource.setException(new ComplexFBCE(new ObjectResult<>(false, "Error al buscar usuario: " + e.getMessage(), null)));
                 });
+        return taskCompletionSource.getTask();
     }
 
     /**
      * Metrodo que lee una comida de un usuario desde su nombre
      * @param name nombre de la comida
      * @param idUser id del usuario al que le pertenece la comida
-     * @param callback parametro que convierte el metodo de asincronico en sincronico
      * @throws FBCException excepcion propia que marca si la conexion no es buena
      */
-    public static void readFood(String name, String idUser, OnResultCallBack<ObjectResult<Food>> callback) throws FBCException {
+    public static Task<ObjectResult<Food>> readFood(String name, String idUser) throws FBCException {
         FirebaseFirestore fst = FireBaseConnector.getInstance().getFirestore();
+        TaskCompletionSource<ObjectResult<Food>> taskCompletionSource = new TaskCompletionSource<>();
+        SaveData saveData = SaveData.getInstance();
+
+        if (saveData.getFoods().isLoaded() && saveData.getFoods().contains(name)){
+            taskCompletionSource.setResult(new ObjectResult<>(true, "success", saveData.getFoods().get(name)));
+            return taskCompletionSource.getTask();
+        };
 
 
         fst.collection(String.valueOf(TablesNames.clientes))
@@ -81,48 +101,60 @@ public class FireBaseReader {
                         Food food = document.toObject(Food.class);
                         if (food != null) {
                             Log.d("Firebase", "📖 Comida encontrada: " + food.getName());
-                            callback.onResult(new ObjectResult<>(true, "success", food));
+                            taskCompletionSource.setResult(new ObjectResult<>(true, "success", food));
                         } else {
                             Log.e("Firebase", "⚠️ Documento encontrado pero no se pudo convertir a Food");
-                            callback.onResult(new ObjectResult<>(false, "Error al convertir el documento a comida", null));
+                            taskCompletionSource.setException(new ComplexFBCE(new ObjectResult<>(false, "Error al convertir el documento a comida", null)));
                         }
                     } else {
                         Log.d("Firebase", "⚠️ No se encontró ningúna comida con el nombre: " + name);
-                        callback.onResult(new ObjectResult<>(false, "Comida no encontrada", null));
+                        taskCompletionSource.setException(new ComplexFBCE(new ObjectResult<>(false, "Comida no encontrada", null)));
                     }
                 })
                 .addOnFailureListener(e -> {
                     Log.e("Firebase", "❌ Error al buscar la comida por nombre: " + e.getMessage());
-                    callback.onResult(new ObjectResult<>(false, "Error al buscar la comida: " + e.getMessage(), null));
+                    taskCompletionSource.setException(new ComplexFBCE(new ObjectResult<>(false, "Error al buscar la comida: " + e.getMessage(), null)));
                 });
+        return taskCompletionSource.getTask();
     }
 
 
     /**
-     * Metodo que lee todas las comida de un usuario
+     * Metodo que lee todas las comida de un usuario (Fill)
      * @param idUser id del usuario al que le pertenece las comida
      * @throws FBCException excepcion propia que marca si la conexion no es buena
      */
-    public static Task<ObjectResult<ArrayList<Food>>> readAllFoodFromUser(String idUser) throws FBCException {
+    public static Task<ObjectResult<Map<String,Food>>> readAllFoodFromUser(String idUser) throws FBCException {
         FirebaseFirestore fst = FireBaseConnector.getInstance().getFirestore();
+        SaveData saveData = SaveData.getInstance();
+        TaskCompletionSource<ObjectResult<Map<String,Food>>> taskCompletionSource = new TaskCompletionSource<>();
 
-        TaskCompletionSource<ObjectResult<ArrayList<Food>>> taskCompletionSource = new TaskCompletionSource<>();
+        if (saveData.getFoods().isLoaded()){
+            taskCompletionSource.setResult(new ObjectResult<>(true, "success", saveData.getFoods().getCollection()));
+            return taskCompletionSource.getTask();
+        };
+
         fst.collection(String.valueOf(TablesNames.alimentos))
                 .whereEqualTo("idUser", idUser)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     if (!queryDocumentSnapshots.isEmpty()) {
-                        ArrayList<Food> foods = new ArrayList<>();
+                        Map<String,Food> foods = new HashMap<>();
+                        CacheCollection<Food> foodsCache = new CacheCollection<>();
+                        foodsCache.setLoaded(true);
                         for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments()) {
                             Food food = document.toObject(Food.class);
                             if (food != null) {
                                 Log.d("Firebase", "📖 Comida encontrada: " + food.getName());
-                                foods.add(food);
+                                foods.put(food.getName(),food);
+                                foodsCache.add(food.getName(), food);
                             }else{
                                 Log.e("Firebase", "⚠️ Documento encontrado pero no se pudo convertir a Food");
                             }
                         }
 
+
+                        saveData.setCollectionFood(foodsCache);
 
                         if (!foods.isEmpty()) {
                             taskCompletionSource.setResult(new ObjectResult<>(true, "success", foods));
@@ -145,36 +177,48 @@ public class FireBaseReader {
 
 
     /**
-     * Metodo que lee las dietas de un cliente
+     * Metodo que lee las dietas de un cliente (Fill)
      * @param idCli cleinte al que pertenecen las dietas
      * @throws FBCException excepcion propia que marca si la conexion no es buena
      */
-    public static Task<ObjectResult<ArrayList<Diet>>> readDietFromUser(String idCli) throws FBCException {
+    public static Task<ObjectResult<Map<String,Diet>>> readDietFromClient(String idCli) throws FBCException {
         FirebaseFirestore fst = FireBaseConnector.getInstance().getFirestore();
+        SaveData saveData = SaveData.getInstance();
+        TaskCompletionSource<ObjectResult<Map<String,Diet>>> taskCompletionSource = new TaskCompletionSource<>();
 
-        TaskCompletionSource<ObjectResult<ArrayList<Diet>>> taskCompletionSource = new TaskCompletionSource<>();
+        /*
+         * Coimprobamos que este cargado y si tiene la clave del cliente
+         */
+        if (saveData.getDiets().isLoaded()&&saveData.getDiets().contains(idCli)){
+            taskCompletionSource.setResult(new ObjectResult<>(true, "success", saveData.getDietsOfClient(idCli)));
+            return taskCompletionSource.getTask();
+        };
+
         fst.collection("dietas")
                 .whereEqualTo("idCliente", idCli)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     if (!queryDocumentSnapshots.isEmpty()) {
 
+                        CacheCollection<Map<String,Diet>> dietsCache = new CacheCollection<>();
+                        Map<String, Diet> diets = new HashMap<>();
 
-                        ArrayList<Diet> diets = new ArrayList<>();
 
 
                         for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments()) {
                             Diet diet = document.toObject(Diet.class);
                             if (diet != null) {
                                 Log.d("Firebase", "📖 Dieta encontrada: " + diet.getName());
-                                diets.add(diet);
+                                diets.put(diet.getName(),diet);
                             }else{
                                 Log.e("Firebase", "⚠️ Documento encontrado pero no se pudo convertir a Dieta");
                             }
                         }
 
 
-                        if (!diets.isEmpty()){
+                        if (!dietsCache.isEmpty()){
+                            dietsCache.setLoaded(true);
+                            dietsCache.add(idCli,diets);
                             taskCompletionSource.setResult(new ObjectResult<>(true, "success", diets));
                         }else{
                             taskCompletionSource.setResult(new ObjectResult<>(false, "No se encontraron dietas", null));
@@ -198,12 +242,17 @@ public class FireBaseReader {
      * Metodo que lee las dietas de un cliente a partir de un nombre
      * @param idCli id del cliente
      * @param name nombre de la dieta
-     * @param callback parametro que convierte el metodo de asincronico en sincronico
      * @throws FBCException excepcion propia que marca si la conexion no es buena
      */
-    public static void readDietByMame(String idCli,String name, OnResultCallBack<ObjectResult<ArrayList<Diet>>> callback) throws FBCException {
+    public static Task<ObjectResult<Diet>> readDietByName(String idCli,String name) throws FBCException {
         FirebaseFirestore fst = FireBaseConnector.getInstance().getFirestore();
+        TaskCompletionSource<ObjectResult<Diet>> taskCompletionSource = new TaskCompletionSource<>();
+        SaveData saveData = SaveData.getInstance();
 
+        if (saveData.getDiets().contains(idCli)){
+            taskCompletionSource.setResult(new ObjectResult<>(true, "success", saveData.getDiet(idCli,name)));
+            return taskCompletionSource.getTask();
+        };
 
         fst.collection("dietas")
                 .whereEqualTo("idCliente", idCli)
@@ -227,22 +276,23 @@ public class FireBaseReader {
                         }
 
 
-                        if (!diets.isEmpty()){
-                            callback.onResult(new ObjectResult<>(true, "success", diets));
+                        if (diets.size()==1){
+                            taskCompletionSource.setResult(new ObjectResult<>(true, "success", diets.get(0)));
                         }else{
-                            callback.onResult(new ObjectResult<>(false, "No se encontraron dietas", null));
+                            taskCompletionSource.setException(new ComplexFBCE(new ObjectResult<>(false, "Dieta no encontrada", null)));
                         }
 
 
                     } else {
                         Log.d("Firebase", "⚠️ No se encontró ningúna dieta para el cliente con id: " + idCli);
-                        callback.onResult(new ObjectResult<>(false, "Dieta no encontrada", null));
+                        taskCompletionSource.setException(new ComplexFBCE(new ObjectResult<>(false, "Dieta no encontrada", null)));
                     }
                 })
                 .addOnFailureListener(e -> {
                     Log.e("Firebase", "❌ Error al buscar la dieta por el cliente: " + e.getMessage());
-                    callback.onResult(new ObjectResult<>(false, "Error al buscar la dieta: " + e.getMessage(), null));
+                    taskCompletionSource.setException(new ComplexFBCE(new ObjectResult<>(false, "Error al buscar la dieta: " + e.getMessage(), null)));
                 });
+        return taskCompletionSource.getTask();
     }
 
 
@@ -251,12 +301,17 @@ public class FireBaseReader {
      * @param name nombre del cliente
      * @param ape apellido del cliente
      * @param idUsr id del usuario al que pertenece el cliente
-     * @param callback parametro que convierte el metodo de asincronico en sincronico
      * @throws FBCException excepcion propia que marca si la conexion no es buena
      */
-    public static void readClient(String name, String ape, String idUsr, OnResultCallBack<ObjectResult<Client>> callback) throws FBCException {
+    public static Task<ObjectResult<Client>> readClient(String name, String ape, String idUsr) throws FBCException {
         FirebaseFirestore fst = FireBaseConnector.getInstance().getFirestore();
+        TaskCompletionSource<ObjectResult<Client>> taskCompletionSource = new TaskCompletionSource<>();
+        SaveData saveData = SaveData.getInstance();
 
+        if (saveData.getClients().isLoaded()&&saveData.getClients().contains(name+" "+ape)){
+            taskCompletionSource.setResult(new ObjectResult<>(true, "success", saveData.getClients().get(name+" "+ape)));
+            return taskCompletionSource.getTask();
+        };
 
         fst.collection("clientes")
                 .whereEqualTo("name", name)
@@ -269,33 +324,39 @@ public class FireBaseReader {
                         Client client = document.toObject(Client.class);
                         if (client != null) {
                             Log.d("Firebase", "📖 Cliente encontrada: " + client.getName());
-                            callback.onResult(new ObjectResult<>(true, "success", client));
+                            taskCompletionSource.setResult(new ObjectResult<>(true, "success", client));
                         } else {
                             Log.e("Firebase", "⚠️ Documento encontrado pero no se pudo convertir a Cliente");
-                            callback.onResult(new ObjectResult<>(false, "Error al convertir el documento a cliente", null));
+                            taskCompletionSource.setException(new ComplexFBCE(new ObjectResult<>(false, "Error al convertir el documento a cliente", null)));
                         }
                     } else {
                         Log.d("Firebase", "⚠️ No se encontró ningún cliente con nombre: " + name +" "+ ape+" y que pertenezca al usuario: "+idUsr);
-                        callback.onResult(new ObjectResult<>(false, "Cliente no encontrado", null));
+                        taskCompletionSource.setException(new ComplexFBCE(new ObjectResult<>(false, "Cliente no encontrado", null)));
                     }
                 })
                 .addOnFailureListener(e -> {
                     Log.e("Firebase", "❌ Error al buscar el cliente: " + e.getMessage());
-                    callback.onResult(new ObjectResult<>(false, "Error al buscar el cliente: " + e.getMessage(), null));
+                    taskCompletionSource.setException(new ComplexFBCE(new ObjectResult<>(false, "Error al buscar el cliente: " + e.getMessage(), null)));
                 });
+        return taskCompletionSource.getTask();
     }
 
 
     /**
-     * Metodo que lee todos los clientes a partir de su id de usuario
+     * Metodo que lee todos los clientes a partir de su id de usuario (Fill)
      * @param idUsr id del usuario
 
      * @throws FBCException excepcion propia que marca si la conexion no es buena
      */
     public static Task<ObjectResult<ArrayList<Client>>> readClientFromUser(String idUsr) throws FBCException {
         FirebaseFirestore fst = FireBaseConnector.getInstance().getFirestore();
-
+        SaveData saveData = SaveData.getInstance();
         TaskCompletionSource<ObjectResult<ArrayList<Client>>> taskCompletionSource = new TaskCompletionSource<>();
+
+        if (saveData.getClients().isLoaded()){
+            taskCompletionSource.setResult(new ObjectResult<>(true, "success", saveData.getClients().getAllAsArrayList()));
+            return taskCompletionSource.getTask();
+        };
 
         fst.collection("clientes")
                 .whereEqualTo("idUsr", idUsr)
@@ -303,7 +364,7 @@ public class FireBaseReader {
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     if (!queryDocumentSnapshots.isEmpty()) {
 
-
+                        CacheCollection<Client> clientsCache = new CacheCollection<>();
                         ArrayList<Client> clients = new ArrayList<>();
 
 
@@ -312,13 +373,15 @@ public class FireBaseReader {
                             if (client != null) {
                                 Log.d("Firebase", "📖 Cliente encontrado: " + client.getName());
                                 clients.add(client);
+                                clientsCache.add(client.getName()+" "+client.getApe(), client);
                             }else{
                                 Log.d("Firebase", "⚠️ Documento encontrado pero no se pudo convertir a Cliente");
                             }
                         }
 
-
                         if (!clients.isEmpty()){
+                            clientsCache.setLoaded(true);
+                            saveData.setCollectionClient(clientsCache);
                             taskCompletionSource.setResult(new ObjectResult<>(true, "success", clients));
                         }else{
                             taskCompletionSource.setResult(new ObjectResult<>(false, "No se encontraron clientes", null));
@@ -342,11 +405,33 @@ public class FireBaseReader {
      * Metodo que lee una comidaDiet a partir de su id de dieta y de alimento
      * @param idDieta id de la dieta
      * @param idAlimento id del alimento
-     * @param callback parametro que convierte el metodo de asincronico en sincronico
      * @throws FBCException excepcion propia que marca si la conexion no es buena
      */
-    public static void readFoodDiet(String idDieta, String idAlimento, OnResultCallBack<ObjectResult<ArrayList<FoodDiet>>> callback) throws FBCException {
+    public static Task<ObjectResult<FoodDiet>> readFoodDiet(String idDieta, String idAlimento) throws FBCException {
         FirebaseFirestore fst = FireBaseConnector.getInstance().getFirestore();
+        TaskCompletionSource<ObjectResult<FoodDiet>> taskCompletionSource = new TaskCompletionSource<>();
+        SaveData saveData = SaveData.getInstance();
+
+        if (saveData.getFoodDiets().isLoaded() && saveData.getFoodDiets().contains(idDieta)) {
+
+            Collection<ArrayList<FoodDiet>> foodDiets = saveData.getFoodDietsOfDiet(idDieta).values();
+
+            for (ArrayList<FoodDiet> lista : foodDiets) {
+                for (FoodDiet foodDiet : lista) {
+                    if (foodDiet.getIdAlimento().equals(idAlimento)) {
+                        taskCompletionSource.setResult(new ObjectResult<>(true, "success", foodDiet));
+                        return taskCompletionSource.getTask();
+                    }
+                }
+            }
+
+            // Si no se encuentra
+            taskCompletionSource.setException(new ComplexFBCE(
+                    new ObjectResult<>(false, "Alimento no encontrado en la dieta", null)
+            ));
+            return taskCompletionSource.getTask();
+        }
+
 
 
         fst.collection("comidaDietas")
@@ -355,74 +440,88 @@ public class FireBaseReader {
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     if (!queryDocumentSnapshots.isEmpty()) {
-
-                        ArrayList<FoodDiet> foods = new ArrayList<>();
-
-                        for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments()) {
-                            FoodDiet food = document.toObject(FoodDiet.class);
-                            if (food != null) {
-                                Log.d("Firebase", "📖 FoodDiet encontrada: " + food.getIdAlimento());
-                                foods.add(food);
-                            }else{
-                                Log.e("Firebase", "⚠️ Documento encontrado pero no se pudo convertir a FoodDiet");
-                            }
+                        DocumentSnapshot document = queryDocumentSnapshots.getDocuments().get(0); // El primero que encuentre
+                        FoodDiet foodDiet = document.toObject(FoodDiet.class);
+                        if (foodDiet != null) {
+                            Log.d("Firebase", "📖 FoodDiet encontrada: " + foodDiet.getIdAlimento());
+                            taskCompletionSource.setResult(new ObjectResult<>(true, "success", foodDiet));
+                        } else {
+                            Log.e("Firebase", "⚠️ Documento encontrado pero no se pudo convertir a FoodDiet");
+                            taskCompletionSource.setException(new ComplexFBCE(new ObjectResult<>(false, "Error al convertir el documento a FoodDiet", null)));
                         }
-
-                        callback.onResult(new ObjectResult<>(true, "success", foods));
 
                     } else {
                         Log.d("Firebase", "⚠️ No se encontró ningún foodDiet con idDieta: " + idDieta +" y con idAlimento: "+idAlimento);
-                        callback.onResult(new ObjectResult<>(false, "FoodDiet no encontrado", null));
+                        taskCompletionSource.setException(new ComplexFBCE(new ObjectResult<>(false, "FoodDiet no encontrado", null)));
                     }
                 })
                 .addOnFailureListener(e -> {
                     Log.e("Firebase", "❌ Error al buscar el FoodDiet: " + e.getMessage());
-                    callback.onResult(new ObjectResult<>(false, "Error al buscar el FoodDiet: " + e.getMessage(), null));
+                    taskCompletionSource.setException(new ComplexFBCE(new ObjectResult<>(false, "Error al buscar el FoodDiet: " + e.getMessage(), null)));
                 });
+        return taskCompletionSource.getTask();
     }
 
 
+
     /**
-     * Metodo que lee todas las comidasde una dieta a partir de su id de dieta
+     * Metodo que lee todas las comidasde una dieta a partir de su id de dieta (Fill)
      * @param idDieta id de la dieta
-     * @param callback parametro que convierte el metodo de asincronico en sincronico
      * @throws FBCException excepcion propia que marca si la conexion no es buena
      */
-    public static void readFoodDietByDiet(String idDieta, OnResultCallBack<ObjectResult<ArrayList<FoodDiet>>> callback) throws FBCException {
+    public static Task<ObjectResult<Map<String, ArrayList<FoodDiet>>>> readFoodDietByDiet(String idDieta) throws FBCException {
         FirebaseFirestore fst = FireBaseConnector.getInstance().getFirestore();
+        SaveData saveData = SaveData.getInstance();
+        TaskCompletionSource<ObjectResult<Map<String, ArrayList<FoodDiet>>>> taskCompletionSource = new TaskCompletionSource<>();
 
+        // Si ya está en caché, devolvemos directamente
+        if (saveData.getFoodDiets().isLoaded() && saveData.getFoodDiets().contains(idDieta)) {
+            taskCompletionSource.setResult(new ObjectResult<>(true, "success", saveData.getFoodDiets().get(idDieta)));
+            return taskCompletionSource.getTask();
+        }
 
+        // Consultamos en Firestore
         fst.collection("comidaDietas")
                 .whereEqualTo("idDieta", idDieta)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     if (!queryDocumentSnapshots.isEmpty()) {
-
-
-                        ArrayList<FoodDiet> foods = new ArrayList<>();
-
+                        Map<String, ArrayList<FoodDiet>> agrupado = new HashMap<>();
 
                         for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments()) {
                             FoodDiet food = document.toObject(FoodDiet.class);
                             if (food != null) {
-                                Log.d("Firebase", "📖 FoodDiet encontrada: " + food.getIdAlimento());
-                                foods.add(food);
-                            }
-                            else{
-                                Log.e("Firebase", "⚠️ Documento encontrado pero no se pudo convertir a FoodDiet");
-                                callback.onResult(new ObjectResult<>(false, "Error al convertir el documento a FoodDiet", null));
+                                String nombre = food.getName(); // o .getComida(), según agrupación
+                                agrupado.putIfAbsent(nombre, new ArrayList<>());
+                                agrupado.get(nombre).add(food);
+                                Log.d("Firebase", "📖 FoodDiet añadida: " + food.getId());
+                            } else {
+                                Log.e("Firebase", "⚠️ Documento no convertible a FoodDiet");
                             }
                         }
+
+                        if (!agrupado.isEmpty()) {
+                            // Guardamos en la caché
+                            saveData.getFoodDiets().add(idDieta, agrupado);
+                            saveData.getFoodDiets().setLoaded(true);
+
+                            taskCompletionSource.setResult(new ObjectResult<>(true, "success", agrupado));
+                        }else{
+                            taskCompletionSource.setException(new ComplexFBCE(new ObjectResult<>(false, "FoodDiet no encontrado", null)));
+                        }
                     } else {
-                        Log.d("Firebase", "⚠️ No se encontró ningún foodDiet con idDieta: " + idDieta );
-                        callback.onResult(new ObjectResult<>(false, "FoodDiet no encontrado", null));
+                        Log.d("Firebase", "⚠️ No se encontraron documentos con idDieta: " + idDieta);
+                        taskCompletionSource.setException(new ComplexFBCE(new ObjectResult<>(false, "FoodDiet no encontrado", null)));
                     }
                 })
                 .addOnFailureListener(e -> {
-                    Log.e("Firebase", "❌ Error al buscar el FoodDiet: " + e.getMessage());
-                    callback.onResult(new ObjectResult<>(false, "Error al buscar el FoodDiet: " + e.getMessage(), null));
+                    Log.e("Firebase", "❌ Error al buscar FoodDiet: " + e.getMessage());
+                    taskCompletionSource.setException(new ComplexFBCE(new ObjectResult<>(false, "Error: " + e.getMessage(), null)));
                 });
+
+        return taskCompletionSource.getTask();
     }
+
 
 
     /**
@@ -432,8 +531,39 @@ public class FireBaseReader {
      * @param callback parametro que convierte el metodo de asincronico en sincronico
      * @throws FBCException excepcion propia que marca si la conexion no es buena
      */
-    public static void readFoodDietByDay(String idDieta, String dia, OnResultCallBack<ObjectResult<ArrayList<FoodDiet>>> callback) throws FBCException {
+    public static Task<ObjectResult<Map<String,ArrayList<FoodDiet>>>> readFoodDietByDay(String idDieta, String dia, OnResultCallBack<ObjectResult<ArrayList<FoodDiet>>> callback) throws FBCException {
         FirebaseFirestore fst = FireBaseConnector.getInstance().getFirestore();
+        SaveData saveData = SaveData.getInstance();
+        TaskCompletionSource<ObjectResult<Map<String,ArrayList<FoodDiet>>>> taskCompletionSource = new TaskCompletionSource<>();
+
+        if (saveData.getFoodDiets().isLoaded() && saveData.getFoodDiets().contains(idDieta)) {
+
+            Collection<ArrayList<FoodDiet>> listaDeListas = saveData.getFoodDietsOfDiet(idDieta).values();
+            Map<String, ArrayList<FoodDiet>> resultados = new HashMap<>();
+
+            for (ArrayList<FoodDiet> lista : listaDeListas) {
+                for (FoodDiet foodDiet : lista) {
+                    if (dia.equals(foodDiet.getDia())) {
+                        String nombre = foodDiet.getName();
+                        resultados.putIfAbsent(nombre, new ArrayList<>());
+                        resultados.get(nombre).add(foodDiet);
+                    }
+                }
+            }
+
+            if (!resultados.isEmpty()) {
+                taskCompletionSource.setResult(new ObjectResult<>(true, "success", resultados));
+            } else {
+                taskCompletionSource.setException(new ComplexFBCE(
+                        new ObjectResult<>(false, "No se encontraron alimentos para el día especificado", null)
+                ));
+            }
+
+        } else {
+            taskCompletionSource.setException(new ComplexFBCE(
+                    new ObjectResult<>(false, "Colección no cargada o idDieta no encontrado", null)
+            ));
+        }
 
 
         fst.collection("comidaDietas")
@@ -443,30 +573,37 @@ public class FireBaseReader {
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     if (!queryDocumentSnapshots.isEmpty()) {
 
-
-                        ArrayList<FoodDiet> foods = new ArrayList<>();
+                        Map<String,ArrayList<FoodDiet>> foods = new HashMap<>();
 
 
                         for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments()) {
                             FoodDiet food = document.toObject(FoodDiet.class);
                             if (food != null) {
                                 Log.d("Firebase", "📖 FoodDiet encontrada: " + food.getIdAlimento());
-                                foods.add(food);
+                                foods.putIfAbsent(food.getName(), new ArrayList<>());
+                                foods.get(food.getName()).add(food);
                             }
                             else{
                                 Log.e("Firebase", "⚠️ Documento encontrado pero no se pudo convertir a FoodDiet");
-                                callback.onResult(new ObjectResult<>(false, "Error al convertir el documento a FoodDiet", null));
                             }
                         }
+
+                        if (!foods.isEmpty()){
+                            taskCompletionSource.setResult(new ObjectResult<>(true, "success", foods));
+                        }else{
+                            taskCompletionSource.setException(new ComplexFBCE(new ObjectResult<>(false, "FoodDiet no encontrado", null)));
+                        }
+
                     } else {
                         Log.d("Firebase", "⚠️ No se encontró ningún foodDiet con idDieta: " + idDieta );
-                        callback.onResult(new ObjectResult<>(false, "FoodDiet no encontrado", null));
+                        taskCompletionSource.setException(new ComplexFBCE(new ObjectResult<>(false, "FoodDiet no encontrado", null)));
                     }
                 })
                 .addOnFailureListener(e -> {
                     Log.e("Firebase", "❌ Error al buscar el FoodDiet: " + e.getMessage());
-                    callback.onResult(new ObjectResult<>(false, "Error al buscar el FoodDiet: " + e.getMessage(), null));
+                    taskCompletionSource.setException(new ComplexFBCE(new ObjectResult<>(false, "Error al buscar el FoodDiet: " + e.getMessage(), null)));
                 });
+        return taskCompletionSource.getTask();
     }
 
 
@@ -480,6 +617,13 @@ public class FireBaseReader {
 
 
         FirebaseFirestore fst = FireBaseConnector.getInstance().getFirestore();
+        SaveData saveData = SaveData.getInstance();
+
+        if (saveData.getUser() != null&&saveData.getUser().getName().equals(email)){
+            TaskCompletionSource<User> taskCompletionSource = new TaskCompletionSource<>();
+            taskCompletionSource.setResult(saveData.getUser());
+            return taskCompletionSource.getTask();
+        }
 
 
         final TaskCompletionSource<User> taskCompletionSource = new TaskCompletionSource<>();
@@ -528,8 +672,22 @@ public class FireBaseReader {
     private static Task<FoodDiet> readDietFood(String idDieta, String idAlimento) throws FBCException {
 
         FirebaseFirestore fst = FireBaseConnector.getInstance().getFirestore();
+        SaveData saveData = SaveData.getInstance();
 
         final TaskCompletionSource<FoodDiet> taskCompletionSource = new TaskCompletionSource<>();
+
+        if (saveData.getFoodDiets().isLoaded() && saveData.getFoodDiets().contains(idDieta)) {
+            Collection<ArrayList<FoodDiet>> listaDeListas = saveData.getFoodDietsOfDiet(idDieta).values();
+            for (ArrayList<FoodDiet> lista : listaDeListas) {
+                for (FoodDiet foodDiet : lista) {
+                    if (foodDiet.getIdAlimento().equals(idAlimento)) {
+                        taskCompletionSource.setResult(foodDiet);
+                        return taskCompletionSource.getTask();
+                    }
+                }
+            }
+
+        }
 
 
         // Referencia al documento en la colección "diet_food"

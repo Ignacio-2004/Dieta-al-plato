@@ -5,7 +5,20 @@ import com.tfg.dietaalplato.firebase.tables.Diet;
 import com.tfg.dietaalplato.firebase.tables.Food;
 import com.tfg.dietaalplato.firebase.tables.FoodDiet;
 import com.tfg.dietaalplato.firebase.tables.User;
+import com.tfg.dietaalplato.firebase.utilities.TablesNames;
 import com.tfg.dietaalplato.utilities.tipe_collection.CacheCollection;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * Esta clase nacio por la necesidad de poder acceder desde todas las clases a los datos de la persona que esta logada, esta clase es un singleton y segun se van pidiendo datos a Firestore estos se van guardadndo en sus respectivas listas.
+
+ * Dietas y foosdiets son diferentes tienen un map dentro con el objetivo de utilizar la primera Key para el idCLient | idDieta y el segundo para el nombre
+ *
+ * la coleccion de FoodDiet tiene una arraylist porque hay alimentos que estan con el mismo nombre
+ */
 
 public class SaveData {
 
@@ -13,19 +26,19 @@ public class SaveData {
     private User user;
     private CacheCollection<Client> clients;
     private CacheCollection<Food> foods;
-    private CacheCollection<Diet> diets;
-    private CacheCollection<FoodDiet> foodDiets;
+    private CacheCollection<Map<String, Diet>> diets;
+    private CacheCollection<Map<String, ArrayList<FoodDiet>>> foodDiets;
 
-    private SaveData(){
-        user = new User();
+    private SaveData() {
+        user = new User("","","");
         clients = new CacheCollection<>();
         foods = new CacheCollection<>();
         diets = new CacheCollection<>();
         foodDiets = new CacheCollection<>();
     }
 
-    public static SaveData getInstance(){
-        if(saveData == null){
+    public static SaveData getInstance() {
+        if (saveData == null) {
             saveData = new SaveData();
         }
         return saveData;
@@ -39,90 +52,161 @@ public class SaveData {
         this.user = user;
     }
 
-    public CacheCollection<Client> getClients() {
-        return clients;
+    public void setCollectionClient ( CacheCollection<Client> cacheCollection){
+        this.clients = cacheCollection;
     }
 
-    public void setClients(CacheCollection<Client> clients) {
-        this.clients = clients;
+    public void setCollectionFood ( CacheCollection<Food> cacheCollection) {
+        this.foods = cacheCollection;
+    }
+
+    public void setCollectionDiet ( CacheCollection<Map<String, Diet>> cacheCollection) {
+        this.diets = cacheCollection;
+    }
+
+    public void setCollectionFoodDiet ( CacheCollection<Map<String, ArrayList<FoodDiet>>> cacheCollection) {
+        this.foodDiets = cacheCollection;
+    }
+
+    public CacheCollection<Client> getClients() {
+        return clients;
     }
 
     public CacheCollection<Food> getFoods() {
         return foods;
     }
 
-    public void setFoods(CacheCollection<Food> foods) {
-        this.foods = foods;
-    }
-
-    public CacheCollection<Diet> getDiets() {
+    public CacheCollection<Map<String, Diet>> getDiets() {
         return diets;
     }
 
-    public void setDiets(CacheCollection<Diet> diets) {
-        this.diets = diets;
-    }
-
-    public CacheCollection<FoodDiet> getFoodDiets() {
+    public CacheCollection<Map<String, ArrayList<FoodDiet>>> getFoodDiets() {
         return foodDiets;
     }
 
-    public void setFoodDiets(CacheCollection<FoodDiet> foodDiets) {
-        this.foodDiets = foodDiets;
+    public Client getCLient (String name){
+        return clients.get(name);
     }
 
-    public void addClient(Client client){
-        this.clients.add(client.getId(), client);
+    public Food getFood (String name){
+        return foods.get(name);
     }
 
-    public void addFood(Food food){
-        this.foods.add(food.getId(), food);
+    public Map<String, Diet> getDietsOfClient (String idClient){
+        return diets.get(idClient);
     }
 
-    public void addDiet(Diet diet){
-        this.diets.add(diet.getId(), diet);
+    public Map<String, ArrayList<FoodDiet>> getFoodDietsOfDiet (String idDiet){
+        return foodDiets.get(idDiet);
     }
 
-    public void addFoodDiet(FoodDiet foodDiet){
-        this.foodDiets.add(foodDiet.getId(), foodDiet);
+    public Diet getDiet (String idClient,String name){
+        return getDietsOfClient(idClient).get(name);
     }
 
-    public void removeClient(Client client){
-        this.clients.remove(client.getName());
+    public ArrayList<FoodDiet> getFoodDiet (String idDiet, String name){
+        return getFoodDietsOfDiet(idDiet).get(name);
     }
 
-    public void removeFood(Food food){
-        this.foods.remove(food.getName());
+    public void addClient (Client client){
+        clients.add(client.getName(), client);
     }
 
-    public void removeDiet(Diet diet){
-        this.diets.remove(diet.getName());
+    public void addFood (Food food){
+        foods.add(food.getName(), food);
     }
 
-    public void removeFoodDiet(FoodDiet foodDiet){
-        this.foodDiets.remove(foodDiet.getName());
+    public void addDiet (Diet diet){
+        Map<String, Diet> diets = getDietsOfClient(diet.getIdCliente());
+        if (diets == null){
+            diets = new HashMap<>();
+        }
+        getDietsOfClient(diet.getIdCliente()).clear();
+        diets.putIfAbsent(diet.getName(), diet);
+        this.diets.add(diet.getIdCliente(),diets);
     }
 
-    public void updateClient(Client client){
-        this.clients.update(client.getName(), client);
+    public void addFoodDiet(FoodDiet foodDiet) {
+        String idDieta = foodDiet.getIdDieta(); // clave externa
+        String comida = foodDiet.getComida();   // clave interna
+
+        // Obtener o crear el mapa interno asociado a esa dieta
+        Map<String, ArrayList<FoodDiet>> comidaMap = foodDiets.get(idDieta);
+        if (comidaMap == null) {
+            comidaMap = new HashMap<>();
+        }
+
+        // Obtener o crear la lista de FoodDiet asociada a esa comida
+        ArrayList<FoodDiet> lista = comidaMap.getOrDefault(comida, new ArrayList<>());
+        lista.add(foodDiet);
+
+        // Guardar la lista actualizada dentro del mapa interno
+        comidaMap.put(comida, lista);
+
+        // Actualizar en el CacheCollection
+        foodDiets.update(idDieta, comidaMap);
     }
 
-    public void updateFood(Food food){
-        this.foods.update(food.getName(), food);
+
+    public void updateClient (Client client){
+        clients.update(client.getName(), client);
     }
 
-    public void updateDiet(Diet diet){
-        this.diets.update(diet.getName(), diet);
+    public void updateFood (Food food){
+        foods.update(food.getName(), food);
     }
 
-    public void updateFoodDiet(FoodDiet foodDiet){
-        this.foodDiets.update(foodDiet.getName(), foodDiet);
+    public void updateDiet (Diet diet){
+        Map<String, Diet> diets = getDietsOfClient(diet.getIdCliente());
+        if (diets == null){
+            diets = new HashMap<>();
+        }
+        getDietsOfClient(diet.getIdCliente()).clear();
+        diets.put(diet.getName(), diet);
+        this.diets.add(diet.getIdCliente(),diets);
     }
 
-    public void clear() {
-        this.user = null;
-        this.clients = null;
-        this.foods = null;
-        this.diets = null;
+
+    public void removeClient (String name){
+        clients.remove(name);
     }
+
+    public void removeFood (String name){
+        foods.remove(name);
+    }
+
+    public void removeDiet (String name){
+        diets.remove(name);
+    }
+
+    public void removeFoodDiet (String name){
+        foodDiets.remove(name);
+    }
+
+    public void clear(){
+        user = new User();
+        clients.clear();
+        foods.clear();
+        diets.clear();
+        foodDiets.clear();
+    }
+
+    public void setCollectionLoaded(TablesNames type, boolean loaded) {
+        switch (type) {
+            case clientes:
+                clients.setLoaded(loaded);
+                break;
+            case alimentos:
+                foods.setLoaded(loaded);
+                break;
+            case dietas:
+                diets.setLoaded(loaded);
+                break;
+            case comidaDietas:
+                foodDiets.setLoaded(loaded);
+                break;
+        }
+    }
+
+
 }

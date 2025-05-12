@@ -20,6 +20,7 @@ import com.tfg.dietaalplato.firebase.conectors.tools.FireBaseReader;
 import com.tfg.dietaalplato.utilities.BasketAnimation;
 import com.tfg.dietaalplato.firebase.conectors.FireBaseConnector;
 import com.tfg.dietaalplato.firebase.exceptions.FBCException;
+import com.tfg.dietaalplato.utilities.SaveData;
 
 public class LogIn_Activity extends AppCompatActivity {
 
@@ -35,6 +36,7 @@ public class LogIn_Activity extends AppCompatActivity {
     private ImageButton see_passw;
     private ImageButton hide_passw;
     private FireBaseConnector DateBase;
+    private SaveData saveData;
 
     @SuppressLint("StaticFieldLeak")
     @Override
@@ -63,6 +65,9 @@ public class LogIn_Activity extends AppCompatActivity {
         } catch (FBCException e) {
             throw new RuntimeException(e);
         }
+
+        saveData = SaveData.getInstance();
+        saveData.clear();
 
     }
 
@@ -130,6 +135,9 @@ public class LogIn_Activity extends AppCompatActivity {
                                                     String passwDB = usuario.getPsw();  // Accedemos a la contraseña de la BD
 
                                                     if(passwDB.matches(passwRegex)){ // Contraseña correcta
+
+                                                        saveData.setUser(usuario);//Guardamos el usuario que se logea
+
                                                         if (passwd_introducida.equals(passwDB)) {
                                                             if (correo_introducido.equals("admin.admin@educa.madrid.org")){
                                                                 Intent i = new Intent(this, InicioAdminActivity.class);

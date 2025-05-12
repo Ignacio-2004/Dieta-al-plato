@@ -17,12 +17,14 @@ import com.tfg.dietaalplato.firebase.conectors.tools.FireBaseReader;
 import com.tfg.dietaalplato.firebase.tables.Client;
 import com.tfg.dietaalplato.firebase.conectors.FireBaseConnector;
 import com.tfg.dietaalplato.firebase.exceptions.FBCException;
+import com.tfg.dietaalplato.utilities.SaveData;
 
 
 public class PacientesActivity extends AppCompatActivity {
 
 
     private LinearLayout layoutClientes;
+    private SaveData saveData;
 
 
     @Override
@@ -33,9 +35,9 @@ public class PacientesActivity extends AppCompatActivity {
 
         layoutClientes = findViewById(R.id.layoutClientes);
 
-
+        saveData = SaveData.getInstance();
         try {
-            FireBaseReader.readClientFromUser("USU0002").addOnSuccessListener(
+            FireBaseReader.readClientFromUser(saveData.getUser().getId()).addOnSuccessListener(
                   clientes ->{
                       for (Client cliente : clientes.result) {
                           Button boton = new Button(this);

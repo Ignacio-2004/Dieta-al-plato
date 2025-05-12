@@ -20,6 +20,7 @@ import com.tfg.dietaalplato.firebase.utilities.OnResultCallBack;
 import com.tfg.dietaalplato.firebase.utilities.ValidationResult;
 import com.tfg.dietaalplato.firebase.exceptions.FBCException;
 import com.tfg.dietaalplato.firebase.exceptions.ComplexFBCE;
+import com.tfg.dietaalplato.utilities.SaveData;
 
 
 import java.util.HashMap;
@@ -68,9 +69,10 @@ import java.util.List;
     private FirebaseDatabase bd;
     private static FirebaseFirestore fst;
     private static final String TAG = "Firebase";
+    private static SaveData saveData;
 
 
-    public FireBaseConnector() {
+    private FireBaseConnector() {
         bd = FirebaseDatabase.getInstance("https://dieta-al-plato-20-default-rtdb.europe-west1.firebasedatabase.app");
         fst = FirebaseFirestore.getInstance();
         this.ref = bd.getReference();
