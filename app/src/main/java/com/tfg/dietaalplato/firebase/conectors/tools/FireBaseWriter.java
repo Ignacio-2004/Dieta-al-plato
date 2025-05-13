@@ -23,6 +23,7 @@ import com.tfg.dietaalplato.firebase.utilities.ValidationResult;
 import com.tfg.dietaalplato.utilities.SaveData;
 
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -332,7 +333,20 @@ public class FireBaseWriter {
                     break;
                 case "clientes":
                     Log.d(TAG, "💾"+classData.key+" "+classData.data);
-                    save(new Client(id.toUpperCase(), result.data.get("name"), result.data.get("ape"), result.data.get("idUsr").toUpperCase())).addOnSuccessListener(
+
+                    ArrayList<String> alergies = new ArrayList<>();
+                    ArrayList<String> pathologies = new ArrayList<>();
+
+                    for (String allergy : result.data.get("alergias").split(",")) {
+                        alergies.add(allergy);
+                    }
+
+                    for (String pathology : result.data.get("patologias").split(",")) {
+                        pathologies.add(pathology);
+                    }
+
+
+                    save(new Client(id.toUpperCase(), result.data.get("name"), result.data.get("ape"), result.data.get("idUsr").toUpperCase(), alergies, pathologies)).addOnSuccessListener(
                             clientResult -> {
                                 Log.d(TAG, "✅ Cliente guardado con éxito en Firestore");
                                 taskCompletionSource.setResult(new ObjectResult<>(clientResult.exit, clientResult.message, clientResult.result));
@@ -524,9 +538,13 @@ public class FireBaseWriter {
         // Crear un objeto Map con los datos del usuario
         HashMap<Object, Object> client = new HashMap<>();
         client.put("id", cli.getId());
-        client.put("cli", cli.getName());
+        client.put("name", cli.getName());
         client.put("ape", cli.getApe());
         client.put("idUsr", cli.getIdUsr());
+        client.put("alergias", cli.getAlergias());
+        client.put("patologias", cli.getPatologias());
+
+
 
         TaskCompletionSource<ObjectResult<Client>> callback = new TaskCompletionSource<>();
         // Guardar en Firestore en la colección "usuarios"

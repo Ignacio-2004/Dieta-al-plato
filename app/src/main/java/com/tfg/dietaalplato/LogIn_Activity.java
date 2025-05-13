@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -17,6 +18,9 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.google.firebase.database.*;
 import com.tfg.dietaalplato.firebase.conectors.tools.FireBaseReader;
+import com.tfg.dietaalplato.firebase.conectors.tools.FireBaseWriter;
+import com.tfg.dietaalplato.firebase.tables.Client;
+import com.tfg.dietaalplato.firebase.utilities.ValidationResult;
 import com.tfg.dietaalplato.utilities.BasketAnimation;
 import com.tfg.dietaalplato.firebase.conectors.FireBaseConnector;
 import com.tfg.dietaalplato.firebase.exceptions.FBCException;
@@ -84,6 +88,23 @@ public class LogIn_Activity extends AppCompatActivity {
     public void signUp(View view) {
         SignUp_Dialogo dialogo = new SignUp_Dialogo();
         dialogo.show(getSupportFragmentManager(), "dialogoNuevoUsuario");
+    }
+
+    public void onClickTest(View view) {
+        ValidationResult result = new ValidationResult();
+        result.exit = true;
+        result.message = "Datos validos";
+        result.data.put("name", "pepe");
+        result.data.put("ape", "perez");
+        result.data.put("idUsr", "USU0002");
+        result.data.put("alergias", "gluten,lactosa");
+        result.data.put("patologias", "hipertension,diabetes");
+
+        FireBaseWriter.saveData(Client.class, result).addOnSuccessListener(
+                objectResult -> Log.d(TAG, "✅ Datos guardados correctamente")
+        ).addOnFailureListener(
+                e -> Log.e(TAG, "❌ Error al guardar los datos: " + e.getMessage())
+        );
     }
 
 

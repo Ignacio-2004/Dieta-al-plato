@@ -17,14 +17,20 @@ public class Client extends BaseObject {
 
     private String ape;
     private String idUsr;
+    private ArrayList<String> alergias;
+    private ArrayList<String> patologias;
 
     public Client() {
+        alergias = new ArrayList<>();
+        patologias = new ArrayList<>();
     }
 
-    public Client(String id, String name, String ape, String idUsr) {
+    public Client(String id, String name, String ape, String idUsr, ArrayList<String> alergias, ArrayList<String> patologias) {
         super(id, name);
         this.ape = ape;
         this.idUsr = idUsr;
+        this.alergias = alergias;
+        this.patologias = patologias;
     }
 
     public String getApe() {
@@ -43,21 +49,38 @@ public class Client extends BaseObject {
         this.idUsr = idUsr;
     }
 
+    public ArrayList<String> getAlergias() {
+        return alergias;
+    }
+
+    public void setAlergias(ArrayList<String> alergias) {
+        this.alergias = alergias;
+    }
+
+    public ArrayList<String> getPatologias() {
+        return patologias;
+    }
+
+    public void setPatologias(ArrayList<String> patologias) {
+        this.patologias = patologias;
+    }
+
+    @Override
     public String toString() {
         return "Client{" +
-                "id='" + super.getId() + '\'' +
-                ", cli='" + super.getName() + '\'' +
-                ", ape='" + ape + '\'' +
+                "ape='" + ape + '\'' +
                 ", idUsr='" + idUsr + '\'' +
+                ", alergias=" + alergias +
+                ", patologias=" + patologias +
                 '}';
     }
 
-//++IP - 23/04/2025 -
+    //++IP - 23/04/2025 -
 
-    public static ValidationResult toMapData(ArrayList<View> data, String idUsr){
+    public static ValidationResult toMapData(ArrayList<View> data,ArrayList<String> alergias, ArrayList<String> patologias, String idUsr){
         ValidationResult result = new ValidationResult();
 
-        String[] fieldName = {"name", "ape", "idUsr"};
+        String[] fieldName = {"name", "ape","alergias", "patologias", "idUsr"};
 
         try{
             result.data = new HashMap<>();
@@ -80,6 +103,22 @@ public class Client extends BaseObject {
             for (int i = 0; i < keys.size(); i++) {
                 result.data.put(fieldName[i], keys.get(i).toLowerCase());
             }
+            result.data.put(fieldName[0], keys.get(0).toLowerCase());
+            result.data.put(fieldName[1], keys.get(1).toLowerCase());
+
+            String compoundCharacteristic = "";
+
+            for (String allergy : alergias) {
+                compoundCharacteristic = compoundCharacteristic + allergy + ",";
+            }
+            result.data.put(fieldName[2], compoundCharacteristic);
+
+            compoundCharacteristic = "";
+
+            for (String pathology : patologias) {
+                compoundCharacteristic = compoundCharacteristic + pathology + ",";
+            }
+            result.data.put(fieldName[3], compoundCharacteristic);
 
             result.exit = true;
             result.message = "Datos validos";

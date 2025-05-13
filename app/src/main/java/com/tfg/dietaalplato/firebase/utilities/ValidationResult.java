@@ -1,5 +1,6 @@
 package com.tfg.dietaalplato.firebase.utilities;
 
+import java.util.HashMap;
 import java.util.Map;
 
 //++IP - 23/04/2025 -
@@ -28,6 +29,7 @@ public class ValidationResult {
     }
 
     public ValidationResult() {
+        data = new HashMap<>();
     }
 }
 

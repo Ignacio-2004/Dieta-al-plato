@@ -62,7 +62,7 @@ public class ClientCreator_Dialogo extends DialogFragment {
 
                     if (apellido.getText().toString().matches("[a-zA-Z]+")) {
 
-                        ArrayList<View> views = new ArrayList<>();
+                        /*ArrayList<View> views = new ArrayList<>();
                         views.add(nombre);
                         views.add(apellido);
 
@@ -84,7 +84,7 @@ public class ClientCreator_Dialogo extends DialogFragment {
                                     textError.setVisibility(View.VISIBLE); // el textView se puede ver
                                     mostrarTextError();// se oculta el mensaje
                                 }
-                        );
+                        );*/
 
                     }else{
                         textError.setText("  Error: apellido de usuario debe ser alfabético.  ");
