@@ -221,7 +221,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="45dp"
         android:background="@drawable/esquinas_errortext"
         android:gravity="center"
         android:textSize="20sp"

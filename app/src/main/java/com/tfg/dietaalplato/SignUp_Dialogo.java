@@ -29,7 +29,7 @@ public class SignUp_Dialogo extends DialogFragment {
         View view = getActivity().getLayoutInflater().inflate(R.layout.dialog_nuevo_usuario, null);
 
         // se inicia los campos
-        final EditText correo = view.findViewById(R.id.editTextCorreo);
+        final EditText nam_user = view.findViewById(R.id.editTextCorreo);
         final EditText password = view.findViewById(R.id.editTextContraseña);
         final EditText confirmPassword = view.findViewById(R.id.editTextConfirmPassword);
         textError = view.findViewById(R.id.textError);
@@ -40,7 +40,7 @@ public class SignUp_Dialogo extends DialogFragment {
 
         //comprobaciones de correo y paswd
         String passwRegex = "^(?=.*[A-Z])(?=.*\\d)(?=.*[!\\-_#])[A-Za-z\\d!\\-_#]{8,12}$";
-        String emailRegex = "^[a-zA-Z]+(\\.[a-zA-Z]+)?@educa\\.madrid\\.org$";
+        String emailRegex = "^[a-zA-Z]+(\\.[a-zA-Z]+)?@dietetica\\.davinci$";
 
         // boton de confirmar
         Button btnConfirmar = view.findViewById(R.id.buttonConfirmar);
@@ -48,53 +48,27 @@ public class SignUp_Dialogo extends DialogFragment {
 
 
             // guardamos los valores introducidos
-            String correo_introducido = correo.getText().toString().trim().toLowerCase();
+            String nomusuario_introducido = nam_user.getText().toString().trim().toLowerCase();
             String passw_introducida = password.getText().toString().trim();
             String confirmPasswordStr = confirmPassword.getText().toString();
 
-           if(!correo_introducido.isEmpty())
+           if(!nomusuario_introducido.isEmpty())
            {
                if(!passw_introducida.isEmpty())
                {
-                   if (correo_introducido.matches(emailRegex)){
+                   if (nomusuario_introducido.matches(emailRegex)){
                        if (passw_introducida.matches(passwRegex)) {
                            if (passw_introducida.equals(confirmPasswordStr)) {
 
                                // GUARDAMOS AL USUARIO
 
-                               // CREAMOS HASHMAP
-                               //++IP -05/05/2025-
-
                                ArrayList<View> views = new ArrayList<>();
 
-                               views.add(correo);
+                               views.add(nam_user);
                                views.add(password);
 
                                ValidationResult userData = User.toMapData(views);
-
-                               //--IP -05/05/2025-
-
-                               /* Alex 05/05/2025
-                               HashMap<String, String> userData = new HashMap<>();
-                               userData.put("name", correo_introducido);
-                               userData.put("psw", passw_introducida);
-                                */
-
-                               //try {
-                                   // inicializamos la conexión con Firebase
                                    DateBase = FireBaseConnector.getInstance();
-
-/*                                 Esto lo comento (Ignacio) para no consuimir datos de la tablet y que valla mas fluido
-                                   DateBase.testFirebaseConnection();
-                                   DateBase.monitorConnectionStatus();*/
-
-                                   /* Alex 05/05/2025
-                                   // llamamos al metodo saveData pero sin forzar a sobreescribir ya que ya comprobamos que no haya un usuario con ese correo
-                                   ValidationResult result = new ValidationResult();
-                                   result.exit = true; // Datos validados
-                                   result.message = correo_introducido;
-                                   result.data = userData;
-                                    */
 
 
                                    // guardamos los datos en la base de datos
@@ -136,7 +110,7 @@ public class SignUp_Dialogo extends DialogFragment {
 
                    }
                    else {
-                       textError.setText("  Error: correo de usuario debe tener la estructura [nombre.apellidos@educa.madrid.org].  ");
+                       textError.setText("  Error: nombre de usuario debe tener la estructura [nombre.apellidos@dietetica.davinci].  ");
                        textError.setVisibility(View.VISIBLE); // el textView se puede ver
                        mostrarTextError();// se oculta el mensaje
                    }
@@ -150,7 +124,7 @@ public class SignUp_Dialogo extends DialogFragment {
 
            }
            else{
-               textError.setText("  Error: correo de usuario vacío.  ");
+               textError.setText("  Error: nombre de usuario vacío.  ");
                 textError.setVisibility(View.VISIBLE); // el textView se puede ver
                 mostrarTextError();// se oculta el mensaje
         }
