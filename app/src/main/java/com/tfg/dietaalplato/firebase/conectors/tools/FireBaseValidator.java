@@ -119,7 +119,10 @@ public class FireBaseValidator {
                             }
 
                             taskCompletionSource.setResult(new ValidationResult(true, String.valueOf(clientes.result.size()), result.data));
-                            return;
+                        }
+                ).addOnFailureListener(
+                        e -> {
+                            taskCompletionSource.setException(new ComplexFBCE(new ObjectResult<>(false, e.getMessage(), result.data)));
                         }
                 );
                 break;
@@ -138,8 +141,11 @@ public class FireBaseValidator {
                                 }
 
                                 taskCompletionSource.setResult(new ValidationResult(true, String.valueOf(foodsCollection.size()), result.data));
-                                return;
                             }
+                        }
+                ).addOnFailureListener(
+                        e -> {
+                            taskCompletionSource.setException(new ComplexFBCE(new ObjectResult<>(false, e.getMessage(), result.data)));
                         }
                 );
             case "dietas":
@@ -159,7 +165,10 @@ public class FireBaseValidator {
                             }
 
                             taskCompletionSource.setResult(new ValidationResult(true, String.valueOf(dietas.result.size()), result.data));
-                            return;
+                        }
+                ).addOnFailureListener(
+                        e -> {
+                            taskCompletionSource.setException(new ComplexFBCE(new ObjectResult<>(false, e.getMessage(), result.data)));
                         }
                 );
             default:

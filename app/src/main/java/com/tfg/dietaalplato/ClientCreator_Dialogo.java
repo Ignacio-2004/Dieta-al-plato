@@ -41,12 +41,15 @@ public class ClientCreator_Dialogo extends DialogFragment {
                 .setCancelable(true);
 
         Button btnCancelar = view.findViewById(R.id.buttonCancelar);
-        btnCancelar.setOnClickListener(v -> dismiss());
+        btnCancelar.setOnClickListener(v -> onCancelClick(view));
+
+        Button btnConfirm = view.findViewById(R.id.buttonConfirmar);
+        btnConfirm.setOnClickListener(v -> onConfirmationClick(view));
 
         return builder.create();
     }
 
-    public void onConfirmationClick(View view){
+    private void onConfirmationClick(View view){
         // guardamos los valores introducidos
         String nombre_introducido = nombre.getText().toString().trim();
         String apellido_introducido = apellido.getText().toString().trim();
@@ -73,6 +76,7 @@ public class ClientCreator_Dialogo extends DialogFragment {
                                     textError.setText("  Cliente creado correctamente.  ");
                                     textError.setVisibility(View.VISIBLE); // el textView se puede ver
                                     mostrarTextError();// se oculta el mensaje
+                                    dismiss();
                                 }
                         ).addOnFailureListener(
                                 e -> {
@@ -106,7 +110,11 @@ public class ClientCreator_Dialogo extends DialogFragment {
         }
     }
 
-    public void mostrarTextError() {
+    private void onCancelClick(View view){
+        dismiss();
+    }
+
+    private void mostrarTextError() {
         textError.postDelayed(() -> textError.setVisibility(View.GONE), 2000);
     }
 }

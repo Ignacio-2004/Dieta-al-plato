@@ -372,56 +372,94 @@ public class FireBaseReader {
         SaveData saveData = SaveData.getInstance();
         TaskCompletionSource<ObjectResult<ArrayList<Client>>> taskCompletionSource = new TaskCompletionSource<>();
 
-        if (saveData.getClients().isLoaded()){
+        if ((saveData.getClients().isLoaded()&&!saveData.getClients().isEmpty())&&saveData.getClients().getAllAsArrayList().get(0).getIdUsr().equals(idUsr)){
             Log.d(TAG, "📖 Clientes encontrados en cache");
+
+            ArrayList<Client> clientes = saveData.getClients().getAllAsArrayList();
+            if (!clientes.isEmpty()) {
+                Log.d(TAG, "✅ Resultado exitoso antes del return:");
+                Log.d(TAG, "| → Estado (exit): true");
+                Log.d(TAG, "| → Mensaje: Clientes cargados");
+                Log.d(TAG, "| → Número total de clientes: " + clientes.size());
+
+                for (int i = 0; i < clientes.size(); i++) {
+                    Client c = clientes.get(i);
+                    Log.d(TAG, "|    Cliente[" + i + "]: { id: " + c.getId() + ", nombre: " + c.getName() + ", idUsr: " + c.getIdUsr() + " }");
+                }
+
+                taskCompletionSource.setResult(new ObjectResult<>(true, "Clientes cargados", clientes));
+                return taskCompletionSource.getTask();
+            } else {
+                Log.d(TAG, "🟡 Resultado vacío antes del return:");
+                Log.d(TAG, "| → Estado (exit): false");
+                Log.d(TAG, "| → Mensaje: No hay clientes disponibles");
+                Log.d(TAG, "| → Número total de clientes: 0");
+            }
+
             taskCompletionSource.setResult(new ObjectResult<>(true, "success", saveData.getClients().getAllAsArrayList()));
-            return taskCompletionSource.getTask();
-        };
+        }else{
+            fst.collection("clientes")
+                    .whereEqualTo("idUsr", idUsr)
+                    .get()
+                    .addOnSuccessListener(queryDocumentSnapshots -> {
+                        if (!queryDocumentSnapshots.isEmpty()) {
 
-        fst.collection("clientes")
-                .whereEqualTo("idUsr", idUsr)
-                .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    if (!queryDocumentSnapshots.isEmpty()) {
-
-                        CacheCollection<Client> clientsCache = new CacheCollection<>();
-                        ArrayList<Client> clients = new ArrayList<>();
+                            CacheCollection<Client> clientsCache = new CacheCollection<>();
+                            ArrayList<Client> clients = new ArrayList<>();
 
 
-                        for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments()) {
-                            Client client = document.toObject(Client.class);
-                            if (client != null) {
-                                Log.d("Firebase", "📖 Cliente encontrado: " + client.getName());
-                                clients.add(client);
-                                clientsCache.add(client.getName()+" "+client.getApe(), client);
+                            for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments()) {
+                                Client client = document.toObject(Client.class);
+                                if (client != null) {
+                                    Log.d("Firebase", "📖 Cliente encontrado: " + client.getName());
+                                    clients.add(client);
+                                    clientsCache.add(client.getName()+" "+client.getApe(), client);
+                                }else{
+                                    Log.d("Firebase", "⚠️ Documento encontrado pero no se pudo convertir a Cliente");
+                                }
+                            }
+
+                            if (!clients.isEmpty()){
+                                clientsCache.setLoaded(true);
+                                saveData.setCollectionClient(clientsCache);
+
+                                if ((saveData.getClients()!= null && !saveData.getClients().isEmpty()) && saveData.getClients().isLoaded()){
+                                    Log.d(TAG, "📖 Clientes guardados en cache");
+                                }
+
+                                taskCompletionSource.setResult(new ObjectResult<>(true, "success", clients));
                             }else{
-                                Log.d("Firebase", "⚠️ Documento encontrado pero no se pudo convertir a Cliente");
-                            }
-                        }
-
-                        if (!clients.isEmpty()){
-                            clientsCache.setLoaded(true);
-                            saveData.setCollectionClient(clientsCache);
-
-                            if ((saveData.getClients()!= null && !saveData.getClients().isEmpty()) && saveData.getClients().isLoaded()){
-                                Log.d(TAG, "📖 Clientes guardados en cache");
+                                taskCompletionSource.setResult(new ObjectResult<>(false, "No se encontraron clientes", null));
                             }
 
-                            taskCompletionSource.setResult(new ObjectResult<>(true, "success", clients));
-                        }else{
-                            taskCompletionSource.setResult(new ObjectResult<>(false, "No se encontraron clientes", null));
+                            if (!clients.isEmpty()) {
+                                Log.d(TAG, "✅ Resultado exitoso antes del return:");
+                                Log.d(TAG, "| → Estado (exit): true");
+                                Log.d(TAG, "| → Mensaje: Clientes cargados");
+                                Log.d(TAG, "| → Número total de clientes: " + clients.size());
+
+                                for (int i = 0; i < clients.size(); i++) {
+                                    Client c = clients.get(i);
+                                    Log.d(TAG, "|    Cliente[" + i + "]: { id: " + c.getId() + ", nombre: " + c.getName() + ", idUsr: " + c.getIdUsr() + " }");
+                                }
+
+                            } else {
+                                Log.d(TAG, "🟡 Resultado vacío antes del return:");
+                                Log.d(TAG, "| → Estado (exit): false");
+                                Log.d(TAG, "| → Mensaje: No hay clientes disponibles");
+                                Log.d(TAG, "| → Número total de clientes: 0");
+                            }
+
+                        } else {
+                            Log.d("Firebase", "⚠️ No se encontró ningún cliente que pertenezca al usuario: "+idUsr);
+                            taskCompletionSource.setException(new ComplexFBCE( new ObjectResult<>(false, "Cliente no encontrado", null)));
                         }
-
-
-                    } else {
-                        Log.d("Firebase", "⚠️ No se encontró ningún cliente que pertenezca al usuario: "+idUsr);
-                        taskCompletionSource.setException(new ComplexFBCE( new ObjectResult<>(false, "Cliente no encontrado", null)));
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    Log.e("Firebase", "❌ Error al buscar el cliente: " + e.getMessage());
-                    taskCompletionSource.setException(new ComplexFBCE( new ObjectResult<>(false, "Error al buscar el cliente: " + e.getMessage(), null)));
-                });
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.e("Firebase", "❌ Error al buscar el cliente: " + e.getMessage());
+                        taskCompletionSource.setException(new ComplexFBCE( new ObjectResult<>(false, "Error al buscar el cliente: " + e.getMessage(), null)));
+                    });
+        }
         return taskCompletionSource.getTask();
     }
 

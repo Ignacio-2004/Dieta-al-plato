@@ -24,6 +24,7 @@ import com.tfg.dietaalplato.utilities.SaveData;
 
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -41,7 +42,6 @@ public class FireBaseWriter {
     public static <T> Task<ObjectResult<BaseObject>> saveData(Class<T> classType, ValidationResult result) {
 
         ClassData classData;
-        final String TAG = "SaveData";
         AtomicReference<Integer> rawId = new AtomicReference<>(-1);
         TaskCompletionSource<ObjectResult<BaseObject>> finalresoult = new TaskCompletionSource<>();
 
@@ -65,9 +65,11 @@ public class FireBaseWriter {
                     repeatObject(result, classData.data).addOnSuccessListener(
                             validationResult -> {
                                 if (!validationResult.exit) {
+                                    Log.w(TAG, "Usuario existente, operacion sin permisos de sobreescritura");
                                     result.exit = false;
                                     result.message = validationResult.message;
                                 }else{
+                                    Log.d(TAG, "Usuario no existente, inicio del guardado.");
                                     save(result,classData, validationResult.message,"-1").addOnSuccessListener(
                                             saveResult ->{
                                                 finalresoult.setResult(saveResult);
@@ -91,10 +93,12 @@ public class FireBaseWriter {
                     repeatObject(result, classData.data, result.data.get("idCliente")).addOnSuccessListener(
                             validationResult -> {
                                 if (!validationResult.exit) {
+                                    Log.w(TAG, "Dieta existente, operacion sin permisos de sobreescritura");
                                     result.exit = false;
                                     result.message = validationResult.message;
                                 }else{
-                                    save(result,classData, result.message,result.data.get("idCliente")).addOnSuccessListener(
+                                    Log.d(TAG, "Dieta no existente, inicio del guardado.");
+                                    save(result,classData, validationResult.message,result.data.get("idCliente")).addOnSuccessListener(
                                             saveResult ->{
                                                 finalresoult.setResult(saveResult);
                                             }
@@ -107,6 +111,7 @@ public class FireBaseWriter {
                             }
                     ).addOnFailureListener(
                             e -> {
+                                Log.d(TAG, e.getMessage());
                                 result.exit = false;
                                 result.message = e.getMessage();
                             }
@@ -114,13 +119,15 @@ public class FireBaseWriter {
                     break;
                 case "ALI":
                 case "CLI":
-                    repeatObject(result, classData.data, result.data.get("idUsr")).addOnSuccessListener(
+                    repeatObject(result, classData.data, result.data.get("idUsr").toUpperCase()).addOnSuccessListener(
                             validationResult -> {
                                 if (!validationResult.exit) {
+                                    Log.w(TAG, classData.data+" existente, operacion sin permisos de sobreescritura");
                                     result.exit = false;
                                     result.message = validationResult.message;
                                 }else{
-                                    save(result,classData, result.message,result.data.get("idUsr")).addOnSuccessListener(
+                                    Log.d(TAG, classData.data+" no existente, inicio del guardado.");
+                                    save(result,classData, validationResult.message,result.data.get("idUsr")).addOnSuccessListener(
                                             saveResult ->{
                                                 finalresoult.setResult(saveResult);
                                             }
@@ -133,6 +140,7 @@ public class FireBaseWriter {
                             }
                     ).addOnFailureListener(
                             e -> {
+                                Log.d(TAG, e.getMessage());
                                 result.exit = false;
                                 result.message = e.getMessage();
                             }
@@ -141,11 +149,13 @@ public class FireBaseWriter {
                 case "FDI":
                     repeatObject(result, classData.data, result.data.get("idDieta"), result.data.get("idAlimento")).addOnSuccessListener(
                             validationResult -> {
+                                Log.d(TAG, "FoodDiet no existente, inicio del guardado.");
                                 if (!validationResult.exit) {
                                     result.exit = false;
                                     result.message = validationResult.message;
                                 } else {
-                                    save(result,classData, result.message,result.data.get("idDieta")).addOnSuccessListener(
+                                    Log.d(TAG, "FoodDiet existente, operacion sin permisos de sobreescritura");
+                                    save(result,classData, validationResult.message,result.data.get("idDieta")).addOnSuccessListener(
                                             saveResult ->{
                                                 finalresoult.setResult(saveResult);
                                             }
@@ -158,6 +168,7 @@ public class FireBaseWriter {
                             }
                     ).addOnFailureListener(
                             e -> {
+                                Log.d(TAG, e.getMessage());
                                 result.exit = false;
                                 result.message = e.getMessage();
                             }
@@ -298,17 +309,21 @@ public class FireBaseWriter {
                 taskCompletionSource.setResult(new ObjectResult<>(false, result.message, null));
                 return taskCompletionSource.getTask();
             }
-
-            id = ClassUtilities.generateId(classData, Integer.parseInt(rawId), Integer.parseInt(idExt));
+            Log.d(TAG, "💾 Metodo save, listo para guardar");
+            id = ClassUtilities.generateId(classData, Integer.parseInt(rawId), idExt);
+            Log.d(TAG, "💾 ID generado: " + id);
 
             switch (classData.data) {
                 case "usuarios":
+                    Log.d(TAG, "💾"+classData.key+" "+classData.data);
                     save(new User(id, result.data.get("name"), result.data.get("psw"))).addOnSuccessListener(
                             userResult -> {
+                                Log.d(TAG, "✅ Usuario guardado con éxito en Firestore");
                                 taskCompletionSource.setResult(new ObjectResult<>(userResult.exit, userResult.message, userResult.result));
                             }
                     ).addOnFailureListener(
                             e -> {
+                                Log.d(TAG, e.getMessage());
                                 taskCompletionSource.setException(new ComplexFBCE(new ObjectResult<>(false, e.getMessage(), result)));
 
                             }
@@ -316,54 +331,70 @@ public class FireBaseWriter {
 
                     break;
                 case "clientes":
-                    save(new Client(id, result.data.get("name"), result.data.get("ape"), result.data.get("idUsr"))).addOnSuccessListener(
+                    Log.d(TAG, "💾"+classData.key+" "+classData.data);
+                    save(new Client(id.toUpperCase(), result.data.get("name"), result.data.get("ape"), result.data.get("idUsr").toUpperCase())).addOnSuccessListener(
                             clientResult -> {
+                                Log.d(TAG, "✅ Cliente guardado con éxito en Firestore");
                                 taskCompletionSource.setResult(new ObjectResult<>(clientResult.exit, clientResult.message, clientResult.result));
+                                Log.d(TAG,"✅ Cliente guardado con éxito en Local");
                                 saveData.addClient(clientResult.result);
                             }
                     ).addOnFailureListener(
                             e -> {
+                                Log.d(TAG, e.getMessage());
                                 taskCompletionSource.setException(new ComplexFBCE(new ObjectResult<>(false, e.getMessage(), result)));
                             }
                     );
                     break;
                 case "dietas":
-                    save(new Diet(id, result.data.get("tip"), result.data.get("idClient"), result.data.get("just"), result.data.get("idUsr"))).addOnSuccessListener(
+                    Log.d(TAG, "💾"+classData.key+" "+classData.data);
+                    save(new Diet(id.toUpperCase(), result.data.get("tip"), result.data.get("idClient").toUpperCase(), result.data.get("just"), result.data.get("idUsr").toUpperCase())).addOnSuccessListener(
                             dietResult -> {
+                                Log.d(TAG, "✅ Dieta guardado con éxito en Firestore");
                                 taskCompletionSource.setResult(new ObjectResult<>(dietResult.exit, dietResult.message, dietResult.result));
+                                Log.d(TAG,"✅ Dieta guardado con éxito en Local");
                                 saveData.addDiet(dietResult.result);
                             }
                     ).addOnFailureListener(
                             e -> {
+                                Log.d(TAG, e.getMessage());
                                 taskCompletionSource.setException(new ComplexFBCE(new ObjectResult<>(false, e.getMessage(), result)));
                             }
                     );
                     break;
                 case "alimentos":
-                    save(new Food(id, result.data.get("name"), result.data.get("idUsr"), result.data.get("pc"), result.data.get("energia"),
+                    Log.d(TAG, "💾"+classData.key+" "+classData.data);
+                    save(new Food(id.toUpperCase(), result.data.get("name"), result.data.get("idUsr").toUpperCase(), result.data.get("pc"), result.data.get("energia"),
                             result.data.get("proteina"), result.data.get("grasa"), result.data.get("ags"), result.data.get("agmi"),
                             result.data.get("agpi"), result.data.get("colesterol"), result.data.get("hc"), result.data.get("fibra"), result.data.get("vitC"),
                             result.data.get("vitB6"), result.data.get("vitE"), result.data.get("hierro"), result.data.get("sodio"), result.data.get("calcio"),
                             result.data.get("potasio"))).addOnSuccessListener(
                             foodResult -> {
+                                Log.d(TAG, "✅ Alimento guardado con éxito en Firestore");
                                 taskCompletionSource.setResult(new ObjectResult<>(foodResult.exit, foodResult.message, foodResult.result));
+                                Log.d(TAG,"✅ Alimento guardado con éxito en Local");
                                 saveData.addFood(foodResult.result);
                             }
                     ).addOnFailureListener(
                             e -> {
+                                Log.d(TAG, e.getMessage());
                                 taskCompletionSource.setException(new ComplexFBCE(new ObjectResult<>(false, e.getMessage(), result)));
                             }
                     );
                     break;
                 case "dietaAlimentos":
-                    save(new FoodDiet(id, result.data.get("idDieta"), result.data.get("idAlimento"), result.data.get("comida"),
+                    Log.d(TAG, "💾"+classData.key+" "+classData.data);
+                    save(new FoodDiet(id.toUpperCase(), result.data.get("idDieta").toUpperCase(), result.data.get("idAlimento").toUpperCase(), result.data.get("comida"),
                             result.data.get("numeroPlato"), result.data.get("dia"), result.data.get("nombreReceta"), result.data.get("idUsr"))).addOnSuccessListener(
                             foodDietResult -> {
+                                Log.d(TAG, "✅ FoodDiet guardado con éxito en Firestore");
                                 taskCompletionSource.setResult(new ObjectResult<>(foodDietResult.exit, foodDietResult.message, foodDietResult.result));
+                                Log.d(TAG,"✅ FoodDiet guardado con éxito en Local");
                                 saveData.addFoodDiet(foodDietResult.result);
                             }
                     ).addOnFailureListener(
                             e -> {
+                                Log.d(TAG, e.getMessage());
                                 taskCompletionSource.setException(new ComplexFBCE(new ObjectResult<>(false, e.getMessage(), result)));
                             }
                     );
@@ -402,11 +433,11 @@ public class FireBaseWriter {
         fst.collection("dietaAlimentos").document(dietFood.getIdDieta() + "_" + dietFood.getIdAlimento())
                 .set(foodData)
                 .addOnSuccessListener(aVoid -> {
-                    Log.d("Firebase", "✅ DietFood guardado con éxito en Firestore");
+                    Log.d(TAG, "✅ DietFood guardado con éxito en Firestore");
                     callback.setResult(new ObjectResult<>(true, "success", dietFood));
                 })
                 .addOnFailureListener(e -> {
-                    Log.e("Firebase", "❌ Error al guardar DietFood: " + e.getMessage());
+                    Log.e(TAG, "❌ Error al guardar DietFood: " + e.getMessage());
                     callback.setException(new ComplexFBCE(new ObjectResult<>(false, "Error al guardar DietFood: " + e.getMessage(), null)));
                 });
         return callback.getTask();
@@ -446,11 +477,11 @@ public class FireBaseWriter {
         fst.collection("alimentos").document(alimento.getId())
                 .set(food)
                 .addOnSuccessListener(aVoid -> {
-                    Log.d("Firebase", "✅ Alimento guardado con éxito en Firestore");
+                    Log.d(TAG, "✅ Alimento guardado con éxito en Firestore");
                     callback.setResult(new ObjectResult<>(true, "success", alimento));
                 })
                 .addOnFailureListener(e -> {
-                    Log.e("Firebase", "❌ Error al guardar Alimento: " + e.getMessage());
+                    Log.e(TAG, "❌ Error al guardar Alimento: " + e.getMessage());
                     callback.setException(new ComplexFBCE(new ObjectResult<>(false, "Error al guardar Alimento: " + e.getMessage(), null)));
                 });
         return callback.getTask();
@@ -474,11 +505,11 @@ public class FireBaseWriter {
         fst.collection("dietas").document(diet.getId())
                 .set(client)
                 .addOnSuccessListener(aVoid -> {
-                    Log.d("Firebase", "✅ Dieta guardado con éxito en Firestore");
+                    Log.d(TAG, "✅ Dieta guardado con éxito en Firestore");
                     callback.setResult(new ObjectResult<>(true, "success", diet));
                 })
                 .addOnFailureListener(e -> {
-                    Log.e("Firebase", "❌ Error al guardar Dieta: " + e.getMessage());
+                    Log.e(TAG, "❌ Error al guardar Dieta: " + e.getMessage());
                     callback.setException(new ComplexFBCE(new ObjectResult<>(false, "Error al guardar Dieta: " + e.getMessage(), null)));
                 });
         return callback.getTask();
@@ -502,11 +533,11 @@ public class FireBaseWriter {
         fst.collection("clientes").document(cli.getId())
                 .set(client)
                 .addOnSuccessListener(aVoid -> {
-                    Log.d("Firebase", "✅ Cliente guardado con éxito en Firestore");
+                    Log.d(TAG, "✅ Cliente guardado con éxito en Firestore");
                     callback.setResult(new ObjectResult<>(true, "success", cli));
                 })
                 .addOnFailureListener(e -> {
-                    Log.e("Firebase", "❌ Error al guardar Cliente: " + e.getMessage());
+                    Log.e(TAG, "❌ Error al guardar Cliente: " + e.getMessage());
                     callback.setException(new ComplexFBCE(new ObjectResult<>(false, "Error al guardar Cliente: " + e.getMessage(), null)));
                 });
         return callback.getTask();
@@ -529,11 +560,11 @@ public class FireBaseWriter {
         fst.collection("usuarios").document(user.getId())
                 .set(usuario)
                 .addOnSuccessListener(aVoid -> {
-                    Log.d("Firebase", "✅ Usuario guardado con éxito en Firestore");
+                    Log.d(TAG, "✅ Usuario guardado con éxito en Firestore");
                     callback.setResult(new ObjectResult<>(true, "success", user));
                 })
                 .addOnFailureListener(e -> {
-                    Log.e("Firebase", "❌ Error al guardar usuario: " + e.getMessage());
+                    Log.e(TAG, "❌ Error al guardar usuario: " + e.getMessage());
                     callback.setException(new ComplexFBCE(new ObjectResult<>(false, "Error al guardar usuario: " + e.getMessage(), user)));
                 });
         return callback.getTask();

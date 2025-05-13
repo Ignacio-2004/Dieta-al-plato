@@ -1,5 +1,7 @@
 package com.tfg.dietaalplato.firebase.utilities;
 
+import android.util.Log;
+
 import com.tfg.dietaalplato.firebase.tables.Client;
 import com.tfg.dietaalplato.firebase.tables.Diet;
 import com.tfg.dietaalplato.firebase.tables.Food;
@@ -21,34 +23,19 @@ public class  ClassUtilities {
         return data;
     }
 
-    public static String generateId(ClassData classData, int amount){
-
-       String id = String.valueOf(amount+1);
-
-        while (id.length()<4){
-            id = "0" + id;
-        }
-
-        return classData.key+id;
-
-    }
-
-    public static String generateId(ClassData classData, int amount, int idNumExt){
-
+    public static String generateId(ClassData classData, int amount, String idNumExt){
+        Log.d("FireBase", "generateId: "+amount);
         String id = String.valueOf(amount+1);
-        String idExt = String.valueOf(idNumExt);
 
         while (id.length()<4){
             id = "0" + id;
         }
 
-        if (idNumExt!=-1){
-            while (idExt.length()<4){
-                idExt = "0" + idExt;
-            }
-
-            return classData.key+idNumExt+id;
+        if (Integer.parseInt(idNumExt.substring(idNumExt.length()-4))!=-1){
+            Log.d("FireBase", "generateId: "+classData.key+idNumExt.substring(idNumExt.length()-4)+id);
+            return classData.key+idNumExt.substring(idNumExt.length()-4)+id;
         }else{
+            Log.d("FireBase", "generateId: "+classData.key+id);
             return classData.key+id;
         }
 

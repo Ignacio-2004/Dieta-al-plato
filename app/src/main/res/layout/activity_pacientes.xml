@@ -32,6 +32,14 @@
             android:layout_weight="1" />
 
         <ImageView
+            android:id="@+id/imageView3"
+            android:layout_width="98dp"
+            android:layout_height="94dp"
+            android:layout_marginTop="24dp"
+            android:onClick="onRestartClick"
+            app:srcCompat="@android:drawable/ic_menu_rotate" />
+
+        <ImageView
             android:id="@+id/imageView"
             android:layout_width="104dp"
             android:layout_height="93dp"

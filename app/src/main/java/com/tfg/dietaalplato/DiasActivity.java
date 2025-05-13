@@ -29,7 +29,7 @@ public class DiasActivity extends AppCompatActivity {
 
         int dietaSeleccionada = getIntent().getIntExtra("dietaSeleccionada", 1);
 
-        // Obtener los botones de los días
+        /*// Obtener los botones de los días
         Button[] botonesDias = new Button[7];
         botonesDias[0] = findViewById(R.id.botonDia1);
         botonesDias[1] = findViewById(R.id.botonDia2);
@@ -44,7 +44,7 @@ public class DiasActivity extends AppCompatActivity {
             botonesDias[i].setVisibility(View.VISIBLE);
             final int dia = i + 1;  // El índice es 0-based, por eso sumamos 1
             botonesDias[i].setOnClickListener(v -> abrirComidasActivity(dia, dietaSeleccionada));
-        }
+        }*/
 
     }
 

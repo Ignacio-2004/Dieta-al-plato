@@ -74,4 +74,9 @@ public class PacientesActivity extends AppCompatActivity {
         ClientCreator_Dialogo dialogo = new ClientCreator_Dialogo();
         dialogo.show(getSupportFragmentManager(), "dialogoNuevoCliente");
     }
+
+    public void onRestartClick(View view) {
+        super.onRestart();
+        recreate();
+    }
 }
