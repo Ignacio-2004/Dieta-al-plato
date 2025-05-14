@@ -35,7 +35,7 @@ public class LogIn_Activity extends AppCompatActivity {
 
 
     //variables para gestionar los gmails y sus password
-    private EditText correo;
+    private EditText nam_user;
     private EditText passw;
     private TextView text_error;
     private TextView text_passw;
@@ -129,7 +129,7 @@ public class LogIn_Activity extends AppCompatActivity {
 
 
     /* metodo para que el usuario se logue
-        1 - se comprueba que el correo sea el adecuado
+        1 - se comprueba que el nombre del usuario sea el adecuado
      */
     public void login(View view) throws FBCException {
 
@@ -137,9 +137,9 @@ public class LogIn_Activity extends AppCompatActivity {
 
         text_error = findViewById(R.id.text_error);// guaardamos en la variable la referencia dele textView para los errores
 
-        correo = findViewById(R.id.text_usuario); //almacenamos lo que ha introducio el usario
-        String correo_introducido = correo.getText().toString().trim().toLowerCase(); // lo ponemos en tipo String
-        String emailRegex = "^[a-zA-Z]+(\\.[a-zA-Z]+)?@educa\\.madrid\\.org$";
+        nam_user = findViewById(R.id.text_usuario); //almacenamos lo que ha introducio el usario
+        String nomusuario_introducido = nam_user.getText().toString().trim().toLowerCase(); // lo ponemos en tipo String
+        String emailRegex = "^[a-zA-Z]+(\\.[a-zA-Z]+)?@dietetica\\.davinci$";
 
         passw = findViewById(R.id.Password); // almacenamos lo que ha introducido el usuario
         String passwd_introducida = passw.getText().toString().trim(); // lo ponemos en tipo String
@@ -158,23 +158,23 @@ public class LogIn_Activity extends AppCompatActivity {
         String passwRegex = "^(?=.*[A-Z])(?=.*\\d)(?=.*[!\\-_#])[A-Za-z\\d!\\-_#]{8,12}$";
 
 
-        // COMPROBAMOS CORREo
-        if (!correo_introducido.isEmpty()) // ha puesto el usuario
+        // COMPROBAMOS NOMBRE USUARIO
+        if (!nomusuario_introducido.isEmpty()) // ha puesto el usuario
         {
-            //COMPROBAMOS QUE SEA UN CORREO CORRECTO
-            //nombre.apellidos@educa.madrid.org
+            //COMPROBAMOS QUE SEA UN NOMBRE USUARIO CORRECTO
+            //nombre.apellidos@dietetica.davinci
 
-            if (correo_introducido.matches(emailRegex)) // es correcto
+            if (nomusuario_introducido.matches(emailRegex)) // es correcto
             {
                 // VERIFICAMOS SI EL USUARIO EXISTE EN FIREBASE
-                DateBase.verifyUser(correo_introducido)
+                DateBase.verifyUser(nomusuario_introducido)
                         .addOnSuccessListener(isUserExists -> {
                             if (isUserExists) {// El usuario existe ✅
 
                                 // COMPROBAMOS PASSWORD
                                 if (!passwd_introducida.isEmpty()) {
                                     try {
-                                        FireBaseReader.readUserByEmail(correo_introducido)
+                                        FireBaseReader.readUserByEmail(nomusuario_introducido)
                                                 .addOnSuccessListener(usuario -> {
                                                     String passwDB = usuario.getPsw();  // Accedemos a la contraseña de la BD
 
@@ -183,7 +183,7 @@ public class LogIn_Activity extends AppCompatActivity {
                                                         saveData.setUser(usuario);//Guardamos el usuario que se logea
 
                                                         if (passwd_introducida.equals(passwDB)) {
-                                                            if (correo_introducido.equals("admin.admin@educa.madrid.org")){
+                                                            if (nomusuario_introducido.equals("admin.admin@dietetica.davinci")){
                                                                 Intent i = new Intent(this, InicioAdminActivity.class);
                                                                 Blocker.removeBlocker(this);
                                                                 startActivity(i);
@@ -228,7 +228,7 @@ public class LogIn_Activity extends AppCompatActivity {
                                 }
 
                             } else { // No existe el usuario ❌
-                                text_error.setText("  Error: correo no resgistrado ");
+                                text_error.setText("  Error: nombre usuario no resgistrado ");
                                 text_error.setVisibility(View.VISIBLE); // el textView se puede ver
                                 mostrarTextError();// se oculta el mensaje
                             }
@@ -241,14 +241,14 @@ public class LogIn_Activity extends AppCompatActivity {
                         });
 
             } else {
-                text_error.setText("  Error: correo de usuario debe tener la estructura [nombre.apellidos@educa.madrid.org].  ");
+                text_error.setText("  Error: nombre de usuario debe tener la estructura [nombre.apellidos@dietetica.davinci].  ");
                 text_error.setVisibility(View.VISIBLE); // el textView se puede ver
                 mostrarTextError();// se oculta el mensaje
             }
 
         } else // no ha puesto el gmail
         {
-            text_error.setText("  Error: correo de usuario vacío.  ");
+            text_error.setText("  Error: bnombre de usuario vacío.  ");
             text_error.setVisibility(View.VISIBLE); // el textView se puede ver
             mostrarTextError();// se oculta el mensaje
         }
