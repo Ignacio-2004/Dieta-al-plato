@@ -141,10 +141,11 @@ public class FireBaseReader {
             return taskCompletionSource.getTask();
         };
 
-        fst.collection(String.valueOf(TablesNames.alimentos))
-                .whereEqualTo("idUser", idUser)
+        fst.collection("alimentos")
+                .whereEqualTo("idUsr", idUser)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
+                    Log.d(TAG, "📖 Comidas encontradas");
                     if (!queryDocumentSnapshots.isEmpty()) {
                         Map<String,Food> foods = new HashMap<>();
                         CacheCollection<Food> foodsCache = new CacheCollection<>();
@@ -176,7 +177,7 @@ public class FireBaseReader {
 
                     } else {
                         Log.d("Firebase", "⚠️ No se encontró ningúna comida que pertenezca al usuario: " +idUser);
-                        taskCompletionSource.setException(new ComplexFBCE(new ObjectResult<>(false, "Comida no encontrada", null)));
+                        taskCompletionSource.setResult(new ObjectResult<>(false, "No se encontraron comidas", null));
                     }
                 })
                 .addOnFailureListener(e -> {

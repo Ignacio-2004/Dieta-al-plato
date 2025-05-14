@@ -106,7 +106,7 @@ public class FireBaseValidator {
                 readClientFromUser(idExt).addOnSuccessListener(
                         clientes -> {
                             if (!clientes.exit) {
-                                taskCompletionSource.setResult(new ValidationResult(false, clientes.message, result.data));
+                                taskCompletionSource.setResult(new ValidationResult(true, String.valueOf(0), result.data));
                                 return;
                             }
 
@@ -129,7 +129,7 @@ public class FireBaseValidator {
             case "alimentos":
                 readAllFoodFromUser(idExt).addOnSuccessListener(
                         foods ->{
-                            if (!foods.exit) {
+                            if (foods.exit) {
                                 Map<String, Food> foodsCollection = foods.result;
 
                                 for (Food food : foodsCollection.values()) {
@@ -142,16 +142,21 @@ public class FireBaseValidator {
 
                                 taskCompletionSource.setResult(new ValidationResult(true, String.valueOf(foodsCollection.size()), result.data));
                             }
+                            else{
+                                taskCompletionSource.setResult(new ValidationResult(true, String.valueOf(0), result.data));
+                            }
                         }
                 ).addOnFailureListener(
                         e -> {
+                            Log.d("Firebase", "❌ Error al leer la colección " + collectionName + ": " + e.getMessage());
                             taskCompletionSource.setException(new ComplexFBCE(new ObjectResult<>(false, e.getMessage(), result.data)));
                         }
                 );
+                break;
             case "dietas":
                 readDietFromClient(idExt).addOnSuccessListener(
                         dietas -> {
-                            if (!dietas.exit) {
+                            if (dietas.exit) {
 
                                 ArrayList<Diet> diets = new ArrayList<>(dietas.result.values());
 
@@ -162,15 +167,18 @@ public class FireBaseValidator {
                                         return;
                                     }
                                 }
-                            }
 
-                            taskCompletionSource.setResult(new ValidationResult(true, String.valueOf(dietas.result.size()), result.data));
+                                taskCompletionSource.setResult(new ValidationResult(true, String.valueOf(dietas.result.size()), result.data));
+                            }else{
+                                taskCompletionSource.setResult(new ValidationResult(true, String.valueOf(0), result.data));
+                            }
                         }
                 ).addOnFailureListener(
                         e -> {
                             taskCompletionSource.setException(new ComplexFBCE(new ObjectResult<>(false, e.getMessage(), result.data)));
                         }
                 );
+                break;
             default:
                 Log.d("Firebase", "❌ Tipo de dato no soportado");
                 taskCompletionSource.setException(new ComplexFBCE(new ObjectResult<>(false, "Tipo de dato no soportado", result.data)));

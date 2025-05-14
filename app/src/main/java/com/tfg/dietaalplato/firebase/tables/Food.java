@@ -211,7 +211,7 @@ public class Food extends BaseObject {
     public static ValidationResult toMapData(ArrayList<View> data,String idUser){
         ValidationResult result = new ValidationResult();
 
-        String[] fieldName = {"idUsr","Name","pc","energia","proteina","grasa","ags","agmi","agpi","colesterol","hc","fibra","vitC","vitB6","vitE","hierro","sodio","calcio","potasio"};
+        String[] fieldName = {"idUsr","name","pc","energia","proteina","grasa","ags","agmi","agpi","colesterol","hc","fibra","vitC","vitB6","vitE","hierro","sodio","calcio","potasio"};
 
         try{
             result.data = new HashMap<>();

@@ -36,7 +36,7 @@ public class InicioUsuarioActivity extends AppCompatActivity {
 
 
     public void onClickAlimentos(View view){
-        Intent intent = new Intent(this, ComidasActivity.class );
+        Intent intent = new Intent(this, AlimentosSV.class );
         startActivity(intent);
     }
 

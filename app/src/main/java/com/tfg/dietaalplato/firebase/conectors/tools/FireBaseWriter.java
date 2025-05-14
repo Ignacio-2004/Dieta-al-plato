@@ -141,7 +141,6 @@ public class FireBaseWriter {
                             }
                     ).addOnFailureListener(
                             e -> {
-                                Log.d(TAG, e.getMessage());
                                 result.exit = false;
                                 result.message = e.getMessage();
                             }

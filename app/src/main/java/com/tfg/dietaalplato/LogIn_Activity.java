@@ -20,10 +20,12 @@ import com.google.firebase.database.*;
 import com.tfg.dietaalplato.firebase.conectors.tools.FireBaseReader;
 import com.tfg.dietaalplato.firebase.conectors.tools.FireBaseWriter;
 import com.tfg.dietaalplato.firebase.tables.Client;
+import com.tfg.dietaalplato.firebase.tables.Food;
 import com.tfg.dietaalplato.firebase.utilities.ValidationResult;
 import com.tfg.dietaalplato.utilities.BasketAnimation;
 import com.tfg.dietaalplato.firebase.conectors.FireBaseConnector;
 import com.tfg.dietaalplato.firebase.exceptions.FBCException;
+import com.tfg.dietaalplato.utilities.Blocker;
 import com.tfg.dietaalplato.utilities.SaveData;
 
 public class LogIn_Activity extends AppCompatActivity {
@@ -93,18 +95,36 @@ public class LogIn_Activity extends AppCompatActivity {
     public void onClickTest(View view) {
         ValidationResult result = new ValidationResult();
         result.exit = true;
-        result.message = "Datos validos";
-        result.data.put("name", "pepe");
-        result.data.put("ape", "perez");
-        result.data.put("idUsr", "USU0002");
-        result.data.put("alergias", "gluten,lactosa");
-        result.data.put("patologias", "hipertension,diabetes");
+        result.message = "Datos válidos";
 
-        FireBaseWriter.saveData(Client.class, result).addOnSuccessListener(
-                objectResult -> Log.d(TAG, "✅ Datos guardados correctamente")
+// Añadir campos en orden
+        result.data.put("idUsr", "USU0002");
+        result.data.put("name", "Pollo");
+        result.data.put("pc", "100");
+        result.data.put("energia", "239");
+        result.data.put("proteina", "27");
+        result.data.put("grasa", "14");
+        result.data.put("ags", "3.8");
+        result.data.put("agmi", "5.3");
+        result.data.put("agpi", "3.6");
+        result.data.put("colesterol", "85");
+        result.data.put("hc", "0");
+        result.data.put("fibra", "0");
+        result.data.put("vitC", "0");
+        result.data.put("vitB6", "0.5");
+        result.data.put("vitE", "0.3");
+        result.data.put("hierro", "1");
+        result.data.put("sodio", "70");
+        result.data.put("calcio", "12");
+        result.data.put("potasio", "223");
+
+// Guardar el alimento
+        FireBaseWriter.saveData(Food.class, result).addOnSuccessListener(
+                objectResult -> Log.d("FireBaseWriter", "✅ Datos del alimento guardados correctamente")
         ).addOnFailureListener(
-                e -> Log.e(TAG, "❌ Error al guardar los datos: " + e.getMessage())
+                e -> Log.e("FireBaseWriter", "❌ Error al guardar el alimento: " + e.getMessage())
         );
+
     }
 
 
@@ -112,6 +132,9 @@ public class LogIn_Activity extends AppCompatActivity {
         1 - se comprueba que el correo sea el adecuado
      */
     public void login(View view) throws FBCException {
+
+        Blocker.createBlocker(this);
+
         text_error = findViewById(R.id.text_error);// guaardamos en la variable la referencia dele textView para los errores
 
         correo = findViewById(R.id.text_usuario); //almacenamos lo que ha introducio el usario
@@ -162,11 +185,13 @@ public class LogIn_Activity extends AppCompatActivity {
                                                         if (passwd_introducida.equals(passwDB)) {
                                                             if (correo_introducido.equals("admin.admin@educa.madrid.org")){
                                                                 Intent i = new Intent(this, InicioAdminActivity.class);
+                                                                Blocker.removeBlocker(this);
                                                                 startActivity(i);
                                                                 finish(); // Cerramos Login para que no se pueda volver atrás
                                                             }
                                                             else {
                                                                 Intent i = new Intent(this, InicioUsuarioActivity.class);
+                                                                Blocker.removeBlocker(this);
                                                                 startActivity(i);
                                                                 finish(); // Cerramos Login para que no se pueda volver atrás
                                                             }
@@ -237,6 +262,7 @@ public class LogIn_Activity extends AppCompatActivity {
                 text_error.setVisibility(View.GONE); // text view desaparece
             }
         }, 2000);
+        Blocker.removeBlocker(this);
     }
 
     public void mostrarPassword(View view) {
