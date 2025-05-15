@@ -1,4 +1,4 @@
-package com.tfg.dietaalplato;
+package com.tfg.dietaalplato.utilities.dialogo;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -10,9 +10,9 @@ import android.widget.TextView;
 
 import androidx.fragment.app.DialogFragment;
 
+import com.tfg.dietaalplato.R;
 import com.tfg.dietaalplato.firebase.conectors.tools.FireBaseWriter;
 import com.tfg.dietaalplato.firebase.tables.Client;
-import com.tfg.dietaalplato.firebase.tables.User;
 import com.tfg.dietaalplato.firebase.utilities.ValidationResult;
 import com.tfg.dietaalplato.utilities.SaveData;
 
@@ -62,11 +62,11 @@ public class ClientCreator_Dialogo extends DialogFragment {
 
                     if (apellido.getText().toString().matches("[a-zA-Z]+")) {
 
-                        /*ArrayList<View> views = new ArrayList<>();
+                        ArrayList<View> views = new ArrayList<>();
                         views.add(nombre);
                         views.add(apellido);
 
-                        ValidationResult userData = Client.toMapData(views, saveData.getUser().getId());
+                        ValidationResult userData  = Client.toMapData(views, getAlergias(view), getPatologias(view),saveData.getUser().getId());
 
                         // guardamos los datos en la base de datos
                         FireBaseWriter.saveData(Client.class,userData).addOnSuccessListener(
@@ -76,7 +76,6 @@ public class ClientCreator_Dialogo extends DialogFragment {
                                     textError.setText("  Cliente creado correctamente.  ");
                                     textError.setVisibility(View.VISIBLE); // el textView se puede ver
                                     mostrarTextError();// se oculta el mensaje
-                                    dismiss();
                                 }
                         ).addOnFailureListener(
                                 e -> {
@@ -84,7 +83,7 @@ public class ClientCreator_Dialogo extends DialogFragment {
                                     textError.setVisibility(View.VISIBLE); // el textView se puede ver
                                     mostrarTextError();// se oculta el mensaje
                                 }
-                        );*/
+                        );
 
                     }else{
                         textError.setText("  Error: apellido de usuario debe ser alfabético.  ");
@@ -116,5 +115,34 @@ public class ClientCreator_Dialogo extends DialogFragment {
 
     private void mostrarTextError() {
         textError.postDelayed(() -> textError.setVisibility(View.GONE), 2000);
+    }
+
+    private ArrayList<String> getAlergias(View view){
+        EditText editText = view.findViewById(R.id.editTextAlergias);
+        String alergias = editText.getText().toString();
+        ArrayList<String> alergiasList = new ArrayList<>();
+
+        if (!alergias.isEmpty()) {
+            String[] alergiasArray = alergias.split(",");
+            for (String alergia : alergiasArray) {
+                alergiasList.add(alergia.trim());
+            }
+        }
+
+        return alergiasList;
+    }
+
+    private ArrayList<String> getPatologias(View view){
+        EditText editText = view.findViewById(R.id.editTextPatologias);
+        String patologias = editText.getText().toString();
+        ArrayList<String> patologiasList = new ArrayList<>();
+
+        if (!patologias.isEmpty()) {
+            String[] patologiasArray = patologias.split(",");
+            for (String patologia : patologiasArray) {
+                patologiasList.add(patologia.trim());
+            }
+        }
+        return patologiasList;
     }
 }

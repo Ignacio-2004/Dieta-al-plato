@@ -25,7 +25,6 @@ import com.tfg.dietaalplato.utilities.SaveData;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -465,8 +464,8 @@ public class FireBaseWriter {
         // Crear un objeto Map con los datos del alimento
         HashMap<String, Object> food = new HashMap<>();
         food.put("id", alimento.getId());
-        food.put("idUser", alimento.getIdUser());
-        food.put("nombre", alimento.getName());
+        food.put("idUsr", alimento.getIdUsr());
+        food.put("name", alimento.getName());
         food.put("pc", alimento.getPc());
         food.put("energia", alimento.getEnergia());
         food.put("proteina", alimento.getProteina());

@@ -29,20 +29,22 @@ public class AlimentosSV extends AppCompatActivity {
         SaveData saveData = SaveData.getInstance();
 
         try{
-            FireBaseReader.readAllFoodFromUser(saveData.getUser().getId()).addOnSuccessListener(
+            FireBaseReader.readAllFoodFromUser(saveData.getUser().getId().toUpperCase()).addOnSuccessListener(
                     alimentos -> {
-                        for (Food alimento : alimentos.result.values()) {
-                            Button btn = new Button(this);
-                            btn.setText(alimento.getName());
-                            btn.setLayoutParams(new LinearLayout.LayoutParams(
-                                    LinearLayout.LayoutParams.MATCH_PARENT,
-                                    LinearLayout.LayoutParams.WRAP_CONTENT)
-                            );
+                        if (alimentos.exit){
+                            for (Food alimento : alimentos.result.values()) {
+                                Button btn = new Button(this);
+                                btn.setText(alimento.getName());
+                                btn.setLayoutParams(new LinearLayout.LayoutParams(
+                                        LinearLayout.LayoutParams.MATCH_PARENT,
+                                        LinearLayout.LayoutParams.WRAP_CONTENT)
+                                );
 
-                            btn.setOnClickListener(v -> {
-                                Toast.makeText(this, "Alimento seleccionado: " + alimento.getName(), Toast.LENGTH_SHORT).show();
-                            });
-                            layoutSV.addView(btn);
+                                btn.setOnClickListener(v -> {
+                                    Toast.makeText(this, "Alimento seleccionado: " + alimento.getName(), Toast.LENGTH_SHORT).show();
+                                });
+                                layoutSV.addView(btn);
+                            }
                         }
                     }
             ).addOnFailureListener(

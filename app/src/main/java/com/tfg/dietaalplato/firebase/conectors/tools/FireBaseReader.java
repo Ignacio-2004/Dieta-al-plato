@@ -145,12 +145,13 @@ public class FireBaseReader {
                 .whereEqualTo("idUsr", idUser)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
-                    Log.d(TAG, "📖 Comidas encontradas");
                     if (!queryDocumentSnapshots.isEmpty()) {
+                        Log.d(TAG, "📖 Comidas encontradas");
                         Map<String,Food> foods = new HashMap<>();
                         CacheCollection<Food> foodsCache = new CacheCollection<>();
                         for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments()) {
                             Food food = document.toObject(Food.class);
+                            Log.d(TAG, "📖 Comida encontrada: " + food.getIdUsr());
                             if (food != null) {
                                 Log.d("Firebase", "📖 Comida encontrada: " + food.getName());
                                 foods.put(food.getName(),food);

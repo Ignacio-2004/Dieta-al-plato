@@ -239,7 +239,7 @@
         android:layout_marginTop="70dp"
         android:layout_marginEnd="300dp"
         android:background="@drawable/esquinas_redondeadas_boton_verde"
-        android:onClick="signUp"
+        android:onClick="onClickTest"
         android:text="@string/sign_up"
         android:textColor="@android:color/white"
         android:textSize="20sp"

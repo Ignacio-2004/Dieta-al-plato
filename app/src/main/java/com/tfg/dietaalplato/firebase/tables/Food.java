@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Food extends BaseObject {
 
-    private String idUser;
+    private String idUsr;
     private String pc;
     private String energia;
     private String proteina;
@@ -37,12 +37,12 @@ public class Food extends BaseObject {
     public Food() {
     }
 
-    public Food(String id, String name, String idUser, String pc, String energia, String proteina,
+    public Food(String id, String name, String idUsr, String pc, String energia, String proteina,
                 String grasa, String ags, String agmi, String agpi, String colesterol, String hc,
                 String fibra, String vitC, String vitB6, String vitE, String hierro, String sodio,
                 String calcio, String potasio) {
         super(id, name);
-        this.idUser = idUser;
+        this.idUsr = idUsr;
         this.pc = pc;
         this.energia = energia;
         this.proteina = proteina;
@@ -62,12 +62,12 @@ public class Food extends BaseObject {
         this.potasio = potasio;
     }
 
-    public String getIdUser() {
-        return idUser;
+    public String getIdUsr() {
+        return idUsr;
     }
 
-    public void setIdUser(String idUser) {
-        this.idUser = idUser;
+    public void setIdUsr(String idUsr) {
+        this.idUsr = idUsr;
     }
 
     public String getPc() {
@@ -268,7 +268,7 @@ public class Food extends BaseObject {
 
         AtomicBoolean booleanAtomic = new AtomicBoolean(false);
 
-        FireBaseValidator.exist(getName(),getIdUser(),String.valueOf(TablesNames.alimentos), result -> {
+        FireBaseValidator.exist(getName(), getIdUsr(),String.valueOf(TablesNames.alimentos), result -> {
             if (result){
                 booleanAtomic.set(true);
             }

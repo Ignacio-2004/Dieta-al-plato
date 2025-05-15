@@ -119,6 +119,7 @@ public class Client extends BaseObject {
                 compoundCharacteristic = compoundCharacteristic + pathology + ",";
             }
             result.data.put(fieldName[3], compoundCharacteristic);
+            result.data.put(fieldName[4], idUsr);
 
             result.exit = true;
             result.message = "Datos validos";

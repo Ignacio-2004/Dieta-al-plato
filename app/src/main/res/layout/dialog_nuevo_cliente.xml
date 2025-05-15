@@ -1,52 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:padding="16dp">
+    android:layout_height="wrap_content">
 
-    <!-- texto de correo -->
-    <EditText
-        android:id="@+id/editTextNombre"
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/nombre_del_cliente"
-        android:inputType="text" />
+        android:padding="16dp">
 
-    <!-- texto de password -->
-    <EditText
-        android:id="@+id/editTextApellido"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/apellido_del_cliente"
-        android:inputType="text" />
+        <!-- Nombre del cliente -->
+        <EditText
+            android:id="@+id/editTextNombre"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/nombre_del_cliente"
+            android:inputType="text" />
 
-    <!-- boton para confirmar -->
-    <Button
-        android:id="@+id/buttonConfirmar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/crear_usuario"
-        android:backgroundTint="#027C68"
-        android:onClick="onConfirmarClick" />
+        <!-- Apellido del cliente -->
+        <EditText
+            android:id="@+id/editTextApellido"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/apellido_del_cliente"
+            android:inputType="text" />
 
-    <!-- boton para cancelar -->
-    <Button
-        android:id="@+id/buttonCancelar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/cancelar"
-        android:onClick="onCancelarClick"
-        android:backgroundTint="#027C68"/>
+        <!-- Alergias -->
+        <EditText
+            android:id="@+id/editTextAlergias"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Alergias (separadas por comas)"
+            android:inputType="text" />
 
-    <!--  texto para errores -->
-    <TextView
-        android:id="@+id/textError"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="@android:color/holo_red_dark"
-        android:textSize="14sp"
-        android:paddingTop="8dp"
-        android:visibility="gone"
-        android:text="Aquí se mostrará el error si hay alguno" />
-</LinearLayout>
+        <!-- Patologías -->
+        <EditText
+            android:id="@+id/editTextPatologias"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Patologías (separadas por comas)"
+            android:inputType="text" />
+
+        <!-- Botón para confirmar -->
+        <Button
+            android:id="@+id/buttonConfirmar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/crear_usuario"
+            android:backgroundTint="#027C68"
+            android:onClick="onConfirmarClick" />
+
+        <!-- Botón para cancelar -->
+        <Button
+            android:id="@+id/buttonCancelar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/cancelar"
+            android:onClick="onCancelarClick"
+            android:backgroundTint="#027C68" />
+
+        <!-- Texto para errores -->
+        <TextView
+            android:id="@+id/textError"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/holo_red_dark"
+            android:textSize="14sp"
+            android:paddingTop="8dp"
+            android:visibility="gone"
+            android:text="Aquí se mostrará el error si hay alguno" />
+    </LinearLayout>
+</ScrollView>

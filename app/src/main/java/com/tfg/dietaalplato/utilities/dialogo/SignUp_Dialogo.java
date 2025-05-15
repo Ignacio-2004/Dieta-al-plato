@@ -1,4 +1,4 @@
-package com.tfg.dietaalplato;
+package com.tfg.dietaalplato.utilities.dialogo;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -12,6 +12,7 @@ import android.widget.TextView;
 import androidx.fragment.app.DialogFragment;
 
 import com.google.firebase.FirebaseApp;
+import com.tfg.dietaalplato.R;
 import com.tfg.dietaalplato.firebase.conectors.tools.FireBaseWriter;
 import com.tfg.dietaalplato.firebase.tables.User;
 import com.tfg.dietaalplato.firebase.conectors.FireBaseConnector;
