@@ -14,4 +14,5 @@
     <string name="crear_usuario">crear usuario</string>
     <string name="apellido_del_cliente">Apellido del cliente</string>
     <string name="nombre_del_cliente">Nombre del cliente</string>
+    <string name="log_out">Log out</string>
 </resources>

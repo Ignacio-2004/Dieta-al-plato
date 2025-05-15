@@ -3,81 +3,153 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
+    android:background="#E9EFDF"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".InicioUsuarioActivity">
 
-    <ImageButton
-        android:id="@+id/iconoAlimentos_imagebutton"
-        android:layout_width="328dp"
-        android:layout_height="317dp"
-        android:background="@null"
-        android:onClick="onClickAlimentos"
-        android:scaleType="fitCenter"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.837"
-        app:layout_constraintStart_toStartOf="parent"
+    <!-- ell fondo -->
+    <ImageView
+        android:id="@+id/fondo"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scaleType="centerCrop"
+        android:contentDescription="Fondo"
+        app:srcCompat="@drawable/fondo_android"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.368"
-        app:srcCompat="@drawable/icono_alimentos" />
-
-    <ImageButton
-        android:id="@+id/iconoPacientes_imagebutton"
-        android:layout_width="328dp"
-        android:layout_height="317dp"
-        android:background="@null"
-        android:onClick="onClickPatient"
-        android:scaleType="fitCenter"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.163"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.339"
-        app:srcCompat="@drawable/icono_pacientes" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
-    <Button
-        android:id="@+id/logout_button"
-        android:layout_width="369dp"
-        android:layout_height="81dp"
-        android:layout_marginTop="628dp"
-        android:backgroundTint="#3C871F"
-        android:fontFamily="@font/alfa_slab_one"
-        android:onClick="onClickCloseSesion"
-        android:text="Cerrar sesión"
-        android:textColor="#1E1D21"
-        android:textSize="34sp"
+    <!-- velo -->
+    <View
+        android:id="@+id/velo"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#DDE9EFDF"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- titulo  -->
+
+
+    <!-- CardView pacientes -->
+    <TextView
+        android:id="@+id/titulo_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="52dp"
+        android:fontFamily="@font/lily_script_one"
+        android:text="Panel de administración nutricional"
+        android:textAllCaps="false"
+        android:textColor="#027C68"
+        android:textSize="65sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.501"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_pacientes"
+        android:layout_width="500dp"
+        android:layout_height="350dp"
+        app:cardCornerRadius="50dp"
+        app:cardElevation="6dp"
+        app:layout_constraintWidth_percent="0.4"
+        app:layout_constraintHeight_percent="0.4"
+        app:layout_constraintTop_toBottomOf="@id/titulo_textview"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/card_alimentos"
+        app:layout_constraintBottom_toTopOf="@+id/logout_button"
+        android:layout_margin="16dp">
+
+        <ImageButton
+            android:id="@+id/iconoPacientes_imagebutton"
+            android:layout_width="500dp"
+            android:layout_height="match_parent"
+            android:background="@null"
+            android:onClick="onClickPatient"
+            android:scaleType="fitCenter"
+            app:srcCompat="@drawable/icono_pacientes" />
+    </androidx.cardview.widget.CardView>
+
+    <!-- CardView alimentos -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_alimentos"
+        android:layout_width="500dp"
+        android:layout_height="350dp"
+        app:cardCornerRadius="50dp"
+        app:cardElevation="6dp"
+        app:layout_constraintWidth_percent="0.4"
+        app:layout_constraintHeight_percent="0.4"
+        app:layout_constraintTop_toBottomOf="@id/titulo_textview"
+        app:layout_constraintStart_toEndOf="@id/card_pacientes"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/logout_button"
+        android:layout_margin="16dp">
+
+        <ImageButton
+            android:id="@+id/iconoAlimentos_imagebutton"
+            android:layout_width="500dp"
+            android:layout_height="match_parent"
+            android:background="@null"
+            android:onClick="onClickAlimentos"
+            android:scaleType="fitCenter"
+            app:srcCompat="@drawable/icono_alimentos" />
+    </androidx.cardview.widget.CardView>
+
+    <!-- TextView Pacientes E-->
     <TextView
         android:id="@+id/pacientes_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="508dp"
-        android:fontFamily="@font/alfa_slab_one"
+        android:layout_marginTop="20dp"
+        android:fontFamily="@font/lily_script_one"
         android:text="Pacientes"
         android:textColor="#1E1D21"
-        android:textSize="34sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.205"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:textSize="35sp"
+        android:textStyle="normal"
+        app:layout_constraintEnd_toEndOf="@id/card_pacientes"
+        app:layout_constraintStart_toStartOf="@id/card_pacientes"
+        app:layout_constraintTop_toBottomOf="@id/card_pacientes" />
 
+    <!-- TextView Alimentos -->
     <TextView
         android:id="@+id/alimentos_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/alfa_slab_one"
+        android:layout_marginTop="8dp"
+        android:fontFamily="@font/lily_script_one"
         android:text="Banco de alimentos"
+        android:textAllCaps="false"
         android:textColor="#1E1D21"
-        android:textSize="34sp"
+        android:textSize="35sp"
+        android:textStyle="normal"
+        app:layout_constraintEnd_toEndOf="@id/card_alimentos"
+        app:layout_constraintStart_toStartOf="@id/card_alimentos"
+        app:layout_constraintTop_toBottomOf="@id/card_alimentos" />
+
+    <!-- Botón Logout -->
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/logout_button"
+        android:layout_width="400dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="32dp"
+        android:background="@drawable/esquinas_redondeadas_boton_verde"
+        android:fontFamily="@font/alfa_slab_one"
+        android:onClick="onClickCloseSesion"
+        android:text="@string/log_out"
+        android:textColor="@android:color/white"
+        android:textSize="18sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.852"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.682" />
+        app:layout_constraintTop_toBottomOf="@id/alimentos_textview"
+        app:layout_constraintVertical_bias="1.0"
+        app:layout_constraintWidth_percent="0.5" />
 </androidx.constraintlayout.widget.ConstraintLayout>
