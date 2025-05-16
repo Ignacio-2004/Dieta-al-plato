@@ -17,6 +17,9 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.google.firebase.database.*;
+import com.tfg.dietaalplato.firebase.tables.Client;
+import com.tfg.dietaalplato.utilities.dialogo.ClientCreator_Dialogo;
+import com.tfg.dietaalplato.utilities.dialogo.ClientInfo_Dialog;
 import com.tfg.dietaalplato.utilities.dialogo.SignUp_Dialogo;
 import com.tfg.dietaalplato.firebase.conectors.tools.FireBaseReader;
 import com.tfg.dietaalplato.firebase.conectors.tools.FireBaseWriter;
@@ -27,6 +30,9 @@ import com.tfg.dietaalplato.firebase.conectors.FireBaseConnector;
 import com.tfg.dietaalplato.firebase.exceptions.FBCException;
 import com.tfg.dietaalplato.utilities.Blocker;
 import com.tfg.dietaalplato.utilities.SaveData;
+import com.tfg.dietaalplato.utilities.tipe_collection.CacheCollection;
+
+import java.util.ArrayList;
 
 public class LogIn_Activity extends AppCompatActivity {
 
@@ -93,7 +99,22 @@ public class LogIn_Activity extends AppCompatActivity {
     }
 
     public void onClickTest(View view) {
-        ValidationResult result = new ValidationResult();
+        ArrayList<String> alergias = new ArrayList<>();
+        ArrayList<String> patologias = new ArrayList<>();
+        alergias.add("Pollo");
+        alergias.add("Pescado");
+        patologias.add("Diabetes");
+        patologias.add("Hipertensión");
+
+        Client client = new Client("CLI00020002", "Juan", "Pérez","USU0002", alergias, patologias);
+        saveData.addClient(client);
+
+        saveData.setIdActualClient("CLI00020002");
+
+        ClientInfo_Dialog dialogo = ClientInfo_Dialog.getInstance(true);
+        dialogo.show(getSupportFragmentManager(), "dialogoInfoCliente");
+
+/*        ValidationResult result = new ValidationResult();
         result.exit = true;
         result.message = "Datos válidos";
 
@@ -123,7 +144,7 @@ public class LogIn_Activity extends AppCompatActivity {
                 objectResult -> Log.d("FireBaseWriter", "✅ Datos del alimento guardados correctamente")
         ).addOnFailureListener(
                 e -> Log.e("FireBaseWriter", "❌ Error al guardar el alimento: " + e.getMessage())
-        );
+        );*/
 
     }
 

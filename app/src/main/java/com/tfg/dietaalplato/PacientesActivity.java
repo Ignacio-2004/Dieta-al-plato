@@ -49,6 +49,7 @@ public class PacientesActivity extends AppCompatActivity {
 
                           boton.setOnClickListener(v ->{
                                       Log.d("Cliente", "Nombre del cliente: " + cliente.getName());
+                                      saveData.setIdActualClient(cliente.getId());
 
                                       Intent intent = new Intent(this, DietasActivity.class);
                                       startActivity(intent);

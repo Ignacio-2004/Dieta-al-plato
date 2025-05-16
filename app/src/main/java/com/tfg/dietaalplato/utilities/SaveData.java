@@ -29,12 +29,19 @@ public class SaveData {
     private CacheCollection<Map<String, Diet>> diets;
     private CacheCollection<Map<String, ArrayList<FoodDiet>>> foodDiets;
 
+    private String idActualClient;
+    private String idActualDiet;
+    private String idActualFood;
+
     private SaveData() {
         user = new User("","","");
         clients = new CacheCollection<>();
         foods = new CacheCollection<>();
         diets = new CacheCollection<>();
         foodDiets = new CacheCollection<>();
+        idActualClient = "";
+        idActualDiet = "";
+        idActualFood = "";
     }
 
     public static SaveData getInstance() {
@@ -42,6 +49,30 @@ public class SaveData {
             saveData = new SaveData();
         }
         return saveData;
+    }
+
+    public String getIdActualClient() {
+        return idActualClient;
+    }
+
+    public void setIdActualClient(String idActualClient) {
+        this.idActualClient = idActualClient;
+    }
+
+    public String getIdActualDiet() {
+        return idActualDiet;
+    }
+
+    public void setIdActualDiet(String idActualDiet) {
+        this.idActualDiet = idActualDiet;
+    }
+
+    public String getIdActualFood() {
+        return idActualFood;
+    }
+
+    public void setIdActualFood(String idActualFood) {
+        this.idActualFood = idActualFood;
     }
 
     public User getUser() {
@@ -109,11 +140,11 @@ public class SaveData {
     }
 
     public void addClient (Client client){
-        clients.add(client.getName(), client);
+        clients.add(client.getId(), client);
     }
 
     public void addFood (Food food){
-        foods.add(food.getName(), food);
+        foods.add(food.getId(), food);
     }
 
     public void addDiet (Diet diet){
