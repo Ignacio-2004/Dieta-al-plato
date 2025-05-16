@@ -90,7 +90,7 @@ public class LogIn_Activity extends AppCompatActivity {
     public void signUp(View view) {
         SignUp_Dialogo dialogo = new SignUp_Dialogo();
         dialogo.show(getSupportFragmentManager(), "dialogoNuevoUsuario");
-    }
+}
 
     public void onClickTest(View view) {
         ValidationResult result = new ValidationResult();

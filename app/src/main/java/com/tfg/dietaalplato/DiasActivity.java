@@ -4,22 +4,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.Toast;
-
-
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.tfg.dietaalplato.firebase.conectors.tools.FireBaseReader;
-import com.tfg.dietaalplato.firebase.tables.User;
-import com.tfg.dietaalplato.firebase.conectors.FireBaseConnector;
-import com.tfg.dietaalplato.firebase.exceptions.FBCException;
-
 public class DiasActivity extends AppCompatActivity {
-
-    Button botonDia1, botonDia2, botonDia3, botonDia4, botonDia5, botonDia6, botonDia7;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,23 +17,49 @@ public class DiasActivity extends AppCompatActivity {
 
         int dietaSeleccionada = getIntent().getIntExtra("dietaSeleccionada", 1);
 
-        /*// Obtener los botones de los días
-        Button[] botonesDias = new Button[7];
-        botonesDias[0] = findViewById(R.id.botonDia1);
-        botonesDias[1] = findViewById(R.id.botonDia2);
-        botonesDias[2] = findViewById(R.id.botonDia3);
-        botonesDias[3] = findViewById(R.id.botonDia4);
-        botonesDias[4] = findViewById(R.id.botonDia5);
-        botonesDias[5] = findViewById(R.id.botonDia6);
-        botonesDias[6] = findViewById(R.id.botonDia7);
+        // Obtener los botones de los días
+        Button[] botonesDias3 = new Button[3];
+        botonesDias3[0] = findViewById(R.id.boton1Dias3);
+        botonesDias3[1] = findViewById(R.id.boton2Dias3);
+        botonesDias3[2] = findViewById(R.id.boton3Dias3);
 
-        // Hacer visibles solo los botones correspondientes
-        for (int i = 0; i < dietaSeleccionada; i++) {
-            botonesDias[i].setVisibility(View.VISIBLE);
-            final int dia = i + 1;  // El índice es 0-based, por eso sumamos 1
-            botonesDias[i].setOnClickListener(v -> abrirComidasActivity(dia, dietaSeleccionada));
-        }*/
+        Button[] botonesDias7 = new Button[7];
+        botonesDias7[0] = findViewById(R.id.boton1Dias7);
+        botonesDias7[1] = findViewById(R.id.boton2Dias7);
+        botonesDias7[2] = findViewById(R.id.boton3Dias7);
+        botonesDias7[3] = findViewById(R.id.boton4Dias7);
+        botonesDias7[4] = findViewById(R.id.boton5Dias7);
+        botonesDias7[5] = findViewById(R.id.boton6Dias7);
+        botonesDias7[6] = findViewById(R.id.boton7Dias7);
 
+        if(dietaSeleccionada == 3) {
+            for (int i = 0; i < 3; i++) {
+                botonesDias3[i].setVisibility(View.VISIBLE);
+                final int dia = i + 1;  // El índice es 0-based, por eso sumamos 1
+                botonesDias3[i].setOnClickListener(v -> abrirComidasActivity(dia, dietaSeleccionada));
+            }
+            for (int i = 0; i < 7; i++) {
+                botonesDias7[i].setVisibility(View.INVISIBLE);
+            }
+        }
+        if(dietaSeleccionada == 7) {
+            for (int i = 0; i < 7; i++) {
+                botonesDias7[i].setVisibility(View.VISIBLE);
+                final int dia = i + 1;  // El índice es 0-based, por eso sumamos 1
+                botonesDias7[i].setOnClickListener(v -> abrirComidasActivity(dia, dietaSeleccionada));
+            }
+            for (int i = 0; i < 7; i++) {
+                botonesDias3[i].setVisibility(View.INVISIBLE);
+            }
+        }
+
+    }
+
+    private void abrirComidasActivity(int diaSeleccionado, int dietaSeleccionada) {
+        Intent intent = new Intent(this, DiasActivity.class);
+        intent.putExtra("dietaSeleccionada", dietaSeleccionada);
+        intent.putExtra("diaSeleccionado", diaSeleccionado);
+        startActivity(intent);
     }
 
     public void onClickReturn(View view){

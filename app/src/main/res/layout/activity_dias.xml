@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/layoutPrincipal"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
-
+    tools:context=".DiasActivity">
 
     <ImageButton
-        android:id="@+id/bttReturn2"
+        android:id="@+id/bttReturn"
         android:layout_width="90dp"
         android:layout_height="66dp"
         android:layout_marginStart="4dp"
@@ -21,21 +21,167 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="?attr/homeAsUpIndicator" />
 
+    <Button
+        android:id="@+id/boton1Dias3"
+        android:layout_width="299dp"
+        android:layout_height="295dp"
+        android:layout_marginStart="16dp"
+        android:backgroundTint="#DCA417"
+        android:fontFamily="@font/bakbak_one"
+        android:text="Día 1"
+        android:textColor="#1E1D21"
+        android:textSize="70sp"
+        app:layout_constraintBottom_toBottomOf="@+id/boton2Dias3"
+        app:layout_constraintEnd_toStartOf="@+id/boton2Dias3"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/boton2Dias3" />
 
-    <ScrollView
-        android:id="@+id/scrollDias"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true">
+    <Button
+        android:id="@+id/boton2Dias3"
+        android:layout_width="299dp"
+        android:layout_height="295dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="50dp"
+        android:backgroundTint="#CA6602"
+        android:fontFamily="@font/bakbak_one"
+        android:text="Día 2"
+        android:textColor="#1E1D21"
+        android:textSize="70sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/boton3Dias3"
+        app:layout_constraintStart_toEndOf="@+id/boton1Dias3"
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+    <Button
+        android:id="@+id/boton3Dias3"
+        android:layout_width="299dp"
+        android:layout_height="295dp"
+        android:layout_marginStart="16dp"
+        android:backgroundTint="#AB1746"
+        android:fontFamily="@font/bakbak_one"
+        android:text="Día 3"
+        android:textColor="#1E1D21"
+        android:textSize="70sp"
+        app:layout_constraintBottom_toBottomOf="@+id/boton2Dias3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/boton2Dias3"
+        app:layout_constraintTop_toTopOf="@+id/boton2Dias3" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="135dp"
+        android:fontFamily="@font/bakbak_one"
+        android:text="¿Qué día quieres visualizar?"
+        android:textColor="#1E1D21"
+        android:textSize="60sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/boton1Dias7"
+        android:layout_width="189dp"
+        android:layout_height="185dp"
+        android:layout_marginStart="200dp"
+        android:backgroundTint="#DCA417"
+        android:fontFamily="@font/bakbak_one"
+        android:text="Día 1"
+        android:textColor="#1E1D21"
+        android:textSize="45sp"
+        app:layout_constraintBottom_toBottomOf="@+id/boton2Dias7"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/boton2Dias7"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <Button
+        android:id="@+id/boton2Dias7"
+        android:layout_width="189dp"
+        android:layout_height="185dp"
+        android:backgroundTint="#D58915"
+        android:fontFamily="@font/bakbak_one"
+        android:text="Día 2"
+        android:textColor="#1E1D21"
+        android:textSize="45sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/boton3Dias7"
+        app:layout_constraintHorizontal_bias="0.501"
+        app:layout_constraintStart_toEndOf="@+id/boton1Dias7"
+        app:layout_constraintTop_toBottomOf="@+id/textView"
+        app:layout_constraintVertical_bias="0.192" />
+
+    <Button
+        android:id="@+id/boton3Dias7"
+        android:layout_width="189dp"
+        android:layout_height="185dp"
+        android:layout_marginEnd="200dp"
+        android:backgroundTint="#CA7216"
+        android:fontFamily="@font/bakbak_one"
+        android:text="Día 3"
+        android:textColor="#1E1D21"
+        android:textSize="45sp"
+        app:layout_constraintBottom_toBottomOf="@+id/boton2Dias7"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/boton2Dias7"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <Button
+        android:id="@+id/boton4Dias7"
+        android:layout_width="189dp"
+        android:layout_height="185dp"
+        android:layout_marginStart="80dp"
+        android:backgroundTint="#CA6602"
+        android:fontFamily="@font/bakbak_one"
+        android:text="Día 4"
+        android:textColor="#1E1D21"
+        android:textSize="45sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/boton1Dias7" />
+
+    <Button
+        android:id="@+id/boton5Dias7"
+        android:layout_width="189dp"
+        android:layout_height="185dp"
+        android:layout_marginEnd="136dp"
+        android:backgroundTint="#B84911"
+        android:fontFamily="@font/bakbak_one"
+        android:text="Día 5"
+        android:textColor="#1E1D21"
+        android:textSize="45sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/boton6Dias7"
+        app:layout_constraintTop_toBottomOf="@+id/boton2Dias7" />
+
+    <Button
+        android:id="@+id/boton6Dias7"
+        android:layout_width="189dp"
+        android:layout_height="185dp"
+        android:layout_marginEnd="108dp"
+        android:backgroundTint="#BA340F"
+        android:fontFamily="@font/bakbak_one"
+        android:text="Día 6"
+        android:textColor="#1E1D21"
+        android:textSize="45sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/boton7Dias7"
+        app:layout_constraintTop_toBottomOf="@+id/boton2Dias7" />
+
+    <Button
+        android:id="@+id/boton7Dias7"
+        android:layout_width="189dp"
+        android:layout_height="185dp"
+        android:layout_marginEnd="80dp"
+        android:backgroundTint="#AB1746"
+        android:fontFamily="@font/bakbak_one"
+        android:text="Día 7"
+        android:textColor="#1E1D21"
+        android:textSize="45sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/boton3Dias7" />
 
 
-        <LinearLayout
-            android:id="@+id/layoutDias"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp" />
-
-
-    </ScrollView>
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

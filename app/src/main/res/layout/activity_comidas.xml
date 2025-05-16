@@ -29,11 +29,11 @@
         android:backgroundTint="#F2A396"
         android:elevation="10dp"
         android:scaleType="fitCenter"
+        android:src="@drawable/desayuno"
         app:layout_constraintEnd_toStartOf="@+id/almuerzo_boton"
         app:layout_constraintHorizontal_bias="0.141"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/almuerzo_boton"
-        />
+        app:layout_constraintTop_toTopOf="@+id/almuerzo_boton" />
 
     <ImageButton
         android:id="@+id/almuerzo_boton"
@@ -42,12 +42,12 @@
         android:backgroundTint="#B8D2B5"
         android:elevation="10dp"
         android:scaleType="fitCenter"
+        android:src="@drawable/almuerzo"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.192"
-        />
+        app:layout_constraintVertical_bias="0.192" />
 
     <ImageButton
         android:id="@+id/comida_boton"
@@ -56,11 +56,11 @@
         android:backgroundTint="#26B5FA"
         android:elevation="10dp"
         android:scaleType="fitCenter"
+        android:src="@drawable/comida"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.493"
         app:layout_constraintStart_toEndOf="@+id/almuerzo_boton"
-        app:layout_constraintTop_toTopOf="@+id/almuerzo_boton"
-        />
+        app:layout_constraintTop_toTopOf="@+id/almuerzo_boton" />
 
     <ImageButton
         android:id="@+id/merienda_boton"
@@ -71,11 +71,12 @@
         android:backgroundTint="#D0628D"
         android:elevation="10dp"
         android:scaleType="fitCenter"
+        android:src="@drawable/merienda"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/desayuno_boton"
 
-        tools:layout_editor_absoluteX="127dp"
-        tools:ignore="MissingConstraints" />
+        app:layout_constraintTop_toBottomOf="@+id/desayuno_boton"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="127dp" />
 
     <ImageButton
         android:id="@+id/recena_boton"
@@ -86,10 +87,11 @@
         android:backgroundTint="#7369D8"
         android:elevation="10dp"
         android:scaleType="fitCenter"
+        android:src="@drawable/recena"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/comida_boton"
-        app:layout_constraintVertical_bias="0.0"
 
+        app:layout_constraintVertical_bias="0.0"
         tools:ignore="MissingConstraints"
         tools:layout_editor_absoluteX="892dp" />
 
@@ -102,11 +104,12 @@
         android:backgroundTint="#D3B8D0"
         android:elevation="10dp"
         android:scaleType="fitCenter"
+        android:src="@drawable/cena"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/almuerzo_boton"
 
-        tools:layout_editor_absoluteX="508dp"
-        tools:ignore="MissingConstraints" /> -->
+        app:layout_constraintTop_toBottomOf="@+id/almuerzo_boton"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="508dp" /> -->
 
     <TextView
         android:id="@+id/desayuno_textview"
@@ -130,14 +133,15 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="14dp"
         android:layout_marginBottom="14dp"
+        android:layout_marginEnd="283dp"
         android:fontFamily="@font/alfa_slab_one"
         android:text="ALMUERZO"
         android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/cena_boton"
+        app:layout_constraintEnd_toStartOf="@+id/comida_textview"
         app:layout_constraintTop_toBottomOf="@+id/almuerzo_boton"
-        app:layout_constraintVertical_bias="0.357"
-        tools:layout_editor_absoluteX="577dp" />
+        app:layout_constraintVertical_bias="0.357" />
 
     <TextView
         android:id="@+id/comida_textview"
