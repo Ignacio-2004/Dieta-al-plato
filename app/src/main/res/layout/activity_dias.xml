@@ -72,7 +72,7 @@
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="135dp"
+        android:layout_marginTop="100dp"
         android:fontFamily="@font/bakbak_one"
         android:text="¿Qué día quieres visualizar?"
         android:textColor="#1E1D21"

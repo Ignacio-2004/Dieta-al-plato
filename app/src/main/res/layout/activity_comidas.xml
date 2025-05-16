@@ -7,6 +7,20 @@
     android:layout_height="match_parent"
     tools:context=".ComidasActivity">
 
+    <TextView
+        android:id="@+id/titulo_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        android:fontFamily="@font/bakbak_one"
+        android:text="¿Qué comida quieres visualizar?"
+        android:textColor="#1E1D21"
+        android:textSize="60sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.501"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <ImageButton
         android:id="@+id/bttReturn"
         android:layout_width="90dp"
@@ -23,22 +37,23 @@
 
     <ImageButton
         android:id="@+id/desayuno_boton"
-        android:layout_width="265dp"
-        android:layout_height="260dp"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
         android:layout_marginStart="108dp"
+        android:layout_marginTop="8dp"
         android:backgroundTint="#F2A396"
         android:elevation="10dp"
         android:scaleType="fitCenter"
         android:src="@drawable/desayuno"
         app:layout_constraintEnd_toStartOf="@+id/almuerzo_boton"
-        app:layout_constraintHorizontal_bias="0.141"
+        app:layout_constraintHorizontal_bias="0.183"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/almuerzo_boton" />
 
     <ImageButton
         android:id="@+id/almuerzo_boton"
-        android:layout_width="265dp"
-        android:layout_height="260dp"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
         android:backgroundTint="#B8D2B5"
         android:elevation="10dp"
         android:scaleType="fitCenter"
@@ -47,12 +62,12 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.192" />
+        app:layout_constraintVertical_bias="0.376" />
 
     <ImageButton
         android:id="@+id/comida_boton"
-        android:layout_width="265dp"
-        android:layout_height="260dp"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
         android:backgroundTint="#26B5FA"
         android:elevation="10dp"
         android:scaleType="fitCenter"
@@ -64,9 +79,8 @@
 
     <ImageButton
         android:id="@+id/merienda_boton"
-        android:layout_width="265dp"
-        android:layout_height="260dp"
-        android:layout_marginTop="69dp"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
         android:layout_marginBottom="107dp"
         android:backgroundTint="#D0628D"
         android:elevation="10dp"
@@ -74,31 +88,35 @@
         android:src="@drawable/merienda"
         app:layout_constraintBottom_toBottomOf="parent"
 
-        app:layout_constraintTop_toBottomOf="@+id/desayuno_boton"
-        tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteX="127dp" />
+        app:layout_constraintEnd_toEndOf="@+id/desayuno_boton"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/desayuno_boton"
+        app:layout_constraintTop_toTopOf="@+id/cena_boton"
+        app:layout_constraintVertical_bias="0.0"
+        tools:ignore="MissingConstraints" />
 
     <ImageButton
         android:id="@+id/recena_boton"
-        android:layout_width="265dp"
-        android:layout_height="260dp"
-        android:layout_marginTop="69dp"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
         android:layout_marginBottom="107dp"
         android:backgroundTint="#7369D8"
         android:elevation="10dp"
         android:scaleType="fitCenter"
         android:src="@drawable/recena"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/comida_boton"
 
+        app:layout_constraintEnd_toEndOf="@+id/comida_boton"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/comida_boton"
+        app:layout_constraintTop_toTopOf="@+id/cena_boton"
         app:layout_constraintVertical_bias="0.0"
-        tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteX="892dp" />
+        tools:ignore="MissingConstraints" />
 
     <ImageButton
         android:id="@+id/cena_boton"
-        android:layout_width="265dp"
-        android:layout_height="260dp"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
         android:layout_marginTop="69dp"
         android:layout_marginBottom="107dp"
         android:backgroundTint="#D3B8D0"
@@ -107,15 +125,18 @@
         android:src="@drawable/cena"
         app:layout_constraintBottom_toBottomOf="parent"
 
+        app:layout_constraintEnd_toEndOf="@+id/almuerzo_boton"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/almuerzo_boton"
         app:layout_constraintTop_toBottomOf="@+id/almuerzo_boton"
-        tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteX="508dp" /> -->
+        app:layout_constraintVertical_bias="0.0"
+        tools:ignore="MissingConstraints" />
 
     <TextView
         android:id="@+id/desayuno_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="200dp"
+        android:layout_marginStart="192dp"
         android:layout_marginTop="14dp"
         android:layout_marginBottom="14dp"
         android:fontFamily="@font/alfa_slab_one"
@@ -125,15 +146,15 @@
         app:layout_constraintBottom_toTopOf="@+id/merienda_boton"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/desayuno_boton"
-        app:layout_constraintVertical_bias="0.357" />
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/almuerzo_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="14dp"
+        android:layout_marginEnd="260dp"
         android:layout_marginBottom="14dp"
-        android:layout_marginEnd="283dp"
         android:fontFamily="@font/alfa_slab_one"
         android:text="ALMUERZO"
         android:textSize="24sp"
@@ -141,14 +162,14 @@
         app:layout_constraintBottom_toTopOf="@+id/cena_boton"
         app:layout_constraintEnd_toStartOf="@+id/comida_textview"
         app:layout_constraintTop_toBottomOf="@+id/almuerzo_boton"
-        app:layout_constraintVertical_bias="0.357" />
+        app:layout_constraintVertical_bias="0.888" />
 
     <TextView
         android:id="@+id/comida_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="14dp"
-        android:layout_marginEnd="212dp"
+        android:layout_marginEnd="224dp"
         android:layout_marginBottom="14dp"
         android:fontFamily="@font/alfa_slab_one"
         android:text="COMIDA"
@@ -157,34 +178,36 @@
         app:layout_constraintBottom_toTopOf="@+id/recena_boton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/comida_boton"
-        app:layout_constraintVertical_bias="0.375" />
+        app:layout_constraintVertical_bias="0.888" />
 
     <TextView
         android:id="@+id/merienda_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="200dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginStart="192dp"
+        android:layout_marginTop="20dp"
         android:fontFamily="@font/alfa_slab_one"
         android:text="MERIENDA"
         android:textSize="24sp"
         android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/cena_textview"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/merienda_boton" />
+        app:layout_constraintTop_toBottomOf="@+id/merienda_boton"
+        app:layout_constraintVertical_bias="1.0" />
 
     <TextView
         android:id="@+id/cena_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="267dp"
-        android:layout_marginTop="14dp"
+        android:layout_marginTop="24dp"
         android:layout_marginEnd="283dp"
         android:fontFamily="@font/alfa_slab_one"
         android:text="CENA"
         android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toStartOf="@+id/recena_textview"
-        app:layout_constraintHorizontal_bias="0.534"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@+id/merienda_textview"
         app:layout_constraintTop_toBottomOf="@+id/cena_boton" />
 
@@ -193,12 +216,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="14dp"
-        android:layout_marginEnd="204dp"
+        android:layout_marginEnd="224dp"
         android:fontFamily="@font/alfa_slab_one"
         android:text="RE-CENA"
         android:textSize="24sp"
         android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/cena_textview"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/recena_boton" />
+        app:layout_constraintTop_toBottomOf="@+id/recena_boton"
+        app:layout_constraintVertical_bias="0.714" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -15,6 +15,7 @@ public class DiasActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_dias);
 
+        String clienteSeleccionado = getIntent().getStringExtra("clienteSeleccionado");
         int dietaSeleccionada = getIntent().getIntExtra("dietaSeleccionada", 1);
 
         // Obtener los botones de los días
@@ -36,7 +37,7 @@ public class DiasActivity extends AppCompatActivity {
             for (int i = 0; i < 3; i++) {
                 botonesDias3[i].setVisibility(View.VISIBLE);
                 final int dia = i + 1;  // El índice es 0-based, por eso sumamos 1
-                botonesDias3[i].setOnClickListener(v -> abrirComidasActivity(dia, dietaSeleccionada));
+                botonesDias3[i].setOnClickListener(v -> abrirComidasActivity(clienteSeleccionado, dia, dietaSeleccionada));
             }
             for (int i = 0; i < 7; i++) {
                 botonesDias7[i].setVisibility(View.INVISIBLE);
@@ -46,17 +47,18 @@ public class DiasActivity extends AppCompatActivity {
             for (int i = 0; i < 7; i++) {
                 botonesDias7[i].setVisibility(View.VISIBLE);
                 final int dia = i + 1;  // El índice es 0-based, por eso sumamos 1
-                botonesDias7[i].setOnClickListener(v -> abrirComidasActivity(dia, dietaSeleccionada));
+                botonesDias7[i].setOnClickListener(v -> abrirComidasActivity(clienteSeleccionado, dia, dietaSeleccionada));
             }
-            for (int i = 0; i < 7; i++) {
+            for (int i = 0; i < 3; i++) {
                 botonesDias3[i].setVisibility(View.INVISIBLE);
             }
         }
 
     }
 
-    private void abrirComidasActivity(int diaSeleccionado, int dietaSeleccionada) {
-        Intent intent = new Intent(this, DiasActivity.class);
+    private void abrirComidasActivity(String clienteSeleccionado, int diaSeleccionado, int dietaSeleccionada) {
+        Intent intent = new Intent(this, ComidasActivity.class);
+        intent.putExtra("clienteSeleccionado", clienteSeleccionado);
         intent.putExtra("dietaSeleccionada", dietaSeleccionada);
         intent.putExtra("diaSeleccionado", diaSeleccionado);
         startActivity(intent);
@@ -64,6 +66,8 @@ public class DiasActivity extends AppCompatActivity {
 
     public void onClickReturn(View view){
         Intent intent = new Intent(this, DietasActivity.class );
+        String clienteSeleccionado = getIntent().getStringExtra("clienteSeleccionado");
+        intent.putExtra("clienteSeleccionado", clienteSeleccionado);
         startActivity(intent);
     }
 }
