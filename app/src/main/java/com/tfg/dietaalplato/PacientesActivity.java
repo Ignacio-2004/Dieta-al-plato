@@ -32,6 +32,7 @@ public class PacientesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pacientes);
 
+        String clienteSeleccionado = getIntent().getStringExtra("clienteSeleccionado");
 
         layoutClientes = findViewById(R.id.layoutClientes);
 
@@ -51,10 +52,11 @@ public class PacientesActivity extends AppCompatActivity {
                                       Log.d("Cliente", "Nombre del cliente: " + cliente.getName());
                                       saveData.setIdActualClient(cliente.getId());
 
-                                      Intent intent = new Intent(this, DietasActivity.class);
-                                      startActivity(intent);
+                              Intent intent = new Intent(this, DietasActivity.class);
+                              intent.putExtra("clienteSeleccionado", cliente.getName());
+                              startActivity(intent);
 
-                                  }
+                              }
                           );
                           layoutClientes.addView(boton);
                       }

@@ -1,6 +1,7 @@
 package com.tfg.dietaalplato;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -15,6 +16,8 @@ import com.tfg.dietaalplato.firebase.conectors.tools.FireBaseReader;
 import com.tfg.dietaalplato.firebase.exceptions.FBCException;
 import com.tfg.dietaalplato.firebase.tables.Food;
 import com.tfg.dietaalplato.utilities.SaveData;
+import com.tfg.dietaalplato.utilities.dialogo.AlimentosSv_Dialogo;
+import com.tfg.dietaalplato.utilities.dialogo.SignUp_Dialogo;
 
 public class AlimentosSV extends AppCompatActivity {
 
@@ -56,5 +59,12 @@ public class AlimentosSV extends AppCompatActivity {
             throw new RuntimeException(e);
         }
 
+    }
+
+
+    // metodo para mostrar el dialogo cuando se hace clic en INSERTAR ALIMENTO
+    public void insertarAlimento(View view) {
+        AlimentosSv_Dialogo dialogo = new AlimentosSv_Dialogo();
+        dialogo.show(getSupportFragmentManager(), "dialogoNuevoAlimento");
     }
 }
