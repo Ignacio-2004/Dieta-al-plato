@@ -13,7 +13,7 @@ import androidx.fragment.app.DialogFragment;
 import androidx.appcompat.app.AlertDialog;
 import com.tfg.dietaalplato.R;
 
-public class AlimentosSv_Dialogo extends DialogFragment {
+public class BancoAlimentos_Dialogo extends DialogFragment {
 
     private EditText inputAlimento, inputPC, inputE100, inputProt100, inputGrasa100, inputAGS100,
             inputAGMI100, inputAGPI100, inputCol100, inputHC100, inputFibra100,

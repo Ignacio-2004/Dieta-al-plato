@@ -37,7 +37,7 @@ public class DiasActivity extends AppCompatActivity {
             for (int i = 0; i < 3; i++) {
                 botonesDias3[i].setVisibility(View.VISIBLE);
                 final int dia = i + 1;  // El índice es 0-based, por eso sumamos 1
-                botonesDias3[i].setOnClickListener(v -> abrirComidasActivity(clienteSeleccionado, dia, dietaSeleccionada));
+                botonesDias3[i].setOnClickListener(v -> abrirComidasActivity(clienteSeleccionado, dietaSeleccionada, dia));
             }
             for (int i = 0; i < 7; i++) {
                 botonesDias7[i].setVisibility(View.INVISIBLE);
@@ -47,7 +47,7 @@ public class DiasActivity extends AppCompatActivity {
             for (int i = 0; i < 7; i++) {
                 botonesDias7[i].setVisibility(View.VISIBLE);
                 final int dia = i + 1;  // El índice es 0-based, por eso sumamos 1
-                botonesDias7[i].setOnClickListener(v -> abrirComidasActivity(clienteSeleccionado, dia, dietaSeleccionada));
+                botonesDias7[i].setOnClickListener(v -> abrirComidasActivity(clienteSeleccionado, dietaSeleccionada, dia));
             }
             for (int i = 0; i < 3; i++) {
                 botonesDias3[i].setVisibility(View.INVISIBLE);
@@ -56,7 +56,7 @@ public class DiasActivity extends AppCompatActivity {
 
     }
 
-    private void abrirComidasActivity(String clienteSeleccionado, int diaSeleccionado, int dietaSeleccionada) {
+    private void abrirComidasActivity(String clienteSeleccionado, int dietaSeleccionada, int diaSeleccionado) {
         Intent intent = new Intent(this, ComidasActivity.class);
         intent.putExtra("clienteSeleccionado", clienteSeleccionado);
         intent.putExtra("dietaSeleccionada", dietaSeleccionada);

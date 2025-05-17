@@ -7,27 +7,22 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.tfg.dietaalplato.firebase.conectors.tools.FireBaseReader;
 import com.tfg.dietaalplato.firebase.exceptions.FBCException;
 import com.tfg.dietaalplato.firebase.tables.Food;
 import com.tfg.dietaalplato.utilities.SaveData;
-import com.tfg.dietaalplato.utilities.dialogo.AlimentosSv_Dialogo;
-import com.tfg.dietaalplato.utilities.dialogo.SignUp_Dialogo;
+import com.tfg.dietaalplato.utilities.dialogo.BancoAlimentos_Dialogo;
 
-public class AlimentosSV extends AppCompatActivity {
+public class BancoAlimentosActivity extends AppCompatActivity {
 
     private LinearLayout layoutSV;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_alimentos_sv);
+        setContentView(R.layout.activity_banco_alimentos);
 
         layoutSV = findViewById(R.id.layoutAlimentos);
         SaveData saveData = SaveData.getInstance();
@@ -65,7 +60,7 @@ public class AlimentosSV extends AppCompatActivity {
 
     // metodo para mostrar el dialogo cuando se hace clic en INSERTAR ALIMENTO
     public void insertarAlimento(View view) {
-        AlimentosSv_Dialogo dialogo = new AlimentosSv_Dialogo();
+        BancoAlimentos_Dialogo dialogo = new BancoAlimentos_Dialogo();
         dialogo.show(getSupportFragmentManager(), "dialogoNuevoAlimento");
     }
     public void onClickBackNavigation(View view){

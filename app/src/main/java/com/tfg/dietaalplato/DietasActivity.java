@@ -63,11 +63,13 @@ public class DietasActivity extends AppCompatActivity {
 
     private void abrirDiasActivity( int dietaSeleccionada) {
         Intent intent = new Intent(this, DiasActivity.class);
+        intent.putExtra("dietaSeleccionada", dietaSeleccionada);
         startActivity(intent);
     }
 
-    private void abrirComidasActivity( int dietaSeleccionada) { // en caso de que se seleccione la dieta de 1 día, pasará directamente a la ventana de comidas
+    private void abrirComidasActivity(int dietaSeleccionada) { // en caso de que se seleccione la dieta de 1 día, pasará directamente a la ventana de comidas
         Intent intent = new Intent(this, ComidasActivity.class);
+        intent.putExtra("dietaSeleccionada", dietaSeleccionada);
         startActivity(intent);
     }
 
