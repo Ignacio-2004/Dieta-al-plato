@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -109,9 +110,9 @@ public class LogIn_Activity extends AppCompatActivity {
         Client client = new Client("CLI00020002", "Juan", "Pérez","USU0002", alergias, patologias);
         saveData.addClient(client);
 
-        saveData.setIdActualClient("CLI00020002");
+        saveData.setIdActualClient(client);
 
-        ClientInfo_Dialog dialogo = ClientInfo_Dialog.getInstance(true);
+        ClientInfo_Dialog dialogo = ClientInfo_Dialog.getInstance(false);
         dialogo.show(getSupportFragmentManager(), "dialogoInfoCliente");
 
 /*        ValidationResult result = new ValidationResult();
@@ -154,7 +155,7 @@ public class LogIn_Activity extends AppCompatActivity {
      */
     public void login(View view) throws FBCException {
 
-        Blocker.createBlocker(this);
+        Blocker.createBlocker(this.findViewById(android.R.id.content),this);
 
         text_error = findViewById(R.id.text_error);// guaardamos en la variable la referencia dele textView para los errores
 
@@ -206,13 +207,13 @@ public class LogIn_Activity extends AppCompatActivity {
                                                         if (passwd_introducida.equals(passwDB)) {
                                                             if (nomusuario_introducido.equals("admin.admin@dietetica.davinci")){
                                                                 Intent i = new Intent(this, InicioAdminActivity.class);
-                                                                Blocker.removeBlocker(this);
+                                                                Blocker.removeBlocker(this.findViewById(android.R.id.content));
                                                                 startActivity(i);
                                                                 finish(); // Cerramos Login para que no se pueda volver atrás
                                                             }
                                                             else {
                                                                 Intent i = new Intent(this, InicioUsuarioActivity.class);
-                                                                Blocker.removeBlocker(this);
+                                                                Blocker.removeBlocker(this.findViewById(android.R.id.content));
                                                                 startActivity(i);
                                                                 finish(); // Cerramos Login para que no se pueda volver atrás
                                                             }
@@ -283,7 +284,7 @@ public class LogIn_Activity extends AppCompatActivity {
                 text_error.setVisibility(View.GONE); // text view desaparece
             }
         }, 2000);
-        Blocker.removeBlocker(this);
+        Blocker.removeBlocker(this.findViewById(android.R.id.content));
     }
 
     public void mostrarPassword(View view) {

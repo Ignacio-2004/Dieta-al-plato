@@ -1,6 +1,7 @@
 package com.tfg.dietaalplato.firebase.conectors.tools;
 
 import android.telephony.TelephonyCallback;
+import android.util.Log;
 
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
@@ -23,6 +24,7 @@ public class FireBaseRemover {
     private static final String TAG = "FireBase/Remover";
 
     public static Task<ValidationResult> remove(String id) {
+        Log.d(TAG, "🗑️ Eliminando elemento con id: " + id);
         TaskCompletionSource<ValidationResult> taskCompletionSource = new TaskCompletionSource<>();
 
         FirebaseFirestore fst = FireBaseConnector.getInstance().getFirestore();
@@ -111,6 +113,7 @@ public class FireBaseRemover {
                 ).addOnFailureListener(e ->
                         taskCompletionSource.setResult(new ValidationResult(false, finalErrorMsg, null))
                 );
+        Log.d(TAG, "🏁 Fin del proceso de eliminado");
         return taskCompletionSource.getTask();
     }
 }

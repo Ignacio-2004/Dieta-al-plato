@@ -17,11 +17,13 @@ import android.widget.TextView;
 import androidx.fragment.app.DialogFragment;
 
 import com.tfg.dietaalplato.R;
+import com.tfg.dietaalplato.firebase.conectors.tools.FireBaseRemover;
 import com.tfg.dietaalplato.firebase.conectors.tools.FireBaseWriter;
 import com.tfg.dietaalplato.firebase.exceptions.FBCException;
 import com.tfg.dietaalplato.firebase.tables.Client;
-import com.tfg.dietaalplato.firebase.tables.User;
+import com.tfg.dietaalplato.firebase.utilities.OnResultCallBack;
 import com.tfg.dietaalplato.firebase.utilities.ValidationResult;
+import com.tfg.dietaalplato.utilities.Blocker;
 import com.tfg.dietaalplato.utilities.SaveData;
 
 import java.util.ArrayList;
@@ -40,6 +42,7 @@ public class ClientInfo_Dialog extends DialogFragment {
     private ArrayList<String> alergias;
     private ArrayList<String> patologias;
     private static boolean haveFill;
+    private View mainView;
 
     public static ClientInfo_Dialog getInstance(boolean fill) {
         haveFill = fill;
@@ -47,24 +50,24 @@ public class ClientInfo_Dialog extends DialogFragment {
     }
 
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        View view = getActivity().getLayoutInflater().inflate(R.layout.dialog_info_cliente, null);
+        mainView = getActivity().getLayoutInflater().inflate(R.layout.dialog_info_cliente, null);
 
-        editTextNombre = view.findViewById(R.id.editTextNombre);
-        editTextApellido = view.findViewById(R.id.editTextApellido);
-        textError = view.findViewById(R.id.textError);
-        layoutAlergias = view.findViewById(R.id.layoutAlergias);
-        layoutPatologias = view.findViewById(R.id.layoutPatologias);
-        saveButton = view.findViewById(R.id.buttonGuardar);
-        cancelButton = view.findViewById(R.id.buttonCancelar);
+        editTextNombre = mainView.findViewById(R.id.editTextNombre);
+        editTextApellido = mainView.findViewById(R.id.editTextApellido);
+        textError = mainView.findViewById(R.id.textError);
+        layoutAlergias = mainView.findViewById(R.id.layoutAlergias);
+        layoutPatologias = mainView.findViewById(R.id.layoutPatologias);
+        saveButton = mainView.findViewById(R.id.buttonGuardar);
+        cancelButton = mainView.findViewById(R.id.buttonCancelar);
 
         saveData = SaveData.getInstance();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setView(view)
+        builder.setView(mainView)
                 .setCancelable(true);
 
         if (haveFill){
-            client = saveData.getCLient(saveData.getIdActualClient());
+            client = saveData.getIdActualClient();
             editTextNombre.setText(client.getName());
             editTextApellido.setText(client.getApe());
             alergias = client.getAlergias();
@@ -76,19 +79,25 @@ public class ClientInfo_Dialog extends DialogFragment {
 
         // Rellenar alergias
         for (String alergia : alergias) {
-            addElement(alergia, layoutAlergias, alergias, view.getContext());
+            if (!alergia.isEmpty()) {
+                addElement(alergia, layoutAlergias, alergias, mainView.getContext());
+            }
         }
-        AddButtonPlus("Alergia", layoutAlergias, alergias, view.getContext());
+        AddButtonPlus("Alergia", layoutAlergias, alergias, mainView.getContext());
 
         // Rellenar patologías
         for (String patologia : patologias) {
-            addElement(patologia, layoutPatologias, patologias, view.getContext());
+            if (!patologia.isEmpty()) {
+                addElement(patologia, layoutPatologias, patologias, mainView.getContext());
+            }
         }
-        AddButtonPlus("Patología", layoutPatologias, patologias, view.getContext());
+        AddButtonPlus("Patología", layoutPatologias, patologias, mainView.getContext());
 
 
         saveButton.setOnClickListener(
                 v -> {
+                    ViewGroup parent = (ViewGroup) mainView.getRootView();
+                    Blocker.createBlocker(parent,requireActivity());
                     ArrayList<View> views = new ArrayList<>();
                     views.add(editTextNombre);
                     views.add(editTextApellido);
@@ -101,31 +110,34 @@ public class ClientInfo_Dialog extends DialogFragment {
                         mostrarTextError();
                         return;
                     }else{
-                        try {
-                            FireBaseWriter.saveData(Client.class, result,haveFill).addOnFailureListener(
-                                    e -> {
-                                        textError.setText("No se ha podido guardar el cliente");
-                                        textError.setVisibility(View.VISIBLE);
-                                        mostrarTextError();
-                                    }
-                            ).addOnSuccessListener(
-                                    validationResult -> {
-                                        textError.setText("Cliente guardado correctamente");
-                                        textError.setVisibility(View.VISIBLE);
-                                        mostrarTextError();
-                                    }
-                            );
-                        } catch (FBCException e) {
-                            textError.setText("No se ha podido guardar el cliente");
-                            textError.setVisibility(View.VISIBLE);
-                            mostrarTextError();
+                        if (haveFill){
+                            FireBaseRemover.remove(saveData.getIdActualClient().getId());
                         }
+
+                        FireBaseWriter.saveData(Client.class, result).addOnFailureListener(
+                                e -> {
+                                    Blocker.removeBlocker(parent);
+                                    textError.setText("No se ha podido guardar el cliente");
+                                    textError.setVisibility(View.VISIBLE);
+                                    mostrarTextError();
+                                }
+                        ).addOnSuccessListener(
+                                validationResult -> {
+                                    saveData.setIdActualClient((Client) validationResult.result);
+                                    Blocker.removeBlocker(parent);
+                                    textError.setText("Cliente guardado correctamente");
+                                    textError.setVisibility(View.VISIBLE);
+                                    mostrarTextError();
+                                }
+                        );
                     }
                 }
         );
 
         cancelButton.setOnClickListener(
-                v -> dismiss()
+                v ->{
+                    dismiss();
+                }
         );
 
         return builder.create();
@@ -192,4 +204,5 @@ public class ClientInfo_Dialog extends DialogFragment {
     private void mostrarTextError() {
         textError.postDelayed(() -> textError.setVisibility(View.GONE), 2000);
     }
+
 }

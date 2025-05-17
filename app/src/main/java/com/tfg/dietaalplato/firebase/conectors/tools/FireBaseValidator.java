@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class FireBaseValidator {
+    private static final String TAG = "FireBase/Validator";
 
     /**
      * Metodo para validar si un usuario ya existe en la base de datos
@@ -106,22 +107,25 @@ public class FireBaseValidator {
                 readClientFromUser(idExt).addOnSuccessListener(
                         clientes -> {
                             if (!clientes.exit) {
+                                Log.d(TAG, "No hay clientes");
                                 taskCompletionSource.setResult(new ValidationResult(true, String.valueOf(0), result.data));
                                 return;
                             }
 
                             for (Client client : clientes.result) {
                                 if (client.getName().equals(result.data.get("name"))) {
-                                    Log.e("Firebase", client.getId());
+                                    Log.e(TAG, client.getId());
                                     taskCompletionSource.setResult(new ValidationResult(false, "El cliente ya existe", result.data));
                                     return;
                                 }
                             }
 
                             taskCompletionSource.setResult(new ValidationResult(true, String.valueOf(clientes.result.size()), result.data));
+                            return;
                         }
                 ).addOnFailureListener(
                         e -> {
+                            Log.d(TAG, "❌ Error al leer la colección " + collectionName + ": " + e.getMessage());
                             taskCompletionSource.setException(new ComplexFBCE(new ObjectResult<>(false, e.getMessage(), result.data)));
                         }
                 );
@@ -134,7 +138,7 @@ public class FireBaseValidator {
 
                                 for (Food food : foodsCollection.values()) {
                                     if (food.getName().equals(result.data.get("name"))) {
-                                        Log.e("Firebase", food.getId());
+                                        Log.e(TAG, food.getId());
                                         taskCompletionSource.setResult(new ValidationResult(false, "El alimento ya existe", result.data));
                                         return;
                                     }
@@ -143,12 +147,13 @@ public class FireBaseValidator {
                                 taskCompletionSource.setResult(new ValidationResult(true, String.valueOf(foodsCollection.size()), result.data));
                             }
                             else{
+                                Log.d(TAG, "No hay alimentos");
                                 taskCompletionSource.setResult(new ValidationResult(true, String.valueOf(0), result.data));
                             }
                         }
                 ).addOnFailureListener(
                         e -> {
-                            Log.d("Firebase", "❌ Error al leer la colección " + collectionName + ": " + e.getMessage());
+                            Log.d(TAG, "❌ Error al leer la colección " + collectionName + ": " + e.getMessage());
                             taskCompletionSource.setException(new ComplexFBCE(new ObjectResult<>(false, e.getMessage(), result.data)));
                         }
                 );

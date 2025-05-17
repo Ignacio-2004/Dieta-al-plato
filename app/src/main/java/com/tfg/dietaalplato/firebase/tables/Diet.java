@@ -28,7 +28,7 @@ public class Diet extends BaseObject {
 
     public Diet(String id, String name, String tip, String idCliente, String just) {
         super(id, name);
-        this.tip = tip;
+        this.tip = tip; //Los dias
         this.idCliente = idCliente;
         this.just = just;
     }

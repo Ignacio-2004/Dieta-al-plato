@@ -259,6 +259,7 @@ public class FireBaseWriter {
                     repeatObject(result, classData.data, result.data.get("idUsr")).addOnSuccessListener(
                             validationResult -> {
                                 if (!validationResult.exit) {
+                                    Log.w(TAG, classData.data+" existente, operacion con permisos de sobreescritura");
                                     FireBaseRemover.remove(validationResult.data.get("id")).addOnSuccessListener(
                                             validationResult1 -> {
                                                 taskCompletionSource.set(finalResultOfForce(validationResult1,classType));

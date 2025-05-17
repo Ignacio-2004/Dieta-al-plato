@@ -18,6 +18,7 @@ import com.tfg.dietaalplato.firebase.conectors.tools.FireBaseReader;
 import com.tfg.dietaalplato.firebase.tables.Client;
 import com.tfg.dietaalplato.firebase.exceptions.FBCException;
 import com.tfg.dietaalplato.utilities.SaveData;
+import com.tfg.dietaalplato.utilities.dialogo.ClientInfo_Dialog;
 
 
 public class PacientesActivity extends AppCompatActivity {
@@ -50,7 +51,7 @@ public class PacientesActivity extends AppCompatActivity {
 
                           boton.setOnClickListener(v ->{
                                       Log.d("Cliente", "Nombre del cliente: " + cliente.getName());
-                                      saveData.setIdActualClient(cliente.getId());
+                                      saveData.setIdActualClient(cliente);
 
                               Intent intent = new Intent(this, DietasActivity.class);
                               intent.putExtra("clienteSeleccionado", cliente.getName());
@@ -74,7 +75,7 @@ public class PacientesActivity extends AppCompatActivity {
     }
 
     public void onClickAddClient(View view){
-        ClientCreator_Dialogo dialogo = new ClientCreator_Dialogo();
+        ClientInfo_Dialog dialogo = ClientInfo_Dialog.getInstance(false);
         dialogo.show(getSupportFragmentManager(), "dialogoNuevoCliente");
     }
 

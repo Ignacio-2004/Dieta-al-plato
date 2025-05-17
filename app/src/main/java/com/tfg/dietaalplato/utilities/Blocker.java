@@ -1,6 +1,7 @@
 package com.tfg.dietaalplato.utilities;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Color;
 import android.view.Gravity;
 import android.view.View;
@@ -12,13 +13,11 @@ public class Blocker {
 
     private static View blocker;
 
-    public static void createBlocker(Activity activity) {
+    public static void createBlocker(ViewGroup rootView, Context context) {
         if (blocker != null) return;
 
-        ViewGroup rootView = activity.findViewById(android.R.id.content);
-
         // Vista contenedora que cubrirá toda la pantalla
-        FrameLayout overlay = new FrameLayout(activity);
+        FrameLayout overlay = new FrameLayout(context);
         overlay.setLayoutParams(new FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.MATCH_PARENT,
                 FrameLayout.LayoutParams.MATCH_PARENT
@@ -28,7 +27,7 @@ public class Blocker {
         overlay.setFocusable(true);
 
         // Añadir ProgressBar centrado
-        ProgressBar progressBar = new ProgressBar(activity);
+        ProgressBar progressBar = new ProgressBar(context);
         FrameLayout.LayoutParams progressParams = new FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.WRAP_CONTENT,
                 FrameLayout.LayoutParams.WRAP_CONTENT
@@ -41,9 +40,8 @@ public class Blocker {
         blocker = overlay;
     }
 
-    public static void removeBlocker(Activity activity) {
+    public static void removeBlocker(ViewGroup rootView) {
         if (blocker != null) {
-            ViewGroup rootView = activity.findViewById(android.R.id.content);
             rootView.removeView(blocker);
             blocker = null;
         }
