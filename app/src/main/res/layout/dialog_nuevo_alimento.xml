@@ -1,224 +1,172 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/scrollView"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:fillViewport="true"
-    android:padding="5dp">
+    android:orientation="vertical"
+    android:background="#DDE9EFDF"
+    android:padding="16dp">
 
-    <LinearLayout
-        android:id="@+id/layoutAlimentoForm"
+    <!-- TÍTULO PRINCIPAL -->
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:text="Registra un nuevo alimento"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:textColor="#027C68"
+        android:gravity="center"
+        android:paddingBottom="16dp" />
 
-        <!-- Título -->
-        <TextView
+    <!-- CONTENIDO SCROLLABLE -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Registrar nuevo alimento"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:gravity="center"
-            android:paddingBottom="16dp" />
+            android:orientation="vertical">
 
-        <!-- Instrucciones -->
-        <TextView
-            android:layout_width="match_parent"
+            <!-- Instrucciones -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Introduce los siguientes datos nutricionales por cada 100g del alimento:"
+                android:textSize="16sp"
+                android:textColor="#333"
+                android:paddingBottom="16dp" />
+
+            <!-- Nombre del alimento -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Nombre del alimento"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="#027C68"
+                android:layout_marginTop="8dp" />
+
+            <EditText
+                android:id="@+id/inputAlimento"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Ej: Manzana"
+                android:background="@android:drawable/edit_text"
+                android:inputType="textCapWords"
+                android:padding="10dp"
+                android:textSize="16sp"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Sección MACRONUTRIENTES -->
+            <TextView
+                android:text="Macronutrientes"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="#027C68"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="8dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <!-- Lista de macronutrientes -->
+            <TextView android:text="PC" style="@style/FormLabel" />
+            <EditText android:id="@+id/inputPC" style="@style/FormInput" android:text="0" />
+
+            <TextView android:text="Energía (E/100)" style="@style/FormLabel" />
+            <EditText android:id="@+id/inputE100" style="@style/FormInput" android:text="0" />
+
+            <TextView android:text="Proteínas (Prot/100)" style="@style/FormLabel" />
+            <EditText android:id="@+id/inputProt100" style="@style/FormInput" android:text="0" />
+
+            <TextView android:text="Grasas (Grasa/100)" style="@style/FormLabel" />
+            <EditText android:id="@+id/inputGrasa100" style="@style/FormInput" android:text="0" />
+
+            <TextView android:text="AGS/100" style="@style/FormLabel" />
+            <EditText android:id="@+id/inputAGS100" style="@style/FormInput" android:text="0" />
+
+            <TextView android:text="AGMI/100" style="@style/FormLabel" />
+            <EditText android:id="@+id/inputAGMI100" style="@style/FormInput" android:text="0" />
+
+            <TextView android:text="AGPI/100" style="@style/FormLabel" />
+            <EditText android:id="@+id/inputAGPI100" style="@style/FormInput" android:text="0" />
+
+            <TextView android:text="Colesterol (Col/100)" style="@style/FormLabel" />
+            <EditText android:id="@+id/inputCol100" style="@style/FormInput" android:text="0" />
+
+            <TextView android:text="Hidratos de Carbono (HC/100)" style="@style/FormLabel" />
+            <EditText android:id="@+id/inputHC100" style="@style/FormInput" android:text="0" />
+
+            <TextView android:text="Fibra/100" style="@style/FormLabel" />
+            <EditText android:id="@+id/inputFibra100" style="@style/FormInput" android:text="0" />
+
+            <!-- Sección MICRONUTRIENTES -->
+            <TextView
+                android:text="Micronutrientes"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="#027C68"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="8dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <TextView android:text="Vitamina C (Vit C/100)" style="@style/FormLabel" />
+            <EditText android:id="@+id/inputVitC100" style="@style/FormInput" android:text="0" />
+
+            <TextView android:text="Vitamina B6 (Vit B6/100)" style="@style/FormLabel" />
+            <EditText android:id="@+id/inputVitB6100" style="@style/FormInput" android:text="0" />
+
+            <TextView android:text="Vitamina E (Vit E/100)" style="@style/FormLabel" />
+            <EditText android:id="@+id/inputVitE100" style="@style/FormInput" android:text="0" />
+
+            <TextView android:text="Hierro (Fe/100)" style="@style/FormLabel" />
+            <EditText android:id="@+id/inputFe100" style="@style/FormInput" android:text="0" />
+
+            <TextView android:text="Sodio (Na/100)" style="@style/FormLabel" />
+            <EditText android:id="@+id/inputNa100" style="@style/FormInput" android:text="0" />
+
+            <TextView android:text="Calcio (Ca/100)" style="@style/FormLabel" />
+            <EditText android:id="@+id/inputCa100" style="@style/FormInput" android:text="0" />
+
+            <TextView android:text="Potasio (K/100)" style="@style/FormLabel" />
+            <EditText android:id="@+id/inputK100" style="@style/FormInput" android:text="0" />
+
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- BOTONES -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="end"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp"
+        android:weightSum="2"
+        android:paddingTop="8dp">
+
+        <Button
+            android:id="@+id/btnCancelar"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Por favor, introduce los siguientes datos nutricionales por cada 100g del alimento:"
-            android:textSize="16sp"
-            android:textColor="#444"
-            android:paddingBottom="16dp" />
+            android:layout_weight="1"
+            android:text="Cancelar"
+            android:textAllCaps="false"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#027C68"
+            android:layout_marginEnd="8dp" />
 
-        <!-- Campos -->
-        <TextView android:text="Nombre del alimento"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
-        <EditText android:id="@+id/inputAlimento"
-            android:hint="Ej: Manzana"
-            android:inputType="textCapWords"
-            android:text=""
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <TextView android:text="PC"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
-        <EditText android:id="@+id/inputPC"
-            android:inputType="numberDecimal"
-            android:text="0"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <TextView android:text="Energía (E/100)"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
-        <EditText android:id="@+id/inputE100"
-            android:inputType="numberDecimal"
-            android:text="0"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <TextView android:text="Proteínas (Prot/100)"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
-        <EditText android:id="@+id/inputProt100"
-            android:inputType="numberDecimal"
-            android:text="0"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <TextView android:text="Grasas (Grasa/100)"   android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
-        <EditText android:id="@+id/inputGrasa100"
-            android:inputType="numberDecimal"
-            android:text="0"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <TextView android:text="AGS/100"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
-        <EditText android:id="@+id/inputAGS100"
-            android:inputType="numberDecimal"
-            android:text="0"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <TextView android:text="AGMI/100"
-            android:layout_width="match_parent"
+        <Button
+            android:id="@+id/btnGuardar"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            />
-
-        <EditText android:id="@+id/inputAGMI100"
-            android:inputType="numberDecimal"
-            android:text="0"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <TextView android:text="AGPI/100"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            />
-
-        <EditText android:id="@+id/inputAGPI100"
-            android:inputType="numberDecimal"
-            android:text="0"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <TextView android:text="Colesterol (Col/100)"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            />
-
-        <EditText android:id="@+id/inputCol100"
-            android:inputType="numberDecimal"
-            android:text="0"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <TextView android:text="Hidratos de Carbono (HC/100)"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            />
-
-        <EditText android:id="@+id/inputHC100"
-            android:inputType="numberDecimal"
-            android:text="0"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <TextView android:text="Fibra/100"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            />
-
-        <EditText android:id="@+id/inputFibra100"
-            android:inputType="numberDecimal"
-            android:text="0"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <!-- Micronutrientes -->
-        <TextView android:text="Vitamina C (Vit C/100)"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            />
-
-        <EditText android:id="@+id/inputVitC100"
-            android:inputType="numberDecimal"
-            android:text="0"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <TextView android:text="Vitamina B6 (Vit B6/100)"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
-        <EditText android:id="@+id/inputVitB6100"
-            android:inputType="numberDecimal"
-            android:text="0"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <TextView android:text="Vitamina E (Vit E/100)"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
-        <EditText android:id="@+id/inputVitE100"
-            android:inputType="numberDecimal"
-            android:text="0"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <TextView android:text="Hierro (Fe/100)"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
-        <EditText android:id="@+id/inputFe100"
-            android:inputType="numberDecimal"
-            android:text="0"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <TextView android:text="Sodio (Na/100)"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            />
-
-        <EditText android:id="@+id/inputNa100"
-            android:inputType="numberDecimal"
-            android:text="0"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <TextView android:text="Calcio (Ca/100)"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            />
-        <EditText android:id="@+id/inputCa100"
-            android:inputType="numberDecimal"
-            android:text="0"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <TextView android:text="Potasio (K/100)"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
-        <EditText android:id="@+id/inputK100"
-            android:inputType="numberDecimal"
-            android:text="0"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
+            android:layout_weight="1"
+            android:text="Guardar"
+            android:textAllCaps="false"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#027C68" />
     </LinearLayout>
-</ScrollView>
+
+</LinearLayout>

@@ -7,6 +7,30 @@
     android:layout_height="match_parent"
     tools:context=".DiasActivity">
 
+    <!-- Fondo -->
+    <ImageView
+        android:id="@+id/fondo"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scaleType="centerCrop"
+        android:contentDescription="Fondo"
+        app:srcCompat="@drawable/fondo_android"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Velo (superposición semitransparente) -->
+    <View
+        android:id="@+id/velo"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#DDE9EFDF"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
     <ImageButton
         android:id="@+id/bttReturn"
         android:layout_width="90dp"

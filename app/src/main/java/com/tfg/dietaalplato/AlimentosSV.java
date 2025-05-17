@@ -1,5 +1,6 @@
 package com.tfg.dietaalplato;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -66,5 +67,9 @@ public class AlimentosSV extends AppCompatActivity {
     public void insertarAlimento(View view) {
         AlimentosSv_Dialogo dialogo = new AlimentosSv_Dialogo();
         dialogo.show(getSupportFragmentManager(), "dialogoNuevoAlimento");
+    }
+    public void onClickBackNavigation(View view){
+        Intent intent = new Intent(this, InicioUsuarioActivity.class );
+        startActivity(intent);
     }
 }
