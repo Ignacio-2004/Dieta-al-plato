@@ -67,4 +67,8 @@ public class BancoAlimentosActivity extends AppCompatActivity {
         Intent intent = new Intent(this, InicioUsuarioActivity.class );
         startActivity(intent);
     }
+    public void actualizarBancoAlimentos(View view){
+        Intent intent = new Intent(this, BancoAlimentosActivity.class );
+        startActivity(intent);
+    }
 }

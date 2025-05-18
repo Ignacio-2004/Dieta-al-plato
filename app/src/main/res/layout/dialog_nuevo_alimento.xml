@@ -10,7 +10,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Registra un nuevo alimento"
+        android:text="@string/registra_un_nuevo_alimento"
         android:textSize="22sp"
         android:textStyle="bold"
         android:textColor="#027C68"
@@ -33,7 +33,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Introduce los siguientes datos nutricionales por cada 100g del alimento:"
+                android:text="@string/introduce_los_siguientes_datos_nutricionales_por_cada_100g_del_alimento"
                 android:textSize="16sp"
                 android:textColor="#333"
                 android:paddingBottom="16dp" />
@@ -42,7 +42,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Nombre del alimento"
+                android:text="@string/nombre_del_alimento"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 android:textColor="#027C68"
@@ -52,7 +52,8 @@
                 android:id="@+id/inputAlimento"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Ej: Manzana"
+                android:autofillHints=""
+                android:hint="@string/ej_manzana"
                 android:background="@android:drawable/edit_text"
                 android:inputType="textCapWords"
                 android:padding="10dp"
@@ -61,7 +62,7 @@
 
             <!-- Sección MACRONUTRIENTES -->
             <TextView
-                android:text="Macronutrientes"
+                android:text="@string/macronutrientes"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 android:textColor="#027C68"
@@ -71,39 +72,49 @@
                 android:layout_height="wrap_content" />
 
             <!-- Lista de macronutrientes -->
-            <TextView android:text="PC" style="@style/FormLabel" />
-            <EditText android:id="@+id/inputPC" style="@style/FormInput" android:text="0" />
+            <TextView android:text="@string/pc" style="@style/FormLabel" />
+            <EditText android:id="@+id/inputPC" style="@style/FormInput"  android:autofillHints=""
+                android:text="@string/_0" />
 
-            <TextView android:text="Energía (E/100)" style="@style/FormLabel" />
-            <EditText android:id="@+id/inputE100" style="@style/FormInput" android:text="0" />
+            <TextView android:text="@string/energ_a_e_100" style="@style/FormLabel" />
+            <EditText android:id="@+id/inputE100" style="@style/FormInput" android:autofillHints=""
+                android:text="@string/_0" />
 
-            <TextView android:text="Proteínas (Prot/100)" style="@style/FormLabel" />
-            <EditText android:id="@+id/inputProt100" style="@style/FormInput" android:text="0" />
+            <TextView android:text="@string/prote_nas_prot_100" style="@style/FormLabel" />
+            <EditText android:id="@+id/inputProt100" style="@style/FormInput" android:autofillHints=""
+                android:text="@string/_0" />
 
-            <TextView android:text="Grasas (Grasa/100)" style="@style/FormLabel" />
-            <EditText android:id="@+id/inputGrasa100" style="@style/FormInput" android:text="0" />
+            <TextView android:text="@string/grasas_grasa_100" style="@style/FormLabel" />
+            <EditText android:id="@+id/inputGrasa100" style="@style/FormInput"  android:autofillHints=""
+                android:text="@string/_0" />
 
-            <TextView android:text="AGS/100" style="@style/FormLabel" />
-            <EditText android:id="@+id/inputAGS100" style="@style/FormInput" android:text="0" />
+            <TextView android:text="@string/ags_100" style="@style/FormLabel" />
+            <EditText android:id="@+id/inputAGS100" style="@style/FormInput"  android:autofillHints=""
+                android:text="@string/_0" />
 
-            <TextView android:text="AGMI/100" style="@style/FormLabel" />
-            <EditText android:id="@+id/inputAGMI100" style="@style/FormInput" android:text="0" />
+            <TextView android:text="@string/agmi_100" style="@style/FormLabel" />
+            <EditText android:id="@+id/inputAGMI100" style="@style/FormInput" android:autofillHints=""
+                android:text="@string/_0" />
 
-            <TextView android:text="AGPI/100" style="@style/FormLabel" />
-            <EditText android:id="@+id/inputAGPI100" style="@style/FormInput" android:text="0" />
+            <TextView android:text="@string/agpi_100" style="@style/FormLabel" />
+            <EditText android:id="@+id/inputAGPI100" style="@style/FormInput"  android:autofillHints=""
+                android:text="@string/_0" />
 
-            <TextView android:text="Colesterol (Col/100)" style="@style/FormLabel" />
-            <EditText android:id="@+id/inputCol100" style="@style/FormInput" android:text="0" />
+            <TextView android:text="@string/colesterol_col_100" style="@style/FormLabel" />
+            <EditText android:id="@+id/inputCol100" style="@style/FormInput" android:autofillHints=""
+                android:text="@string/_0" />
 
-            <TextView android:text="Hidratos de Carbono (HC/100)" style="@style/FormLabel" />
-            <EditText android:id="@+id/inputHC100" style="@style/FormInput" android:text="0" />
+            <TextView android:text="@string/hidratos_de_carbono_hc_100" style="@style/FormLabel" />
+            <EditText android:id="@+id/inputHC100" style="@style/FormInput"  android:autofillHints=""
+                android:text="@string/_0" />
 
-            <TextView android:text="Fibra/100" style="@style/FormLabel" />
-            <EditText android:id="@+id/inputFibra100" style="@style/FormInput" android:text="0" />
+            <TextView android:text="@string/fibra_100" style="@style/FormLabel" />
+            <EditText android:id="@+id/inputFibra100" style="@style/FormInput"  android:autofillHints=""
+                android:text="@string/_0" />
 
             <!-- Sección MICRONUTRIENTES -->
             <TextView
-                android:text="Micronutrientes"
+                android:text="@string/micronutrientes"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 android:textColor="#027C68"
@@ -112,32 +123,42 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
-            <TextView android:text="Vitamina C (Vit C/100)" style="@style/FormLabel" />
-            <EditText android:id="@+id/inputVitC100" style="@style/FormInput" android:text="0" />
+            <TextView android:text="@string/vitamina_c_vit_c_100" style="@style/FormLabel" />
+            <EditText android:id="@+id/inputVitC100" style="@style/FormInput"  android:autofillHints=""
+                android:text="@string/_0" />
 
-            <TextView android:text="Vitamina B6 (Vit B6/100)" style="@style/FormLabel" />
-            <EditText android:id="@+id/inputVitB6100" style="@style/FormInput" android:text="0" />
+            <TextView android:text="@string/vitamina_b6_vit_b6_100" style="@style/FormLabel" />
+            <EditText android:id="@+id/inputVitB6100" style="@style/FormInput"  android:autofillHints=""
+                android:text="@string/_0" />
 
-            <TextView android:text="Vitamina E (Vit E/100)" style="@style/FormLabel" />
-            <EditText android:id="@+id/inputVitE100" style="@style/FormInput" android:text="0" />
+            <TextView android:text="@string/vitamina_e_vit_e_100" style="@style/FormLabel" />
+            <EditText android:id="@+id/inputVitE100" style="@style/FormInput"  android:autofillHints=""
+                android:text="@string/_0" />
 
-            <TextView android:text="Hierro (Fe/100)" style="@style/FormLabel" />
-            <EditText android:id="@+id/inputFe100" style="@style/FormInput" android:text="0" />
+            <TextView android:text="@string/hierro_fe_100" style="@style/FormLabel" />
+            <EditText android:id="@+id/inputFe100" style="@style/FormInput"  android:autofillHints=""
+                android:text="@string/_0" />
 
-            <TextView android:text="Sodio (Na/100)" style="@style/FormLabel" />
-            <EditText android:id="@+id/inputNa100" style="@style/FormInput" android:text="0" />
+            <TextView android:text="@string/sodio_na_100" style="@style/FormLabel" />
+            <EditText android:id="@+id/inputNa100" style="@style/FormInput"  android:autofillHints=""
+                android:text="@string/_0" />
 
-            <TextView android:text="Calcio (Ca/100)" style="@style/FormLabel" />
-            <EditText android:id="@+id/inputCa100" style="@style/FormInput" android:text="0" />
+            <TextView android:text="@string/calcio_ca_100" style="@style/FormLabel" />
+            <EditText android:id="@+id/inputCa100" style="@style/FormInput"
+                android:autofillHints=""
+                android:text="@string/_0" />
 
-            <TextView android:text="Potasio (K/100)" style="@style/FormLabel" />
-            <EditText android:id="@+id/inputK100" style="@style/FormInput" android:text="0" />
+            <TextView android:text="@string/potasio_k_100" style="@style/FormLabel" />
+            <EditText android:id="@+id/inputK100" style="@style/FormInput"
+                android:autofillHints=""
+                android:text="@string/_0" />
 
         </LinearLayout>
     </ScrollView>
 
     <!-- BOTONES -->
     <LinearLayout
+        style="?android:attr/buttonBarStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -149,10 +170,11 @@
 
         <Button
             android:id="@+id/btnCancelar"
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Cancelar"
+            android:text="@string/cancelar"
             android:textAllCaps="false"
             android:textColor="#FFFFFF"
             android:backgroundTint="#027C68"
@@ -160,13 +182,27 @@
 
         <Button
             android:id="@+id/btnGuardar"
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Guardar"
+            android:text="@string/guardar"
             android:textAllCaps="false"
             android:textColor="#FFFFFF"
             android:backgroundTint="#027C68" />
     </LinearLayout>
+
+    <!-- MENSAJE DE ERROR -->
+    <TextView
+        android:id="@+id/txtMensajeErrorAlimento"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textColor="#B00020"
+        android:textSize="14sp"
+        android:visibility="gone"
+        android:gravity="center"
+        android:paddingTop="4dp"
+        android:paddingBottom="8dp" />
 
 </LinearLayout>

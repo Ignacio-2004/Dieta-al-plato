@@ -65,6 +65,7 @@
             android:layout_width="98dp"
             android:layout_height="94dp"
             android:layout_marginTop="16dp"
+            android:onClick="actualizarBancoAlimentos"
             app:srcCompat="@android:drawable/ic_menu_rotate" />
 
         <ImageView
@@ -92,6 +93,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+
             android:padding="16dp" />
     </ScrollView>
 

@@ -26,6 +26,8 @@ public class SignUp_Dialogo extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+
+
         // mostramos el layout (Inflamos)
         View view = getActivity().getLayoutInflater().inflate(R.layout.dialog_nuevo_usuario, null);
 
@@ -89,7 +91,7 @@ public class SignUp_Dialogo extends DialogFragment {
                                            }
                                    ).addOnFailureListener(
                                            e -> {
-                                               textError.setText("Error al guardar los datos: " + e.getMessage());
+                                               textError.setText("❌  Error al guardar los datos: " + e.getMessage());
                                                textError.setVisibility(View.VISIBLE);
                                                mostrarTextError();
                                            }
@@ -97,41 +99,47 @@ public class SignUp_Dialogo extends DialogFragment {
                                    //--IP -07/05/2025
                            }
                            else {
-                               textError.setText("Las contraseñas no coinciden");
+                               textError.setText("❌ Las contraseñas no coinciden");
+                               nam_user.setError("Error en contraseña");
                                textError.setVisibility(View.VISIBLE);
                                mostrarTextError();
                            }
 
                        }
                        else{
-                           textError.setText(" Error: La contraseña debe tener entre 8 y 12 caracteres, con al menos una mayúscula, un número y un símbolo especial (- _ # !).");
+                           textError.setText("❌ Error: La contraseña debe tener entre 8 y 12 caracteres, con al menos una mayúscula, un número y un símbolo especial (- _ # !).");
+                           password.setError("Error en contraseña");
                            textError.setVisibility(View.VISIBLE);
                            mostrarTextError();
                        }
 
                    }
                    else {
-                       textError.setText("  Error: nombre de usuario debe tener la estructura [nombre.apellidos@dietetica.davinci].  ");
+                       textError.setText("❌ Error: nombre de usuario debe tener la estructura [nombre.apellidos@dietetica.davinci].  ");
+                       nam_user.setError("Error en usuario");
                        textError.setVisibility(View.VISIBLE); // el textView se puede ver
                        mostrarTextError();// se oculta el mensaje
                    }
 
                }
                else{
-                   textError.setText("  Error: contraseña de usuario vacía.  ");
+                   textError.setText("❌ Error: contraseña de usuario vacía.  ");
+                   password.setError("Error en contraseña");
                    textError.setVisibility(View.VISIBLE); // el textView se puede ver
                    mostrarTextError();// se oculta el mensaje
                }
 
            }
            else{
-               textError.setText("  Error: nombre de usuario vacío.  ");
+
+               textError.setText("❌ Error: nombre de usuario vacío.  ");
+               nam_user.setError("Error en usuario");
                 textError.setVisibility(View.VISIBLE); // el textView se puede ver
                 mostrarTextError();// se oculta el mensaje
         }
         });
 
-        // boton de cancelar
+                // boton de cancelar
         Button btnCancelar = view.findViewById(R.id.buttonCancelar);
         btnCancelar.setOnClickListener(v -> dismiss());
 

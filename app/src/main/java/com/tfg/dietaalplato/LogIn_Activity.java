@@ -220,6 +220,7 @@ public class LogIn_Activity extends AppCompatActivity {
                                                         } else {
                                                             // Contraseña incorrecta
                                                             text_error.setText("Contraseña incorrecta.");
+                                                            passw.setError("Error en contraseña");
                                                             text_error.setVisibility(View.VISIBLE);
                                                             mostrarTextError();
                                                         }
@@ -227,6 +228,7 @@ public class LogIn_Activity extends AppCompatActivity {
                                                     }
                                                     else {
                                                         text_error.setText(" Error: La contraseña debe tener entre 8 y 12 caracteres, con al menos una mayúscula, un número y un símbolo especial (- _ # !).");
+                                                        passw.setError("Error en contraseña");
                                                         text_error.setVisibility(View.VISIBLE);
                                                         mostrarTextError();
                                                     }
@@ -245,12 +247,14 @@ public class LogIn_Activity extends AppCompatActivity {
 
                                 } else {
                                     text_error.setText("  Error: contraseña de usuario vacía.  ");
+                                    passw.setError("Error en usuario");
                                     text_error.setVisibility(View.VISIBLE); // el textView se puede ver
                                     mostrarTextError();// se oculta el mensaje
                                 }
 
                             } else { // No existe el usuario ❌
                                 text_error.setText("  Error: nombre usuario no resgistrado ");
+                                nam_user.setError("Error en usuario");
                                 text_error.setVisibility(View.VISIBLE); // el textView se puede ver
                                 mostrarTextError();// se oculta el mensaje
                             }
@@ -258,20 +262,23 @@ public class LogIn_Activity extends AppCompatActivity {
                             // Manejo de error
                             e.printStackTrace();
                             text_error.setText("Error al verificar el usuario.");
+                            nam_user.setError("Error en usuario");
                             text_error.setVisibility(View.VISIBLE);
                             mostrarTextError();
                         });
 
             } else {
                 text_error.setText("  Error: nombre de usuario debe tener la estructura [nombre.apellidos@dietetica.davinci].  ");
+                nam_user.setError("Error en usuario");
                 text_error.setVisibility(View.VISIBLE); // el textView se puede ver
                 mostrarTextError();// se oculta el mensaje
             }
 
         } else // no ha puesto el gmail
         {
-            text_error.setText("  Error: bnombre de usuario vacío.  ");
+            text_error.setText("  Error: nombre de usuario vacío.  ");
             text_error.setVisibility(View.VISIBLE); // el textView se puede ver
+            nam_user.setError("Error en usuario");
             mostrarTextError();// se oculta el mensaje
         }
     }

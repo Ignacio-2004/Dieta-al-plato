@@ -254,13 +254,13 @@
         android:layout_width="45dp"
         android:layout_height="45dp"
         android:layout_marginTop="23dp"
-        android:layout_marginEnd="320dp"
+        android:layout_marginEnd="340dp"
         android:background="@android:color/transparent"
         android:onClick="mostrarPassword"
         android:scaleType="fitXY"
         android:src="@drawable/closed_eye"
-        app:layout_constraintEnd_toEndOf="parent"
         android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_usuario" />
 
     <!-- boton ocultar password -->
@@ -269,13 +269,13 @@
         android:layout_width="45dp"
         android:layout_height="45dp"
         android:layout_marginTop="23dp"
-        android:layout_marginEnd="320dp"
+        android:layout_marginEnd="340dp"
         android:background="@android:color/transparent"
         android:onClick="ocultarPassword"
         android:scaleType="fitXY"
         android:src="@drawable/open_eye"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
-         android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@+id/text_usuario" />
 
 
