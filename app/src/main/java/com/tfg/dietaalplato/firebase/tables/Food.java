@@ -256,7 +256,7 @@ public class Food extends BaseObject {
         }catch (Exception e){
 
             result.exit = false;
-            result.message = "Error : " + e.getMessage();
+            result.message = "Error : Todos los campos obligatorios (*) deben de estar rellenos ";
 
         }
 

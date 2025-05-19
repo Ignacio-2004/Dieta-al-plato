@@ -74,19 +74,19 @@
             <!-- Lista de macronutrientes -->
             <TextView android:text="@string/pc" style="@style/FormLabel" />
             <EditText android:id="@+id/inputPC" style="@style/FormInput"  android:autofillHints=""
-                android:text="@string/_0" />
+                android:hint="@string/_0" />
 
             <TextView android:text="@string/energ_a_e_100" style="@style/FormLabel" />
             <EditText android:id="@+id/inputE100" style="@style/FormInput" android:autofillHints=""
-                android:text="@string/_0" />
+                android:hint="@string/_0" />
 
             <TextView android:text="@string/prote_nas_prot_100" style="@style/FormLabel" />
             <EditText android:id="@+id/inputProt100" style="@style/FormInput" android:autofillHints=""
-                android:text="@string/_0" />
+                android:hint="@string/_0" />
 
             <TextView android:text="@string/grasas_grasa_100" style="@style/FormLabel" />
             <EditText android:id="@+id/inputGrasa100" style="@style/FormInput"  android:autofillHints=""
-                android:text="@string/_0" />
+                android:hint="@string/_0" />
 
             <TextView android:text="@string/ags_100" style="@style/FormLabel" />
             <EditText android:id="@+id/inputAGS100" style="@style/FormInput"  android:autofillHints=""
@@ -106,7 +106,7 @@
 
             <TextView android:text="@string/hidratos_de_carbono_hc_100" style="@style/FormLabel" />
             <EditText android:id="@+id/inputHC100" style="@style/FormInput"  android:autofillHints=""
-                android:text="@string/_0" />
+                android:hint="@string/_0" />
 
             <TextView android:text="@string/fibra_100" style="@style/FormLabel" />
             <EditText android:id="@+id/inputFibra100" style="@style/FormInput"  android:autofillHints=""

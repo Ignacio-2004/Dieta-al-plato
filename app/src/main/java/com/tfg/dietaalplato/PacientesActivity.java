@@ -13,6 +13,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 
+import com.tfg.dietaalplato.utilities.Blocker;
 import com.tfg.dietaalplato.utilities.dialogo.ClientCreator_Dialogo;
 import com.tfg.dietaalplato.firebase.conectors.tools.FireBaseReader;
 import com.tfg.dietaalplato.firebase.tables.Client;
@@ -39,6 +40,7 @@ public class PacientesActivity extends AppCompatActivity {
 
         saveData = SaveData.getInstance();
         try {
+            Blocker.createBlocker(this.findViewById(android.R.id.content),this);
             FireBaseReader.readClientFromUser(saveData.getUser().getId()).addOnSuccessListener(
                   clientes ->{
                       for (Client cliente : clientes.result) {
@@ -60,11 +62,18 @@ public class PacientesActivity extends AppCompatActivity {
                               }
                           );
                           layoutClientes.addView(boton);
+                          Blocker.removeBlocker(this.findViewById(android.R.id.content));
                       }
                   }
+            ).addOnFailureListener(
+                    e -> {
+                        Toast.makeText(this, "Error al cargar clientes", Toast.LENGTH_SHORT).show();
+                        Blocker.removeBlocker(this.findViewById(android.R.id.content));
+                    }
             );
         } catch (FBCException e) {
             Toast.makeText(this, "Error al cargar clientes", Toast.LENGTH_SHORT).show();
+            Blocker.removeBlocker(this.findViewById(android.R.id.content));
         }
     }
 

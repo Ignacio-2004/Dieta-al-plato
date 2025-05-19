@@ -1,10 +1,14 @@
 package com.tfg.dietaalplato;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.tfg.dietaalplato.firebase.conectors.tools.FireBaseReader;
 import com.tfg.dietaalplato.firebase.exceptions.FBCException;
 import com.tfg.dietaalplato.firebase.tables.Food;
+import com.tfg.dietaalplato.utilities.Blocker;
 import com.tfg.dietaalplato.utilities.SaveData;
 import com.tfg.dietaalplato.utilities.dialogo.BancoAlimentos_Dialogo;
 
@@ -28,31 +33,43 @@ public class BancoAlimentosActivity extends AppCompatActivity {
         SaveData saveData = SaveData.getInstance();
 
         try{
+            Blocker.createBlocker(this.findViewById(android.R.id.content),this);
             FireBaseReader.readAllFoodFromUser(saveData.getUser().getId().toUpperCase()).addOnSuccessListener(
                     alimentos -> {
                         if (alimentos.exit){
                             for (Food alimento : alimentos.result.values()) {
-                                Button btn = new Button(this);
-                                btn.setText(alimento.getName());
-                                btn.setLayoutParams(new LinearLayout.LayoutParams(
-                                        LinearLayout.LayoutParams.MATCH_PARENT,
-                                        LinearLayout.LayoutParams.WRAP_CONTENT)
-                                );
+                                LinearLayout item = new LinearLayout(this);
+                                item.setOrientation(LinearLayout.HORIZONTAL);
+                                item.setBackgroundResource(R.drawable.bg_food_background);
+                                item.setPadding(12, 12, 12, 12);
+                                item.setElevation(8f);
 
-                                btn.setOnClickListener(v -> {
-                                    Toast.makeText(this, "Alimento seleccionado: " + alimento.getName(), Toast.LENGTH_SHORT).show();
-                                });
-                                layoutSV.addView(btn);
+                                TextView nombre = new TextView(this);
+                                nombre.setText(alimento.getName().substring(0, 1).toUpperCase() + alimento.getName().substring(1).toLowerCase());
+                                nombre.setTextColor(Color.WHITE);
+                                nombre.setTextSize(30);
+                                nombre.setGravity(Gravity.CENTER);
+                                nombre.setTypeface(null, Typeface.BOLD);
+                                nombre.setLayoutParams(new LinearLayout.LayoutParams(
+                                        LinearLayout.LayoutParams.MATCH_PARENT,
+                                        LinearLayout.LayoutParams.WRAP_CONTENT
+                                ));
+
+                                item.addView(nombre);
+                                layoutSV.addView(item);
                             }
+                            Blocker.removeBlocker(this.findViewById(android.R.id.content));
                         }
                     }
             ).addOnFailureListener(
                     e -> {
                         Toast.makeText(this, "Error al cargar alimentos", Toast.LENGTH_SHORT).show();
+                        Blocker.removeBlocker(this.findViewById(android.R.id.content));
                     }
             );
         } catch (FBCException e) {
-            throw new RuntimeException(e);
+            Toast.makeText(this, "Error al cargar alimentos", Toast.LENGTH_SHORT).show();
+            Blocker.removeBlocker(this.findViewById(android.R.id.content));
         }
 
     }
