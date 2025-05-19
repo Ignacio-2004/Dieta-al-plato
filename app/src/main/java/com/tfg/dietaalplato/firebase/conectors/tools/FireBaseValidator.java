@@ -58,8 +58,8 @@ public class FireBaseValidator {
                     )
                     .addOnFailureListener(
                             e -> {
-                                Log.d("Firebase", "❌ Error al leer la colección " + collectionName + ": " + e.getMessage());
-                                taskCompletionSource.setException(new ComplexFBCE(new ObjectResult<>(false, e.getMessage(), result.data)));
+                                Log.d("Firebase", "❌ Error al leer la colección " + collectionName);
+                                taskCompletionSource.setException(new ComplexFBCE(new ObjectResult<>(false, "Error al leer la base de datos" , result.data)));
                             }
                     );
         } else {
@@ -113,10 +113,12 @@ public class FireBaseValidator {
                             }
 
                             for (Client client : clientes.result) {
-                                if (client.getName().equals(result.data.get("name"))) {
-                                    Log.e(TAG, client.getId());
-                                    taskCompletionSource.setResult(new ValidationResult(false, "El cliente ya existe", result.data));
-                                    return;
+                                if (client.getName().toUpperCase().equals(result.data.get("name").toUpperCase())) {
+                                    if (client.getApe().toUpperCase().equals(result.data.get("ape").toUpperCase())){
+                                        Log.e(TAG, client.getId());
+                                        taskCompletionSource.setResult(new ValidationResult(false, "El cliente ya existe", result.data));
+                                        return;
+                                    }
                                 }
                             }
 
@@ -126,7 +128,7 @@ public class FireBaseValidator {
                 ).addOnFailureListener(
                         e -> {
                             Log.d(TAG, "❌ Error al leer la colección " + collectionName + ": " + e.getMessage());
-                            taskCompletionSource.setException(new ComplexFBCE(new ObjectResult<>(false, e.getMessage(), result.data)));
+                            taskCompletionSource.setException(new ComplexFBCE(new ObjectResult<>(false, "Error al leer la base de datos", result.data)));
                         }
                 );
                 break;
@@ -154,7 +156,7 @@ public class FireBaseValidator {
                 ).addOnFailureListener(
                         e -> {
                             Log.d(TAG, "❌ Error al leer la colección " + collectionName + ": " + e.getMessage());
-                            taskCompletionSource.setException(new ComplexFBCE(new ObjectResult<>(false, e.getMessage(), result.data)));
+                            taskCompletionSource.setException(new ComplexFBCE(new ObjectResult<>(false, "Error al leer la base de datos", result.data)));
                         }
                 );
                 break;
@@ -180,7 +182,8 @@ public class FireBaseValidator {
                         }
                 ).addOnFailureListener(
                         e -> {
-                            taskCompletionSource.setException(new ComplexFBCE(new ObjectResult<>(false, e.getMessage(), result.data)));
+                            Log.d("Firebase", "❌ Error al leer la colección " + collectionName + ": " + e.getMessage());
+                            taskCompletionSource.setException(new ComplexFBCE(new ObjectResult<>(false, "Error al leer la base de datos", result.data)));
                         }
                 );
                 break;

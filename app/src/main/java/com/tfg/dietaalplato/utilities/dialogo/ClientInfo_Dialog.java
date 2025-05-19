@@ -19,6 +19,7 @@ import androidx.fragment.app.DialogFragment;
 import com.tfg.dietaalplato.R;
 import com.tfg.dietaalplato.firebase.conectors.tools.FireBaseRemover;
 import com.tfg.dietaalplato.firebase.conectors.tools.FireBaseWriter;
+import com.tfg.dietaalplato.firebase.exceptions.ComplexFBCE;
 import com.tfg.dietaalplato.firebase.exceptions.FBCException;
 import com.tfg.dietaalplato.firebase.tables.Client;
 import com.tfg.dietaalplato.firebase.utilities.OnResultCallBack;
@@ -108,6 +109,7 @@ public class ClientInfo_Dialog extends DialogFragment {
                         textError.setText(result.message);
                         textError.setVisibility(View.VISIBLE);
                         mostrarTextError();
+                        Blocker.removeBlocker(parent);
                         return;
                     }else{
                         if (haveFill){
@@ -116,9 +118,13 @@ public class ClientInfo_Dialog extends DialogFragment {
 
                         FireBaseWriter.saveData(Client.class, result).addOnFailureListener(
                                 e -> {
-                                    Blocker.removeBlocker(parent);
-                                    textError.setText("No se ha podido guardar el cliente");
+                                    if (e instanceof ComplexFBCE) {
+                                        textError.setText(((ComplexFBCE) e).reason.message);
+                                    }else{
+                                        textError.setText("Error al guardar el cliente");
+                                    }
                                     textError.setVisibility(View.VISIBLE);
+                                    Blocker.removeBlocker(parent);
                                     mostrarTextError();
                                 }
                         ).addOnSuccessListener(

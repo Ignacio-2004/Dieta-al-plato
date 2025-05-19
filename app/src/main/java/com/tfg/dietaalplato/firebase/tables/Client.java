@@ -127,7 +127,7 @@ public class Client extends BaseObject {
         }catch (Exception e){
 
             result.exit = false;
-            result.message = "Error : " + e.getMessage();
+            result.message = "Error al validar los datos. Compruebe las celdas.";
 
         }
 

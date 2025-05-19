@@ -2,11 +2,15 @@ package com.tfg.dietaalplato;
 
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -44,14 +48,37 @@ public class PacientesActivity extends AppCompatActivity {
             FireBaseReader.readClientFromUser(saveData.getUser().getId()).addOnSuccessListener(
                   clientes ->{
                       for (Client cliente : clientes.result) {
-                          Button boton = new Button(this);
-                          boton.setText(cliente.getName()); // o el campo que tengas
-                          boton.setLayoutParams(new LinearLayout.LayoutParams(
+                          LinearLayout item = new LinearLayout(this);
+                          item.setOrientation(LinearLayout.HORIZONTAL);
+                          item.setPadding(12, 5, 5, 12);
+                          item.setElevation(8f);
+                          layoutClientes.addView(item);
+
+
+                          item = new LinearLayout(this);
+                          item.setOrientation(LinearLayout.HORIZONTAL);
+                          item.setBackgroundResource(R.drawable.bg_food_background);
+                          item.setPadding(12, 12, 12, 12);
+                          item.setElevation(8f);
+
+                          TextView nombre = new TextView(this);
+                          try{
+                              nombre.setText(cliente.getName().substring(0, 1).toUpperCase() + cliente.getName().substring(1).toLowerCase() +" "+
+                                      cliente.getApe().substring(0, 1).toUpperCase() + cliente.getApe().substring(1).toLowerCase());
+                          } catch (Exception e) {
+                              nombre.setText("Cliente mal registrado");
+                          }
+                          nombre.setTextColor(Color.WHITE);
+                          nombre.setTextSize(30);
+                          nombre.setGravity(Gravity.CENTER);
+                          nombre.setTypeface(null, Typeface.BOLD);
+                          nombre.setLayoutParams(new LinearLayout.LayoutParams(
                                   LinearLayout.LayoutParams.MATCH_PARENT,
-                                  LinearLayout.LayoutParams.WRAP_CONTENT));
+                                  LinearLayout.LayoutParams.WRAP_CONTENT
+                          ));
 
 
-                          boton.setOnClickListener(v ->{
+                          item.setOnClickListener(v ->{
                                       Log.d("Cliente", "Nombre del cliente: " + cliente.getName());
                                       saveData.setIdActualClient(cliente);
 
@@ -61,7 +88,8 @@ public class PacientesActivity extends AppCompatActivity {
 
                               }
                           );
-                          layoutClientes.addView(boton);
+                          item.addView(nombre);
+                          layoutClientes.addView(item);
                           Blocker.removeBlocker(this.findViewById(android.R.id.content));
                       }
                   }

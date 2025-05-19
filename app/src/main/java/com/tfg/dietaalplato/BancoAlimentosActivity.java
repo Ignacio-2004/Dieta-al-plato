@@ -40,6 +40,13 @@ public class BancoAlimentosActivity extends AppCompatActivity {
                             for (Food alimento : alimentos.result.values()) {
                                 LinearLayout item = new LinearLayout(this);
                                 item.setOrientation(LinearLayout.HORIZONTAL);
+                                item.setPadding(12, 5, 5, 12);
+                                item.setElevation(8f);
+                                layoutSV.addView(item);
+
+
+                                item = new LinearLayout(this);
+                                item.setOrientation(LinearLayout.HORIZONTAL);
                                 item.setBackgroundResource(R.drawable.bg_food_background);
                                 item.setPadding(12, 12, 12, 12);
                                 item.setElevation(8f);

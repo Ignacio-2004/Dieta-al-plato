@@ -1,69 +1,109 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/layoutPrincipal"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <!-- Fondo -->
+    <ImageView
+        android:id="@+id/fondo"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scaleType="centerCrop"
+        android:contentDescription="Fondo"
+        app:srcCompat="@drawable/fondo_android"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Velo (superposición semitransparente) -->
+    <View
+        android:id="@+id/velo"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#DDE9EFDF"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:id="@+id/headerLayout"
+        android:layout_width="0dp"
         android:layout_height="125dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:padding="8dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
         <ImageButton
             android:id="@+id/bttReturn2"
-            android:layout_width="121dp"
-            android:layout_height="88dp"
-            android:layout_marginStart="4dp"
-            android:layout_marginTop="24dp"
+            android:layout_width="110dp"
+            android:layout_height="99dp"
+            android:layout_marginTop="16dp"
             android:backgroundTint="#00FFFFFF"
             android:onClick="onClickReturn"
-            android:scaleX="3"
-            android:scaleY="2"
-            app:srcCompat="?attr/homeAsUpIndicator" />
+            app:srcCompat="@drawable/gobacksinfondo" />
 
-        <ImageView
-            android:id="@+id/imageView2"
-            android:layout_width="104dp"
-            android:layout_height="93dp"
-            android:layout_marginTop="24dp"
-            android:layout_weight="1" />
+        <TextView
+            android:id="@+id/textNombreAlimento"
+            android:layout_width="970dp"
+            android:layout_height="96dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="25dp"
+            android:fontFamily="@font/lily_script_one"
+            android:gravity="center"
+            android:padding="8dp"
+            android:text="Pacientes"
+            android:textColor="#027C68"
+            android:textSize="50dp"
+            android:textStyle="bold" />
 
         <ImageView
             android:id="@+id/imageView3"
-            android:layout_width="98dp"
-            android:layout_height="94dp"
-            android:layout_marginTop="24dp"
+            android:layout_width="84dp"
+            android:layout_height="74dp"
+            android:layout_marginTop="26dp"
             android:onClick="onRestartClick"
-            app:srcCompat="@android:drawable/ic_menu_rotate" />
+            app:srcCompat="@drawable/reloadsinfondo" />
 
         <ImageView
             android:id="@+id/imageView"
-            android:layout_width="104dp"
-            android:layout_height="93dp"
-            android:layout_marginTop="24dp"
+            android:layout_width="84dp"
+            android:layout_height="71dp"
+            android:layout_marginTop="30dp"
             android:onClick="onClickAddClient"
-            app:srcCompat="@android:drawable/ic_input_add" />
+            app:srcCompat="@drawable/anyadir" />
     </LinearLayout>
 
 
     <ScrollView
         android:id="@+id/scrollClientes"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true">
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintTop_toBottomOf="@id/headerLayout"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
 
         <LinearLayout
             android:id="@+id/layoutClientes"
+            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp">
+            android:padding="8dp"
+            android:layout_margin="8dp"
+            android:background="@drawable/bg_food_item"
+            android:elevation="2dp">
 
         </LinearLayout>
     </ScrollView>
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
