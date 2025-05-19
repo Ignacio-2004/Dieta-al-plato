@@ -2,6 +2,7 @@ package com.tfg.dietaalplato;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
@@ -297,6 +298,7 @@ public class LogIn_Activity extends AppCompatActivity {
     public void mostrarPassword(View view) {
         text_passw = findViewById(R.id.Password);
         text_passw.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+        text_passw.setTypeface(Typeface.createFromFile("@font/lily_script_one"));
 
         see_passw = findViewById(R.id.buttonSeePasswd);
         hide_passw = findViewById(R.id.buttonHidePasswd);
@@ -307,6 +309,7 @@ public class LogIn_Activity extends AppCompatActivity {
     public void ocultarPassword(View view) {
         text_passw = findViewById(R.id.Password);
         text_passw.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        text_passw.setTypeface(Typeface.createFromFile("@font/lily_script_one"));
 
         ImageButton see = findViewById(R.id.buttonSeePasswd);
         ImageButton hide = findViewById(R.id.buttonHidePasswd);

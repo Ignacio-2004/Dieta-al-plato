@@ -10,277 +10,190 @@
     android:padding="32dp"
     tools:context=".LogIn_Activity">
 
-    <!-- food icons -->
+    <!-- Fondo -->
     <ImageView
-        android:id="@+id/imageView4"
-        android:layout_width="150dp"
-        android:layout_height="146dp"
-        android:layout_marginStart="36dp"
-        android:rotation="36"
+        android:id="@+id/fondo"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scaleType="centerCrop"
+        android:contentDescription="Fondo"
+        app:srcCompat="@drawable/fondo_android"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.986"
-        app:srcCompat="@drawable/apple" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
-    <ImageView
-        android:id="@+id/imageView6"
-        android:layout_width="171dp"
-        android:layout_height="219dp"
-        android:layout_marginStart="324dp"
-        android:layout_marginTop="560dp"
-        android:rotation="58"
+    <!-- Velo (superposición semitransparente) -->
+    <View
+        android:id="@+id/velo"
+        android:layout_width="1283dp"
+        android:layout_height="802dp"
+        android:background="#DDE9EFDF"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- gmail -->
+
+    <TextView
+        android:id="@+id/textView20"
+        android:layout_width="947dp"
+        android:layout_height="358dp"
+        android:background="@drawable/esquinas_redondeadas_boton_verde"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/banana" />
+        app:layout_constraintVertical_bias="0.674" />
 
-    <ImageView
-        android:id="@+id/imageView7"
-        android:layout_width="193dp"
-        android:layout_height="126dp"
-        android:layout_marginEnd="172dp"
-        android:layout_marginBottom="8dp"
-        android:rotation="75"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/bread" />
+    <!-- passwordd-->
 
-    <ImageView
-        android:id="@+id/imageView8"
-        android:layout_width="113dp"
-        android:layout_height="141dp"
-        android:layout_marginEnd="508dp"
-        android:layout_marginBottom="76dp"
-        android:rotation="100"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/brocoli" />
+    <!-- boton login -->
 
-    <ImageView
-        android:id="@+id/imageView9"
-        android:layout_width="330dp"
-        android:layout_height="321dp"
-        android:layout_marginEnd="120dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.537"
-        app:srcCompat="@drawable/carrot" />
 
-    <ImageView
-        android:id="@+id/imageView11"
-        android:layout_width="240dp"
-        android:layout_height="201dp"
-        android:layout_marginStart="184dp"
-        android:layout_marginBottom="112dp"
-        android:rotation="49"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/fish" />
-
-    <ImageView
-        android:id="@+id/imageView12"
-        android:layout_width="261dp"
-        android:layout_height="272dp"
-        android:layout_marginStart="276dp"
-        android:layout_marginTop="4dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/lettuce" />
-
-    <ImageView
-        android:id="@+id/imageView13"
-        android:layout_width="155dp"
-        android:layout_height="189dp"
-        android:layout_marginTop="372dp"
-        android:layout_marginEnd="12dp"
-        android:rotation="-40"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/milk" />
-
-    <ImageView
-        android:id="@+id/imageView14"
-        android:layout_width="160dp"
-        android:layout_height="147dp"
-        android:layout_marginStart="60dp"
-        android:layout_marginTop="48dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/orange" />
-
-    <ImageView
-        android:id="@+id/imageView15"
-        android:layout_width="165dp"
-        android:layout_height="191dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="40dp"
-        android:rotation="40"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/pasta" />
-
-    <ImageView
-        android:id="@+id/imageView16"
-        android:layout_width="171dp"
-        android:layout_height="146dp"
-        android:layout_marginEnd="260dp"
-        android:rotation="-45"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.083"
-        app:srcCompat="@drawable/steak" />
-
-    <!-- acount icon -->
-
-    <ImageView
-        android:id="@+id/imageView17"
-        android:layout_width="162dp"
-        android:layout_height="162dp"
-        android:layout_marginStart="36dp"
-        android:rotation="-23"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.48"
-        app:srcCompat="@drawable/yogurt" />
+    <!-- mensaje error login -->
 
     <ImageView
         android:id="@+id/icon_account"
         android:layout_width="160dp"
         android:layout_height="160dp"
-        android:layout_marginTop="75dp"
+        android:layout_marginTop="90dp"
         android:src="@drawable/icono_account"
         app:layout_constraintBottom_toTopOf="@id/text_usuario"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
         app:layout_constraintVertical_chainStyle="packed" />
 
-
-    <!-- gmail -->
-    <EditText
-        android:id="@+id/text_usuario"
-        android:layout_width="0dp"
-        android:layout_height="60dp"
-        android:layout_marginStart="300dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="300dp"
-        android:background="@drawable/esquinas_redondeadas"
-        android:hint="@string/usuario"
-        android:inputType="text"
-        android:padding="16dp"
-        android:textColor="#027C68"
-        android:textColorHint="#027C68"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/icon_account" />
-
-    <!-- passwordd-->
-    <EditText
-        android:id="@+id/Password"
-        android:layout_width="0dp"
-        android:layout_height="60dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginStart="300dp"
-        android:layout_marginEnd="300dp"
-        android:background="@drawable/esquinas_redondeadas"
-        android:hint="@string/contrase_a"
-        android:inputType="textPassword"
-        android:padding="16dp"
-        android:textColor="#027C68"
-        android:textColorHint="#027C68"
-        android:textSize="20sp"
-        app:layout_constraintTop_toBottomOf="@id/text_usuario"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <!-- boton login -->
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/buttonLogin"
-        android:layout_width="0dp"
-        android:layout_height="35dp"
-        android:layout_marginStart="300dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="300dp"
-        android:background="@drawable/esquinas_redondeadas_boton_verde"
-        android:onClick="login"
-        android:text="@string/login"
-        android:textColor="@android:color/white"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/Password" />
-
-
-    <!-- mensaje error login -->
-    <TextView
-        android:id="@+id/text_error"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-
-        android:layout_marginTop="45dp"
-        android:background="@drawable/esquinas_errortext"
-        android:gravity="center"
-        android:textSize="20sp"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonSignUp" />
-
     <!-- boton Sign UP -->
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/buttonSignUp"
-        android:layout_width="0dp"
-        android:layout_height="35dp"
-        android:layout_marginStart="300dp"
-        android:layout_marginTop="70dp"
-        android:layout_marginEnd="300dp"
-        android:background="@drawable/esquinas_redondeadas_boton_verde"
-        android:onClick="signUp"
-        android:text="@string/sign_up"
-        android:textColor="@android:color/white"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/Password" />
 
     <!-- boton mostrar password -->
-    <ImageButton
-        android:id="@+id/buttonSeePasswd"
-        android:layout_width="45dp"
-        android:layout_height="45dp"
-        android:layout_marginTop="23dp"
-        android:layout_marginEnd="340dp"
-        android:background="@android:color/transparent"
-        android:onClick="mostrarPassword"
-        android:scaleType="fitXY"
-        android:src="@drawable/closed_eye"
-        android:visibility="visible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_usuario" />
 
     <!-- boton ocultar password -->
+
     <ImageButton
         android:id="@+id/buttonHidePasswd"
         android:layout_width="45dp"
         android:layout_height="45dp"
-        android:layout_marginTop="23dp"
-        android:layout_marginEnd="340dp"
+        android:layout_marginEnd="12dp"
         android:background="@android:color/transparent"
         android:onClick="ocultarPassword"
         android:scaleType="fitXY"
         android:src="@drawable/open_eye"
         android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_usuario" />
+        app:layout_constraintBottom_toBottomOf="@+id/textView20"
+        app:layout_constraintEnd_toEndOf="@+id/textView20"
+        app:layout_constraintTop_toTopOf="@+id/textView20"
+        app:layout_constraintVertical_bias="0.338" />
 
+    <ImageButton
+        android:id="@+id/buttonSeePasswd"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_marginEnd="12dp"
+        android:background="@android:color/transparent"
+        android:onClick="mostrarPassword"
+        android:scaleType="fitXY"
+        android:src="@drawable/closed_eye"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@+id/textView20"
+        app:layout_constraintEnd_toEndOf="@+id/textView20"
+        app:layout_constraintTop_toTopOf="@+id/textView20"
+        app:layout_constraintVertical_bias="0.338" />
 
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="810dp"
+        android:layout_height="308dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="@+id/textView20"
+        app:layout_constraintEnd_toEndOf="@+id/textView20"
+        app:layout_constraintStart_toStartOf="@+id/textView20"
+        app:layout_constraintTop_toTopOf="@+id/textView20">
 
+        <EditText
+            android:id="@+id/text_usuario"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/esquinas_redondeadas"
+            android:fontFamily="@font/lily_script_one"
+            android:hint="@string/usuario"
+            android:inputType="text"
+            android:padding="16dp"
+            android:textColor="#027C68"
+            android:textColorHint="#027C68"
+            android:textSize="20sp" />
 
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="15dp" />
+
+        <EditText
+            android:id="@+id/Password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/esquinas_redondeadas"
+            android:fontFamily="@font/lily_script_one"
+            android:hint="@string/contrase_a"
+            android:inputType="textPassword"
+            android:padding="16dp"
+            android:textColor="#027C68"
+            android:textColorHint="#027C68"
+            android:textSize="20sp" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="15dp" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/buttonLogin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_food_item"
+            android:fontFamily="@font/lily_script_one"
+            android:onClick="login"
+            android:text="@string/login"
+            android:textColor="#027C68"
+            android:textSize="20sp" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="15dp" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/buttonSignUp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_food_item"
+            android:fontFamily="@font/lily_script_one"
+            android:onClick="signUp"
+            android:text="@string/sign_up"
+            android:textColor="#027C68"
+            android:textSize="20sp" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="15dp" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/text_error"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:layout_marginBottom="15dp"
+        android:background="@drawable/esquinas_errortext"
+        android:gravity="center|center_horizontal"
+        android:textSize="20sp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@+id/textView20"
+        app:layout_constraintEnd_toEndOf="@+id/textView20"
+        app:layout_constraintStart_toStartOf="@+id/textView20"
+        app:layout_constraintTop_toBottomOf="@+id/icon_account"
+        app:layout_constraintVertical_bias="0.973" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

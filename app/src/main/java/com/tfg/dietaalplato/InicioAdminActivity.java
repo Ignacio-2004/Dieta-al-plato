@@ -1,11 +1,16 @@
 package com.tfg.dietaalplato;
 
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -24,6 +29,7 @@ public class InicioAdminActivity extends AppCompatActivity {
     private FireBaseConnector fbConnector; // tu conector personalizado
 
 
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,22 +43,32 @@ public class InicioAdminActivity extends AppCompatActivity {
             FireBaseReader.readAllFromCollection("usuarios", User.class)
                     .addOnSuccessListener(usuarios -> {
                         for (User usuario : usuarios) {
-                            Button botonUsuario = new Button(this);
-                            botonUsuario.setText(usuario.getName());
+                            LinearLayout item = new LinearLayout(this);
+                            item.setOrientation(LinearLayout.HORIZONTAL);
+                            item.setPadding(12, 5, 5, 12);
+                            item.setElevation(8f);
+                            layoutUsuarios.addView(item);
 
 
-                            botonUsuario.setLayoutParams(new LinearLayout.LayoutParams(
+                            item = new LinearLayout(this);
+                            item.setOrientation(LinearLayout.HORIZONTAL);
+                            item.setBackgroundResource(R.drawable.bg_food_background);
+                            item.setPadding(12, 12, 12, 12);
+                            item.setElevation(8f);
+
+                            TextView nombre = new TextView(this);
+                            nombre.setText(usuario.getName().toUpperCase());
+                            nombre.setTextColor(Color.WHITE);
+                            nombre.setTextSize(30);
+                            nombre.setGravity(Gravity.CENTER);
+                            nombre.setTypeface(null, Typeface.BOLD);
+                            nombre.setLayoutParams(new LinearLayout.LayoutParams(
                                     LinearLayout.LayoutParams.MATCH_PARENT,
                                     LinearLayout.LayoutParams.WRAP_CONTENT
                             ));
 
-
-                            botonUsuario.setOnClickListener(v ->
-                                    Toast.makeText(this, "Usuario: " + usuario.getName(), Toast.LENGTH_SHORT).show()
-                            );
-
-
-                            layoutUsuarios.addView(botonUsuario);
+                            item.addView(nombre);
+                            layoutUsuarios.addView(item);
                         }
                     });
         } catch (FBCException e) {

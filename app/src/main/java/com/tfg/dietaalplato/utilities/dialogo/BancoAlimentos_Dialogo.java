@@ -21,6 +21,7 @@ import com.google.firebase.FirebaseApp;
 import com.tfg.dietaalplato.R;
 import com.tfg.dietaalplato.firebase.conectors.FireBaseConnector;
 import com.tfg.dietaalplato.firebase.conectors.tools.FireBaseWriter;
+import com.tfg.dietaalplato.firebase.exceptions.ComplexFBCE;
 import com.tfg.dietaalplato.firebase.tables.Food;
 import com.tfg.dietaalplato.firebase.utilities.ValidationResult;
 import com.tfg.dietaalplato.utilities.Blocker;
@@ -171,7 +172,11 @@ public class BancoAlimentos_Dialogo extends DialogFragment {
                     dismiss();
                 })
                 .addOnFailureListener(e -> {
-                    textError.setText("Error al guardar el alimento: " + e.getMessage());
+                    if (e instanceof ComplexFBCE) {
+                        textError.setText(((ComplexFBCE) e).reason.message);
+                    }else{
+                        textError.setText("Error al guardar el alimento");
+                    }
                     textError.setVisibility(View.VISIBLE);
                     Blocker.removeBlocker((ViewGroup) mainView.getRootView());
                     mostrarTextError();

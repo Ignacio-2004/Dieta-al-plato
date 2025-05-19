@@ -31,7 +31,11 @@ import java.util.concurrent.atomic.AtomicReference;
 public class FireBaseWriter {
 
     private static final String TAG = "FireBase/Writer";
-    private static final String msgErrorRepeat = "Ya existe un objeto con las mismos credenciales, para modificarlo entre en la ficha del cliente.";
+    private static final String msgErrorRepeatClient = "Ya existe un objeto con las mismos credenciales, para modificarlo entre en la ficha del cliente.";
+    private static final String msgErrorRepeatDiet = "Ya existe una dieta con las mismas credenciales, para modificarla entre en la ficha de la dieta.";
+    private static final String msgErrorRepeatFood = "Ya existe un alimento con las mismas credenciales, para modificarlo entre en la ficha del alimento.";
+    private static final String msgErrorRepeatFoodDiet = "Ya existe un alimento en la dieta con las mismas credenciales, para modificarlo entre en la ficha del alimento.";
+    private static final String msgErrorRepeatUser = "Ya existe un usuario con las mismas credenciales, para modificarlo entre en la ficha del usuario.";
 
     /**
      * Metodo principal para guardar los datos en la base de datos
@@ -67,7 +71,7 @@ public class FireBaseWriter {
                             validationResult -> {
                                 if (!validationResult.exit) {
                                     Log.w(TAG, "Usuario existente, operacion sin permisos de sobreescritura");
-                                    finalresoult.setException(new ComplexFBCE(new ObjectResult<>(false, msgErrorRepeat,null )));
+                                    finalresoult.setException(new ComplexFBCE(new ObjectResult<>(false, msgErrorRepeatClient,null )));
                                 }else{
                                     Log.d(TAG, "Usuario no existente, inicio del guardado.");
                                     save(result,classData, validationResult.message,"-1").addOnSuccessListener(
@@ -94,7 +98,7 @@ public class FireBaseWriter {
                             validationResult -> {
                                 if (!validationResult.exit) {
                                     Log.w(TAG, "Dieta existente, operacion sin permisos de sobreescritura");
-                                    finalresoult.setException(new ComplexFBCE(new ObjectResult<>(false, msgErrorRepeat,null )));
+                                    finalresoult.setException(new ComplexFBCE(new ObjectResult<>(false, msgErrorRepeatClient,null )));
                                 }else{
                                     Log.d(TAG, "Dieta no existente, inicio del guardado.");
                                     save(result,classData, validationResult.message,result.data.get("idCliente")).addOnSuccessListener(
@@ -122,7 +126,11 @@ public class FireBaseWriter {
                             validationResult -> {
                                 if (!validationResult.exit) {
                                     Log.w(TAG, classData.data+" existente, operacion sin permisos de sobreescritura");
-                                    finalresoult.setException(new ComplexFBCE(new ObjectResult<>(false, msgErrorRepeat,null )));
+                                    if (classData.data.equals("alimentos")) {
+                                        finalresoult.setException(new ComplexFBCE(new ObjectResult<>(false, msgErrorRepeatFood,null )));
+                                    }else{
+                                        finalresoult.setException(new ComplexFBCE(new ObjectResult<>(false, msgErrorRepeatFoodDiet,null )));
+                                    }
                                 }else{
                                     Log.d(TAG, classData.data+" no existente, inicio del guardado.");
                                     save(result,classData, validationResult.message,result.data.get("idUsr")).addOnSuccessListener(
@@ -149,7 +157,7 @@ public class FireBaseWriter {
                                 Log.d(TAG, "FoodDiet no existente, inicio del guardado.");
                                 if (!validationResult.exit) {
                                     Log.w(TAG, "FoodDiet existente, operacion sin permisos de sobreescritura");
-                                    finalresoult.setException(new ComplexFBCE(new ObjectResult<>(false, msgErrorRepeat,null )));
+                                    finalresoult.setException(new ComplexFBCE(new ObjectResult<>(false, msgErrorRepeatFoodDiet,null )));
                                 } else {
                                     Log.d(TAG, "FoodDiet existente, operacion sin permisos de sobreescritura");
                                     save(result,classData, validationResult.message,result.data.get("idDieta")).addOnSuccessListener(
