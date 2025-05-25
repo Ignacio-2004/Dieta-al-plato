@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -298,8 +299,7 @@ public class LogIn_Activity extends AppCompatActivity {
     public void mostrarPassword(View view) {
         text_passw = findViewById(R.id.Password);
         text_passw.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
-        text_passw.setTypeface(Typeface.createFromFile("@font/lily_script_one"));
-
+        text_passw.setTypeface(ResourcesCompat.getFont(this, R.font.lily_script_one));
         see_passw = findViewById(R.id.buttonSeePasswd);
         hide_passw = findViewById(R.id.buttonHidePasswd);
         see_passw.setVisibility(View.GONE);
@@ -309,8 +309,7 @@ public class LogIn_Activity extends AppCompatActivity {
     public void ocultarPassword(View view) {
         text_passw = findViewById(R.id.Password);
         text_passw.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-        text_passw.setTypeface(Typeface.createFromFile("@font/lily_script_one"));
-
+        text_passw.setTypeface(ResourcesCompat.getFont(this, R.font.lily_script_one));
         ImageButton see = findViewById(R.id.buttonSeePasswd);
         ImageButton hide = findViewById(R.id.buttonHidePasswd);
         see.setVisibility(View.VISIBLE);
