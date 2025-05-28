@@ -102,7 +102,7 @@ public class LogIn_Activity extends AppCompatActivity {
 }
 
     public void onClickTest(View view) {
-        ArrayList<String> alergias = new ArrayList<>();
+        /*ArrayList<String> alergias = new ArrayList<>();
         ArrayList<String> patologias = new ArrayList<>();
         alergias.add("Pollo");
         alergias.add("Pescado");
@@ -115,7 +115,7 @@ public class LogIn_Activity extends AppCompatActivity {
         saveData.setIdActualClient(client);
 
         ClientInfo_Dialog dialogo = ClientInfo_Dialog.getInstance(false);
-        dialogo.show(getSupportFragmentManager(), "dialogoInfoCliente");
+        dialogo.show(getSupportFragmentManager(), "dialogoInfoCliente");*/
 
 /*        ValidationResult result = new ValidationResult();
         result.exit = true;
@@ -299,9 +299,10 @@ public class LogIn_Activity extends AppCompatActivity {
     public void mostrarPassword(View view) {
         text_passw = findViewById(R.id.Password);
         text_passw.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+
         text_passw.setTypeface(ResourcesCompat.getFont(this, R.font.lily_script_one));
         see_passw = findViewById(R.id.buttonSeePasswd);
-        hide_passw = findViewById(R.id.buttonHidePasswd);
+        hide_passw = findViewById(R.id.buttHidePsw);
         see_passw.setVisibility(View.GONE);
         hide_passw.setVisibility(View.VISIBLE);
     }
@@ -309,9 +310,10 @@ public class LogIn_Activity extends AppCompatActivity {
     public void ocultarPassword(View view) {
         text_passw = findViewById(R.id.Password);
         text_passw.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+
         text_passw.setTypeface(ResourcesCompat.getFont(this, R.font.lily_script_one));
         ImageButton see = findViewById(R.id.buttonSeePasswd);
-        ImageButton hide = findViewById(R.id.buttonHidePasswd);
+        ImageButton hide = findViewById(R.id.buttHidePsw);
         see.setVisibility(View.VISIBLE);
         hide.setVisibility(View.GONE);
     }

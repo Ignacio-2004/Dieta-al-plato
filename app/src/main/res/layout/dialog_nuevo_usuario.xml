@@ -1,40 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="#DDE9EFDF"
     android:padding="16dp">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/usuario"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:textColor="#027C68"
+        android:fontFamily="@font/lily_script_one"
+        android:gravity="center"
+        android:paddingBottom="16dp" />
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/usuario_de_la_aplicaci_n"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="#027C68"
+        android:layout_marginTop="8dp" />
     <!-- texto de correo -->
     <EditText
         android:id="@+id/editTextCorreo"
+        android:hint="@string/hintEmail"
+        android:inputType="textEmailAddress"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/correo_educamadrid"
-        android:inputType="textEmailAddress" />
+        android:textColor="#027C68"
+        android:background="@android:drawable/edit_text"
+        android:padding="10dp"
+        android:textSize="16sp"
+        android:layout_marginBottom="16dp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/constrase_a"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="#027C68"
+        android:layout_marginTop="8dp" />
 
     <!-- texto de password -->
     <EditText
         android:id="@+id/editTextContraseña"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/contrase_a"
-        android:inputType="textPassword" />
+        android:textColor="#027C68"
+        android:hint=" · · · · · · · · · · · ·"
+        android:inputType="textPassword"
+        android:background="@android:drawable/edit_text"
+        android:padding="10dp"
+        android:textSize="16sp"
+        android:layout_marginBottom="16dp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/confirmar_contrase_a"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="#027C68"
+        android:layout_marginTop="8dp" />
 
     <!--  confirmar paswwd -->
     <EditText
         android:id="@+id/editTextConfirmPassword"
+        android:hint=" · · · · · · · · · · · ·"
+        android:inputType="textPassword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/confirmar_contrase_a"
-        android:inputType="textPassword" />
+        android:textColor="#027C68"
+        android:background="@android:drawable/edit_text"
+        android:padding="10dp"
+        android:textSize="16sp"
+        android:layout_marginBottom="16dp"/>
 
     <!-- boton para confirmar -->
     <Button
         android:id="@+id/buttonConfirmar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/crear_cuenta"
+        android:text="Guardar"
         android:backgroundTint="#027C68"
         android:onClick="onConfirmarClick" />
 

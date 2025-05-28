@@ -6,6 +6,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.InputType;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -20,9 +21,7 @@ import com.tfg.dietaalplato.R;
 import com.tfg.dietaalplato.firebase.conectors.tools.FireBaseRemover;
 import com.tfg.dietaalplato.firebase.conectors.tools.FireBaseWriter;
 import com.tfg.dietaalplato.firebase.exceptions.ComplexFBCE;
-import com.tfg.dietaalplato.firebase.exceptions.FBCException;
 import com.tfg.dietaalplato.firebase.tables.Client;
-import com.tfg.dietaalplato.firebase.utilities.OnResultCallBack;
 import com.tfg.dietaalplato.firebase.utilities.ValidationResult;
 import com.tfg.dietaalplato.utilities.Blocker;
 import com.tfg.dietaalplato.utilities.SaveData;
@@ -44,6 +43,8 @@ public class ClientInfo_Dialog extends DialogFragment {
     private ArrayList<String> patologias;
     private static boolean haveFill;
     private View mainView;
+    private EditText minKal;
+    private EditText maxKal;
 
     public static ClientInfo_Dialog getInstance(boolean fill) {
         haveFill = fill;
@@ -60,6 +61,8 @@ public class ClientInfo_Dialog extends DialogFragment {
         layoutPatologias = mainView.findViewById(R.id.layoutPatologias);
         saveButton = mainView.findViewById(R.id.buttonGuardar);
         cancelButton = mainView.findViewById(R.id.buttonCancelar);
+        minKal = mainView.findViewById(R.id.minKal);
+        maxKal = mainView.findViewById(R.id.maxKal);
 
         saveData = SaveData.getInstance();
 
@@ -68,11 +71,14 @@ public class ClientInfo_Dialog extends DialogFragment {
                 .setCancelable(true);
 
         if (haveFill){
-            client = saveData.getIdActualClient();
+            client = saveData.getIdCurrentClient();
+            Log.d("Client",client.toString());
             editTextNombre.setText(client.getName());
             editTextApellido.setText(client.getApe());
             alergias = client.getAlergias();
             patologias = client.getPatologias();
+            minKal.setText(client.getMinKcal());
+            maxKal.setText(client.getMaxKcal());
         }else{
             alergias = new ArrayList<>();
             patologias = new ArrayList<>();
@@ -102,6 +108,8 @@ public class ClientInfo_Dialog extends DialogFragment {
                     ArrayList<View> views = new ArrayList<>();
                     views.add(editTextNombre);
                     views.add(editTextApellido);
+                    views.add(minKal);
+                    views.add(maxKal);
 
                     ValidationResult result = Client.toMapData(views,alergias, patologias,saveData.getUser().getId());
 
@@ -113,7 +121,7 @@ public class ClientInfo_Dialog extends DialogFragment {
                         return;
                     }else{
                         if (haveFill){
-                            FireBaseRemover.remove(saveData.getIdActualClient().getId());
+                            FireBaseRemover.remove(saveData.getIdCurrentClient().getId());
                         }
 
                         FireBaseWriter.saveData(Client.class, result).addOnFailureListener(
@@ -129,7 +137,7 @@ public class ClientInfo_Dialog extends DialogFragment {
                                 }
                         ).addOnSuccessListener(
                                 validationResult -> {
-                                    saveData.setIdActualClient((Client) validationResult.result);
+                                    saveData.setIdCurrentClient((Client) validationResult.result);
                                     Blocker.removeBlocker(parent);
                                     textError.setText("Cliente guardado correctamente");
                                     textError.setVisibility(View.VISIBLE);
@@ -143,6 +151,50 @@ public class ClientInfo_Dialog extends DialogFragment {
         cancelButton.setOnClickListener(
                 v ->{
                     dismiss();
+                }
+        );
+
+        minKal.setOnFocusChangeListener(
+                (v, hasFocus) -> {
+                    if (!hasFocus) {
+                        int min = 0;
+                        int max = 0;
+
+                        try {
+                            min = Integer.parseInt(minKal.getText().toString());
+                            max = Integer.parseInt(maxKal.getText().toString());
+
+                            if (min>max){
+                                min = max;
+                            }
+
+                        }catch (Exception ignored){}
+
+                        minKal.setText(String.valueOf(min));
+                        maxKal.setText(String.valueOf(max));
+
+                    }
+                }
+        );
+        maxKal.setOnFocusChangeListener(
+                (v, hasFocus) -> {
+                    if (!hasFocus) {
+                        int min = 0;
+                        int max = 0;
+
+                        try {
+                            min = Integer.parseInt(minKal.getText().toString());
+                            max = Integer.parseInt(maxKal.getText().toString());
+
+                            if (min>max){
+                                max = min;
+                            }
+
+                        }catch (Exception ignored){}
+
+                        minKal.setText(String.valueOf(min));
+                        maxKal.setText(String.valueOf(max));
+                    }
                 }
         );
 

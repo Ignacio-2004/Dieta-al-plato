@@ -168,7 +168,9 @@ public class FireBaseValidator {
                                 ArrayList<Diet> diets = new ArrayList<>(dietas.result.values());
 
                                 for (Diet diet : diets){
-                                    if (diet.getName().equals(result.data.get("name"))) {
+                                    Log.d("Firebase", diet.getName());
+                                    Log.d("Firebase", result.data.get("name"));
+                                    if (diet.getName().equalsIgnoreCase(result.data.get("name"))) {
                                         Log.e("Firebase", diet.getId());
                                         taskCompletionSource.setResult(new ValidationResult(false, "La dieta ya existe", result.data));
                                         return;

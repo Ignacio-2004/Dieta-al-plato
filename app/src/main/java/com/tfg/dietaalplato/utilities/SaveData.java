@@ -29,9 +29,9 @@ public class SaveData {
     private CacheCollection<Map<String, Diet>> diets;
     private CacheCollection<Map<String, ArrayList<FoodDiet>>> foodDiets;
 
-    private Client idActualClient;
-    private Diet idActualDiet;
-    private FoodDiet idActualFood;
+    private Client idCurrentClient;
+    private Diet idCurrentDiet;
+    private FoodDiet idCurrentFood;
 
     private SaveData() {
         user = new User("","","");
@@ -39,9 +39,9 @@ public class SaveData {
         foods = new CacheCollection<>();
         diets = new CacheCollection<>();
         foodDiets = new CacheCollection<>();
-        idActualClient = new Client();
-        idActualDiet = new Diet();
-        idActualFood = new FoodDiet();
+        idCurrentClient = new Client();
+        idCurrentDiet = new Diet();
+        idCurrentFood = new FoodDiet();
     }
 
     public static SaveData getInstance() {
@@ -51,28 +51,28 @@ public class SaveData {
         return saveData;
     }
 
-    public Client getIdActualClient() {
-        return idActualClient;
+    public Client getIdCurrentClient() {
+        return idCurrentClient;
     }
 
-    public void setIdActualClient(Client idActualClient) {
-        this.idActualClient = idActualClient;
+    public void setIdCurrentClient(Client idCurrentClient) {
+        this.idCurrentClient = idCurrentClient;
     }
 
-    public Diet getIdActualDiet() {
-        return idActualDiet;
+    public Diet getIdCurrentDiet() {
+        return idCurrentDiet;
     }
 
-    public void setIdActualDiet(Diet idActualDiet) {
-        this.idActualDiet = idActualDiet;
+    public void setIdCurrentDiet(Diet idCurrentDiet) {
+        this.idCurrentDiet = idCurrentDiet;
     }
 
-    public FoodDiet getIdActualFood() {
-        return idActualFood;
+    public FoodDiet getIdCurrentFood() {
+        return idCurrentFood;
     }
 
-    public void setIdActualFood(FoodDiet idActualFood) {
-        this.idActualFood = idActualFood;
+    public void setIdCurrentFood(FoodDiet idCurrentFood) {
+        this.idCurrentFood = idCurrentFood;
     }
 
     public User getUser() {
@@ -124,7 +124,11 @@ public class SaveData {
     }
 
     public Map<String, Diet> getDietsOfClient (String idClient){
-        return diets.get(idClient);
+        if (diets.get(idClient) == null){
+            return new HashMap<>();
+        }else{
+            return diets.get(idClient);
+        }
     }
 
     public Map<String, ArrayList<FoodDiet>> getFoodDietsOfDiet (String idDiet){
@@ -148,13 +152,10 @@ public class SaveData {
     }
 
     public void addDiet (Diet diet){
-        Map<String, Diet> diets = getDietsOfClient(diet.getIdCliente());
-        if (diets == null){
-            diets = new HashMap<>();
-        }
-        getDietsOfClient(diet.getIdCliente()).clear();
+        Map<String, Diet> diets = getDietsOfClient(diet.getIdCli());
+        getDietsOfClient(diet.getIdCli()).clear();
         diets.putIfAbsent(diet.getName(), diet);
-        this.diets.add(diet.getIdCliente(),diets);
+        this.diets.add(diet.getIdCli(),diets);
     }
 
     public void addFoodDiet(FoodDiet foodDiet) {
@@ -188,13 +189,13 @@ public class SaveData {
     }
 
     public void updateDiet (Diet diet){
-        Map<String, Diet> diets = getDietsOfClient(diet.getIdCliente());
+        Map<String, Diet> diets = getDietsOfClient(diet.getIdCli());
         if (diets == null){
             diets = new HashMap<>();
         }
-        getDietsOfClient(diet.getIdCliente()).clear();
+        getDietsOfClient(diet.getIdCli()).clear();
         diets.put(diet.getName(), diet);
-        this.diets.add(diet.getIdCliente(),diets);
+        this.diets.add(diet.getIdCli(),diets);
     }
 
 

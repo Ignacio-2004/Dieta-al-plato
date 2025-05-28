@@ -31,6 +31,15 @@ public class ValidationResult {
     public ValidationResult() {
         data = new HashMap<>();
     }
+
+    @Override
+    public String toString() {
+        return "ValidationResult{" +
+                "exit=" + exit +
+                ", message='" + message + '\'' +
+                ", data=" + data.toString() +
+                '}';
+    }
 }
 
 //--IP - 23/04/2025 -

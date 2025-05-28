@@ -2,18 +2,28 @@ package com.tfg.dietaalplato;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.tfg.dietaalplato.firebase.conectors.tools.FireBaseWriter;
+import com.tfg.dietaalplato.firebase.exceptions.ComplexFBCE;
 import com.tfg.dietaalplato.firebase.tables.Client;
+import com.tfg.dietaalplato.firebase.tables.Diet;
+import com.tfg.dietaalplato.firebase.tables.FoodDiet;
 import com.tfg.dietaalplato.firebase.utilities.OnResultCallBack;
+import com.tfg.dietaalplato.firebase.utilities.ValidationResult;
+import com.tfg.dietaalplato.utilities.Blocker;
 import com.tfg.dietaalplato.utilities.SaveData;
 import com.tfg.dietaalplato.utilities.dialogo.ClientInfo_Dialog;
+
+import java.util.ArrayList;
 
 public class DietasActivity extends AppCompatActivity {
 
@@ -22,6 +32,7 @@ public class DietasActivity extends AppCompatActivity {
     Button boton1dias, boton3dias, boton7dias;
     ImageButton botonimage1dias, botonimage3dias, botonimage7dias;
     TextView nombreClienteText;
+    private static final String msgErrorRepeatDiet = "Ya existe una dieta con las mismas credenciales, para modificarla entre en la ficha de la dieta.";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +41,7 @@ public class DietasActivity extends AppCompatActivity {
 
         saveData = SaveData.getInstance();
 
-        Client cliente = saveData.getIdActualClient();
+        Client cliente = saveData.getIdCurrentClient();
         imagenCliente = findViewById(R.id.imgCliente);
         nombreClienteText = findViewById(R.id.nombrePaciente_textview);
         nombreClienteText.setText((cliente.getName().substring(0, 1).toUpperCase() + cliente.getName().substring(1)));
@@ -62,15 +73,61 @@ public class DietasActivity extends AppCompatActivity {
     }
 
     private void abrirDiasActivity( int dietaSeleccionada) {
-        Intent intent = new Intent(this, DiasActivity.class);
-        intent.putExtra("dietaSeleccionada", dietaSeleccionada);
-        startActivity(intent);
+        Blocker.createBlocker(this.findViewById(android.R.id.content), this);
+        ArrayList<String> data = new ArrayList<>();
+        data.add(String.valueOf(dietaSeleccionada));
+        data.add("null");
+        ValidationResult result = Diet.toMapData(data, saveData.getIdCurrentClient().getId());
+        Log.d("Cliente", "Cliente: "+saveData.getIdCurrentClient().toString());
+        Log.d("Cliente", result.toString());
+        FireBaseWriter.saveData(Diet.class, result).addOnSuccessListener(
+                validationResult -> {
+                    Log.d("Dieta", validationResult.toString());
+                    Blocker.removeBlocker(this.findViewById(android.R.id.content));
+                    Intent intent = new Intent(this, DiasActivity.class);
+                    startActivity(intent);
+                }
+        ).addOnFailureListener(
+                e -> {
+                    if (!((ComplexFBCE) e).reason.message.equals(msgErrorRepeatDiet)) {
+                        Toast.makeText(this, "Error al guardar la dieta", Toast.LENGTH_SHORT).show();
+                        Blocker.removeBlocker(this.findViewById(android.R.id.content));
+                    }else{
+                        Blocker.removeBlocker(this.findViewById(android.R.id.content));
+                        Intent intent = new Intent(this, DiasActivity.class);
+                        startActivity(intent);
+                    }
+                }
+        );
     }
 
     private void abrirComidasActivity(int dietaSeleccionada) { // en caso de que se seleccione la dieta de 1 día, pasará directamente a la ventana de comidas
-        Intent intent = new Intent(this, ComidasActivity.class);
-        intent.putExtra("dietaSeleccionada", dietaSeleccionada);
-        startActivity(intent);
+        Blocker.createBlocker(this.findViewById(android.R.id.content), this);
+        ArrayList<String> data = new ArrayList<>();
+        data.add(String.valueOf(dietaSeleccionada));
+        data.add("null");
+        ValidationResult result = Diet.toMapData(data, saveData.getIdCurrentClient().getId());
+        Log.d("Cliente", "Cliente: "+saveData.getIdCurrentClient().toString());
+        Log.d("Cliente", result.toString());
+        FireBaseWriter.saveData(Diet.class, result).addOnSuccessListener(
+                validationResult -> {
+                    Log.d("Dieta", validationResult.toString());
+                    Blocker.removeBlocker(this.findViewById(android.R.id.content));
+                    Intent intent = new Intent(this, AlimentosActivity.class);
+                    startActivity(intent);
+                }
+        ).addOnFailureListener(
+                e -> {
+                    if (!((ComplexFBCE) e).reason.message.equals(msgErrorRepeatDiet)) {
+                        Toast.makeText(this, "Error al guardar la dieta", Toast.LENGTH_SHORT).show();
+                        Blocker.removeBlocker(this.findViewById(android.R.id.content));
+                    }else{
+                        Blocker.removeBlocker(this.findViewById(android.R.id.content));
+                        Intent intent = new Intent(this, AlimentosActivity.class);
+                        startActivity(intent);
+                    }
+                }
+        );
     }
 
     public void onClickReturn(View view){

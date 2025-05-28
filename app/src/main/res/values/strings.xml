@@ -42,4 +42,9 @@
     <string name="potasio_k_100">Potasio (K/100)</string>
     <string name="guardar">Guardar</string>
     <string name="_0">0</string>
+    <string name="usuario_de_la_aplicaci_n">Usuario de la aplicación. *</string>
+    <string name="constrase_a">Constraseña. *</string>
+    <string name="hintEmail">nnnnnnnn@dietetica.davinci</string>
+    <string name="rango_de_calorias_objetivo">Rango de calorias objetivo</string>
+    <string name="minkcal">minKcal</string>
 </resources>

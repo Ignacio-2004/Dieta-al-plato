@@ -65,8 +65,8 @@ public class BancoAlimentosActivity extends AppCompatActivity {
                                 item.addView(nombre);
                                 layoutSV.addView(item);
                             }
-                            Blocker.removeBlocker(this.findViewById(android.R.id.content));
                         }
+                        Blocker.removeBlocker(this.findViewById(android.R.id.content));
                     }
             ).addOnFailureListener(
                     e -> {

@@ -1,8 +1,5 @@
 package com.tfg.dietaalplato.firebase.tables;
 
-import android.view.View;
-import android.widget.EditText;
-
 import com.tfg.dietaalplato.firebase.conectors.tools.FireBaseValidator;
 import com.tfg.dietaalplato.firebase.exceptions.FBCException;
 import com.tfg.dietaalplato.firebase.tables.parents.BaseObject;
@@ -20,7 +17,7 @@ public class Diet extends BaseObject {
      */
 
     private String tip;
-    private String idCliente;
+    private String idCli;
     private String just;
 
     public Diet() {
@@ -29,7 +26,7 @@ public class Diet extends BaseObject {
     public Diet(String id, String name, String tip, String idCliente, String just) {
         super(id, name);
         this.tip = tip; //Los dias
-        this.idCliente = idCliente;
+        this.idCli = idCliente;
         this.just = just;
     }
 
@@ -41,12 +38,12 @@ public class Diet extends BaseObject {
         this.tip = tip;
     }
 
-    public String getIdCliente() {
-        return idCliente;
+    public String getIdCli() {
+        return idCli;
     }
 
-    public void setIdCliente(String idCliente) {
-        this.idCliente = idCliente;
+    public void setIdCli(String idCli) {
+        this.idCli = idCli;
     }
 
     public String getJust() {
@@ -63,37 +60,37 @@ public class Diet extends BaseObject {
                 "id='" + super.getId() + '\'' +
                 ", name='" + super.getName() + '\'' +
                 "tip=" + tip +
-                ", idCliente='" + idCliente + '\'' +
+                ", idCli='" + idCli + '\'' +
                 ", just='" + just + '\'' +
                 '}';
     }
 
     //++IP - 23/04/2025 -
 
-    public static ValidationResult toMapData(ArrayList<View> data, String idCliente){
+    public static ValidationResult toMapData(ArrayList<String> data, String idCliente){
         ValidationResult result = new ValidationResult();
 
-        String[] fieldName = {"name","tip", "idCliente", "just"};
+        String[] fieldName = {"name","tip", "idCli", "just"};
 
         try{
             result.data = new HashMap<>();
 
             ArrayList<String> keys = new ArrayList<>();
-            if (data.get(0).getTag().toString().trim().equals("1")){
-                keys.add("Dieta de "+data.get(0).getTag().toString().trim()+" dias.");
+            if (!data.get(0).trim().equals("1")){
+                keys.add("Dieta de "+data.get(0).trim()+" dias.");
             }else{
-                keys.add("Dieta de "+data.get(0).getTag().toString().trim()+" dia.");
+                keys.add("Dieta de "+data.get(0).trim()+" dia.");
             }
-            keys.add(((EditText) data.get(1)).getText().toString().trim());
-            keys.add(idCliente);
-            keys.add(((EditText) data.get(3)).getText().toString().trim());
+            keys.add(data.get(0).trim());
+            keys.add(idCliente.toUpperCase());
+            keys.add(data.get(1).trim());
 
             for (int i = 0; i < keys.size(); i++) {
 
                 //Comprobamos que no haya campos vacios
 
                 if (keys.get(i).isEmpty()) {
-                    throw new Exception("El campo " + data.get(i).getTag().toString() + " no puede estar vacio");
+                    throw new Exception("El campo " + data.get(i).toString() + " no puede estar vacio");
                     //Con tag devuelvo el nombre del campo vacio
                 }
             }
@@ -119,7 +116,7 @@ public class Diet extends BaseObject {
 
         AtomicBoolean booleanAtomic = new AtomicBoolean(false);
 
-        FireBaseValidator.exist(getName(),getIdCliente(),String.valueOf(TablesNames.dietas), result -> {
+        FireBaseValidator.exist(getName(), getIdCli(),String.valueOf(TablesNames.dietas), result -> {
             if (result){
                 booleanAtomic.set(true);
             }

@@ -232,28 +232,29 @@
         android:id="@+id/buttonSeePasswd"
         android:layout_width="45dp"
         android:layout_height="45dp"
-        android:layout_marginTop="23dp"
-        android:layout_marginEnd="342dp"
+        android:layout_marginEnd="15dp"
         android:background="@android:color/transparent"
         android:onClick="mostrarPassword"
         android:scaleType="fitXY"
         android:src="@drawable/closed_eye"
-        app:layout_constraintEnd_toEndOf="parent"
         android:visibility="visible"
-        app:layout_constraintTop_toBottomOf="@+id/text_usuario" />
+        app:layout_constraintBottom_toBottomOf="@+id/Password"
+        app:layout_constraintEnd_toEndOf="@+id/Password"
+        app:layout_constraintTop_toTopOf="@+id/Password" />
 
-    <!-- boton ocultar password -->
     <ImageButton
-        android:id="@+id/buttonHidePasswd"
+        android:id="@+id/buttHidePsw"
         android:layout_width="45dp"
         android:layout_height="45dp"
-        android:layout_marginTop="23dp"
-        android:layout_marginEnd="342dp"
+        android:layout_marginEnd="15dp"
         android:background="@android:color/transparent"
-        android:onClick="ocultarPassword"
+        android:onClick="mostrarPassword"
         android:scaleType="fitXY"
         android:src="@drawable/open_eye"
-        app:layout_constraintEnd_toEndOf="parent"
         android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@+id/text_usuario" />
+        app:layout_constraintBottom_toBottomOf="@+id/Password"
+        app:layout_constraintEnd_toEndOf="@+id/Password"
+        app:layout_constraintTop_toTopOf="@+id/Password" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

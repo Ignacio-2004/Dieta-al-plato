@@ -71,7 +71,7 @@ public class FireBaseWriter {
                             validationResult -> {
                                 if (!validationResult.exit) {
                                     Log.w(TAG, "Usuario existente, operacion sin permisos de sobreescritura");
-                                    finalresoult.setException(new ComplexFBCE(new ObjectResult<>(false, msgErrorRepeatClient,null )));
+                                    finalresoult.setException(new ComplexFBCE(new ObjectResult<>(false, msgErrorRepeatUser,null )));
                                 }else{
                                     Log.d(TAG, "Usuario no existente, inicio del guardado.");
                                     save(result,classData, validationResult.message,"-1").addOnSuccessListener(
@@ -88,20 +88,20 @@ public class FireBaseWriter {
                     ).addOnFailureListener(
                             e -> {
                                 result.exit = false;
-                                result.message = e.getMessage();
+                                result.message = ((ComplexFBCE) e).reason.message;
                             }
                     );
 
                     break;
                 case "DIE":
-                    repeatObject(result, classData.data, result.data.get("idCliente")).addOnSuccessListener(
+                    repeatObject(result, classData.data, result.data.get("idCli")).addOnSuccessListener(
                             validationResult -> {
                                 if (!validationResult.exit) {
                                     Log.w(TAG, "Dieta existente, operacion sin permisos de sobreescritura");
-                                    finalresoult.setException(new ComplexFBCE(new ObjectResult<>(false, msgErrorRepeatClient,null )));
+                                    finalresoult.setException(new ComplexFBCE(new ObjectResult<>(false, msgErrorRepeatDiet,null )));
                                 }else{
                                     Log.d(TAG, "Dieta no existente, inicio del guardado.");
-                                    save(result,classData, validationResult.message,result.data.get("idCliente")).addOnSuccessListener(
+                                    save(result,classData, validationResult.message,result.data.get("idCli")).addOnSuccessListener(
                                             saveResult ->{
                                                 finalresoult.setResult(saveResult);
                                             }
@@ -116,7 +116,7 @@ public class FireBaseWriter {
                             e -> {
                                 Log.d(TAG, e.getMessage());
                                 result.exit = false;
-                                result.message = e.getMessage();
+                                result.message = ((ComplexFBCE) e).reason.message;
                             }
                     );
                     break;
@@ -129,7 +129,7 @@ public class FireBaseWriter {
                                     if (classData.data.equals("alimentos")) {
                                         finalresoult.setException(new ComplexFBCE(new ObjectResult<>(false, msgErrorRepeatFood,null )));
                                     }else{
-                                        finalresoult.setException(new ComplexFBCE(new ObjectResult<>(false, msgErrorRepeatFoodDiet,null )));
+                                        finalresoult.setException(new ComplexFBCE(new ObjectResult<>(false, msgErrorRepeatClient,null )));
                                     }
                                 }else{
                                     Log.d(TAG, classData.data+" no existente, inicio del guardado.");
@@ -147,7 +147,7 @@ public class FireBaseWriter {
                     ).addOnFailureListener(
                             e -> {
                                 result.exit = false;
-                                result.message = e.getMessage();
+                                result.message = ((ComplexFBCE) e).reason.message;
                             }
                     );
                     break;
@@ -175,7 +175,7 @@ public class FireBaseWriter {
                             e -> {
                                 Log.d(TAG, e.getMessage());
                                 result.exit = false;
-                                result.message = e.getMessage();
+                                result.message = ((ComplexFBCE) e).reason.message;
                             }
                     );
 
@@ -244,7 +244,12 @@ public class FireBaseWriter {
                                     }
                             );
                         }
-                    });
+                    }).addOnFailureListener(
+                            e -> {
+                                result.exit = false;
+                                result.message = ((ComplexFBCE) e).reason.message;
+                            }
+                    );
 
                     break;
                 case "DIE":
@@ -257,8 +262,12 @@ public class FireBaseWriter {
                                             });
                                 }
                             }
+                    ).addOnFailureListener(
+                            e -> {
+                                result.exit = false;
+                                result.message = ((ComplexFBCE) e).reason.message;
+                            }
                     );
-
                     break;
                 case "ALI":
                 case "CLI":
@@ -271,7 +280,14 @@ public class FireBaseWriter {
                                                 taskCompletionSource.set(finalResultOfForce(validationResult1,classType));
                                             }
                                     );
+                                }else{
+                                    taskCompletionSource.set(finalResultOfForce(validationResult,classType));
                                 }
+                            }
+                    ).addOnFailureListener(
+                            e -> {
+                                result.exit = false;
+                                result.message = ((ComplexFBCE) e).reason.message;
                             }
                     );
 
@@ -285,7 +301,14 @@ public class FireBaseWriter {
                                                 taskCompletionSource.set(finalResultOfForce(validationResult1,classType));
                                             }
                                     );
+                                }else{
+                                    taskCompletionSource.set(finalResultOfForce(validationResult,classType));
                                 }
+                            }
+                    ).addOnFailureListener(
+                            e -> {
+                                result.exit = false;
+                                result.message = ((ComplexFBCE) e).reason.message;
                             }
                     );
 
@@ -316,6 +339,8 @@ public class FireBaseWriter {
                 return taskCompletionSource.getTask();
             }
             Log.d(TAG, "💾 Metodo save, listo para guardar");
+            Log.d(TAG, "💾 ID ext: " + idExt);
+            Log.d(TAG, "💾 ID raw: " + rawId);
             id = ClassUtilities.generateId(classData, Integer.parseInt(rawId), idExt);
             Log.d(TAG, "💾 ID generado: " + id);
 
@@ -351,7 +376,7 @@ public class FireBaseWriter {
                     }
 
 
-                    save(new Client(id.toUpperCase(), result.data.get("name"), result.data.get("ape"), result.data.get("idUsr").toUpperCase(), alergies, pathologies)).addOnSuccessListener(
+                    save(new Client(id.toUpperCase(), result.data.get("name"), result.data.get("ape"), result.data.get("idUsr").toUpperCase(),result.data.get("mincKal"),result.data.get("maxcKal"), alergies, pathologies)).addOnSuccessListener(
                             clientResult -> {
                                 Log.d(TAG, "✅ Cliente guardado con éxito en Firestore");
                                 taskCompletionSource.setResult(new ObjectResult<>(clientResult.exit, clientResult.message, clientResult.result));
@@ -367,7 +392,7 @@ public class FireBaseWriter {
                     break;
                 case "dietas":
                     Log.d(TAG, "💾"+classData.key+" "+classData.data);
-                    save(new Diet(id.toUpperCase(), result.data.get("tip"), result.data.get("idClient").toUpperCase(), result.data.get("just"), result.data.get("idUsr").toUpperCase())).addOnSuccessListener(
+                    save(new Diet(id.toUpperCase(), result.data.get("name"), result.data.get("tip"), result.data.get("idCli").toUpperCase(), result.data.get("just").toUpperCase())).addOnSuccessListener(
                             dietResult -> {
                                 Log.d(TAG, "✅ Dieta guardado con éxito en Firestore");
                                 taskCompletionSource.setResult(new ObjectResult<>(dietResult.exit, dietResult.message, dietResult.result));
@@ -515,8 +540,9 @@ public class FireBaseWriter {
         // Crear un objeto Map con los datos del usuario
         HashMap<Object, Object> client = new HashMap<>();
         client.put("id", diet.getId());
+        client.put("name", diet.getName());
         client.put("tip", diet.getTip());
-        client.put("idClient", diet.getIdCliente());
+        client.put("idCli", diet.getIdCli());
         client.put("just", diet.getJust());
 
         TaskCompletionSource<ObjectResult<Diet>> callback = new TaskCompletionSource<>();
@@ -548,6 +574,8 @@ public class FireBaseWriter {
         client.put("idUsr", cli.getIdUsr());
         client.put("alergias", cli.getAlergias());
         client.put("patologias", cli.getPatologias());
+        client.put("minKal", cli.getMinKcal());
+        client.put("maxKal", cli.getMaxKcal());
 
 
 

@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,7 +17,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 
 import com.tfg.dietaalplato.utilities.Blocker;
-import com.tfg.dietaalplato.utilities.dialogo.ClientCreator_Dialogo;
 import com.tfg.dietaalplato.firebase.conectors.tools.FireBaseReader;
 import com.tfg.dietaalplato.firebase.tables.Client;
 import com.tfg.dietaalplato.firebase.exceptions.FBCException;
@@ -79,19 +77,18 @@ public class PacientesActivity extends AppCompatActivity {
 
 
                           item.setOnClickListener(v ->{
-                                      Log.d("Cliente", "Nombre del cliente: " + cliente.getName());
-                                      saveData.setIdActualClient(cliente);
+                                      Log.d("Cliente", "Nombre del cliente: " + cliente.toString());
+                                      saveData.setIdCurrentClient(cliente);
 
                               Intent intent = new Intent(this, DietasActivity.class);
-                              intent.putExtra("clienteSeleccionado", cliente.getName());
                               startActivity(intent);
 
                               }
                           );
                           item.addView(nombre);
                           layoutClientes.addView(item);
-                          Blocker.removeBlocker(this.findViewById(android.R.id.content));
                       }
+                      Blocker.removeBlocker(this.findViewById(android.R.id.content));
                   }
             ).addOnFailureListener(
                     e -> {

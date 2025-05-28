@@ -26,18 +26,18 @@ public class  ClassUtilities {
     public static String generateId(ClassData classData, int amount, String idNumExt){
         Log.d("FireBase", "generateId: "+amount);
         String id = String.valueOf(amount+1);
+        String date = String.valueOf(System.currentTimeMillis());
 
         while (id.length()<4){
             id = "0" + id;
         }
 
-        if (Integer.parseInt(idNumExt.substring(idNumExt.length()-4))!=-1){
-            Log.d("FireBase", "generateId: "+classData.key+idNumExt.substring(idNumExt.length()-4)+id);
-            return classData.key+idNumExt.substring(idNumExt.length()-4)+id;
-        }else{
-            Log.d("FireBase", "generateId: "+classData.key+id);
-            return classData.key+id;
+        if (idNumExt.split("0").length>1){
+            Log.d("FireBase", "generateId: "+date+classData.key+idNumExt.substring(idNumExt.length()-4)+id);
+            return classData.key+date+idNumExt.substring(idNumExt.length()-4)+id;
         }
+
+        return classData.key+date+id;
 
     }
 

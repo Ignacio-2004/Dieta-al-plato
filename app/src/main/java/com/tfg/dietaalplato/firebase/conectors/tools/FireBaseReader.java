@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class FireBaseReader {
@@ -209,7 +210,7 @@ public class FireBaseReader {
         };
 
         fst.collection("dietas")
-                .whereEqualTo("idCliente", idCli)
+                .whereEqualTo("idCli", idCli.toUpperCase())
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     if (!queryDocumentSnapshots.isEmpty()) {
@@ -230,11 +231,11 @@ public class FireBaseReader {
                         }
 
 
-                        if (!dietsCache.isEmpty()){
+                        if (!diets.isEmpty()){
                             dietsCache.setLoaded(true);
-                            dietsCache.add(idCli,diets);
+                            dietsCache.add(idCli.toUpperCase(),diets);
 
-                            if ((saveData.getDiets()!= null && !saveData.getDiets().isEmpty()) && saveData.getDiets().isLoaded()){
+                            if (saveData.getDiets().isLoaded()){
                                 Log.d(TAG, "📖 Dietas guardadas en cache");
                             }
 
@@ -246,7 +247,7 @@ public class FireBaseReader {
 
                     } else {
                         Log.d("Firebase", "⚠️ No se encontró ningúna dieta para el cliente con id: " + idCli);
-                        taskCompletionSource.setException(new ComplexFBCE(new ObjectResult<>(false, "Dieta no encontrada", null)));
+                        taskCompletionSource.setResult(new ObjectResult<>(false, "Dieta no encontrada", null));
                     }
                 })
                 .addOnFailureListener(e -> {
@@ -386,7 +387,7 @@ public class FireBaseReader {
 
                 for (int i = 0; i < clientes.size(); i++) {
                     Client c = clientes.get(i);
-                    Log.d(TAG, "|    Cliente[" + i + "]: { id: " + c.getId() + ", nombre: " + c.getName() + ", idUsr: " + c.getIdUsr() + " }");
+                    Log.d(TAG, "|    Cliente[" + i + "]: { id: " + c.getId() + ", nombre: " + c.getName() + ", idUsr: " + c.getIdUsr() + "minKcal: " + c.getMinKcal() + ", maxKcal: " + c.getMaxKcal()  +" }");
                 }
 
                 taskCompletionSource.setResult(new ObjectResult<>(true, "Clientes cargados", clientes));
@@ -454,7 +455,10 @@ public class FireBaseReader {
 
                         } else {
                             Log.d("Firebase", "⚠️ No se encontró ningún cliente que pertenezca al usuario: "+idUsr);
-                            taskCompletionSource.setException(new ComplexFBCE( new ObjectResult<>(false, "Cliente no encontrado", null)));
+                            taskCompletionSource.setResult(new ObjectResult<>(false, "Cliente no encontrado", new ArrayList<>() ));
+                            CacheCollection<Client> clientsCache = new CacheCollection<>();
+                            clientsCache.setLoaded(true);
+                            saveData.setCollectionClient(clientsCache);
                         }
                     })
                     .addOnFailureListener(e -> {

@@ -1,5 +1,6 @@
 package com.tfg.dietaalplato.firebase.tables;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
@@ -17,6 +18,8 @@ public class Client extends BaseObject {
 
     private String ape;
     private String idUsr;
+    private String minKcal;
+    private String maxKcal;
     private ArrayList<String> alergias;
     private ArrayList<String> patologias;
 
@@ -25,12 +28,30 @@ public class Client extends BaseObject {
         patologias = new ArrayList<>();
     }
 
-    public Client(String id, String name, String ape, String idUsr, ArrayList<String> alergias, ArrayList<String> patologias) {
+    public Client(String id, String name, String ape, String idUsr, String minKcal, String maxKcal, ArrayList<String> alergias, ArrayList<String> patologias) {
         super(id, name);
         this.ape = ape;
         this.idUsr = idUsr;
+        this.minKcal = minKcal;
+        this.maxKcal = maxKcal;
         this.alergias = alergias;
         this.patologias = patologias;
+    }
+
+    public String getMinKcal() {
+        return minKcal;
+    }
+
+    public void setMinKcal(String minKcal) {
+        this.minKcal = minKcal;
+    }
+
+    public String getMaxKcal() {
+        return maxKcal;
+    }
+
+    public void setMaxKcal(String maxKcal) {
+        this.maxKcal = maxKcal;
     }
 
     public String getApe() {
@@ -70,6 +91,8 @@ public class Client extends BaseObject {
         return "Client{" +
                 "ape='" + ape + '\'' +
                 ", idUsr='" + idUsr + '\'' +
+                ", minKcal='" + minKcal + '\'' +
+                ", maxKcal='" + maxKcal + '\'' +
                 ", alergias=" + alergias +
                 ", patologias=" + patologias +
                 '}';
@@ -80,7 +103,7 @@ public class Client extends BaseObject {
     public static ValidationResult toMapData(ArrayList<View> data,ArrayList<String> alergias, ArrayList<String> patologias, String idUsr){
         ValidationResult result = new ValidationResult();
 
-        String[] fieldName = {"name", "ape","alergias", "patologias", "idUsr"};
+        String[] fieldName = {"name", "ape","minKcal","maxKcal", "idUsr", "alergias", "patologias"};
 
         try{
             result.data = new HashMap<>();
@@ -88,6 +111,8 @@ public class Client extends BaseObject {
             ArrayList<String> keys = new ArrayList<>();
             keys.add(((EditText) data.get(0)).getText().toString().trim());
             keys.add(((EditText) data.get(1)).getText().toString().trim());
+            keys.add(((EditText) data.get(2)).getText().toString().trim());
+            keys.add(((EditText) data.get(3)).getText().toString().trim());
             keys.add(idUsr);
 
             for (int i = 0; i < keys.size()-1; i++) {
@@ -103,23 +128,20 @@ public class Client extends BaseObject {
             for (int i = 0; i < keys.size(); i++) {
                 result.data.put(fieldName[i], keys.get(i).toLowerCase());
             }
-            result.data.put(fieldName[0], keys.get(0).toLowerCase());
-            result.data.put(fieldName[1], keys.get(1).toLowerCase());
 
             String compoundCharacteristic = "";
 
             for (String allergy : alergias) {
                 compoundCharacteristic = compoundCharacteristic + allergy + ",";
             }
-            result.data.put(fieldName[2], compoundCharacteristic);
+            result.data.put(fieldName[5], compoundCharacteristic);
 
             compoundCharacteristic = "";
 
             for (String pathology : patologias) {
                 compoundCharacteristic = compoundCharacteristic + pathology + ",";
             }
-            result.data.put(fieldName[3], compoundCharacteristic);
-            result.data.put(fieldName[4], idUsr);
+            result.data.put(fieldName[6], compoundCharacteristic);
 
             result.exit = true;
             result.message = "Datos validos";
@@ -127,9 +149,11 @@ public class Client extends BaseObject {
         }catch (Exception e){
 
             result.exit = false;
-            result.message = "Error al validar los datos. Compruebe las celdas.";
+            result.message = e.getMessage();
 
         }
+
+        Log.d("Client",result.data.toString());
 
         return result;
     }
