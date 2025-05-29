@@ -38,7 +38,7 @@
         android:orientation="horizontal">
 
         <ImageButton
-            android:id="@+id/bttReturn2"
+            android:id="@+id/return_button"
             android:layout_width="121dp"
             android:layout_height="88dp"
             android:layout_marginStart="4dp"
