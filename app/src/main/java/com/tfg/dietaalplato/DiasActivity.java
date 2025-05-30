@@ -1,5 +1,7 @@
 package com.tfg.dietaalplato;
 
+
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -7,7 +9,9 @@ import android.widget.Button;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
+
 public class DiasActivity extends AppCompatActivity {
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -15,14 +19,17 @@ public class DiasActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_dias);
 
+
         String clienteSeleccionado = getIntent().getStringExtra("clienteSeleccionado");
         int dietaSeleccionada = getIntent().getIntExtra("dietaSeleccionada", 1);
+
 
         // Obtener los botones de los días
         Button[] botonesDias3 = new Button[3];
         botonesDias3[0] = findViewById(R.id.boton1Dias3);
         botonesDias3[1] = findViewById(R.id.boton2Dias3);
         botonesDias3[2] = findViewById(R.id.boton3Dias3);
+
 
         Button[] botonesDias7 = new Button[7];
         botonesDias7[0] = findViewById(R.id.boton1Dias7);
@@ -32,6 +39,7 @@ public class DiasActivity extends AppCompatActivity {
         botonesDias7[4] = findViewById(R.id.boton5Dias7);
         botonesDias7[5] = findViewById(R.id.boton6Dias7);
         botonesDias7[6] = findViewById(R.id.boton7Dias7);
+
 
         if(dietaSeleccionada == 3) {
             for (int i = 0; i < 3; i++) {
@@ -54,19 +62,24 @@ public class DiasActivity extends AppCompatActivity {
             }
         }
 
+
     }
+
 
     private void abrirComidasActivity(String clienteSeleccionado, int dietaSeleccionada, int diaSeleccionado) {
         Intent intent = new Intent(this, ComidasActivity.class);
+        intent.putExtra("esAdmin", true);
         intent.putExtra("clienteSeleccionado", clienteSeleccionado);
         intent.putExtra("dietaSeleccionada", dietaSeleccionada);
         intent.putExtra("diaSeleccionado", diaSeleccionado);
         startActivity(intent);
     }
 
+
     public void onClickReturn(View view){
         Intent intent = new Intent(this, DietasActivity.class );
         String clienteSeleccionado = getIntent().getStringExtra("clienteSeleccionado");
+        intent.putExtra("esAdmin", true);
         intent.putExtra("clienteSeleccionado", clienteSeleccionado);
         startActivity(intent);
     }

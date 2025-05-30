@@ -1,5 +1,6 @@
 package com.tfg.dietaalplato;
 
+
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
@@ -14,7 +15,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+
+
 import androidx.appcompat.app.AppCompatActivity;
+
 
 import com.tfg.dietaalplato.firebase.conectors.tools.FireBaseReader;
 import com.tfg.dietaalplato.firebase.tables.User;
@@ -23,12 +27,17 @@ import com.tfg.dietaalplato.firebase.exceptions.FBCException;
 import com.tfg.dietaalplato.utilities.SaveData;
 
 
+
+
 public class InicioAdminActivity extends AppCompatActivity {
+
+
 
 
     private LinearLayout layoutUsuarios;
     private FireBaseConnector fbConnector; // tu conector personalizado
     private SaveData saveData;
+
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -37,7 +46,10 @@ public class InicioAdminActivity extends AppCompatActivity {
         setContentView(R.layout.activity_inicio_admin);
 
 
+
+
         layoutUsuarios = findViewById(R.id.layoutUsuarios);
+
 
         saveData = SaveData.getInstance();
         try {
@@ -51,11 +63,14 @@ public class InicioAdminActivity extends AppCompatActivity {
                             layoutUsuarios.addView(item);
 
 
+
+
                             item = new LinearLayout(this);
                             item.setOrientation(LinearLayout.HORIZONTAL);
                             item.setBackgroundResource(R.drawable.bg_food_background);
                             item.setPadding(12, 12, 12, 12);
                             item.setElevation(8f);
+
 
                             TextView nombre = new TextView(this);
                             nombre.setText(usuario.getName().toUpperCase());
@@ -68,15 +83,25 @@ public class InicioAdminActivity extends AppCompatActivity {
                                     LinearLayout.LayoutParams.WRAP_CONTENT
                             ));
 
+
                             item.setOnClickListener(v ->{
                                         Log.d("Usuario", "Nombre del usuario: " + usuario.getName());
                                         //saveData.setIdActualClient(usuario);
 
-                                        Intent intent = new Intent(this, InicioUsuarioActivity.class);
-                                        intent.putExtra("esAdmin", true);
-                                        intent.putExtra("usuarioSeleccionado", usuario.getName());
-                                        startActivity(intent);
 
+                                        Intent intent = new Intent(this, InicioUsuarioActivity.class);
+                                        intent.putExtra("esAdmin", true); //como es admin, mandamos true
+
+
+                                        try {
+                                            String idUser = FireBaseReader.readUserByEmail(usuario.getId()).toString();
+                                            intent.putExtra("usuarioSeleccionado", idUser);
+
+
+                                        } catch (FBCException e) {
+                                            throw new RuntimeException(e);
+                                        }
+                                        startActivity(intent);
                                     }
                             );
                             item.addView(nombre);
@@ -87,6 +112,7 @@ public class InicioAdminActivity extends AppCompatActivity {
             Toast.makeText(this, "Error al cargar usuarios", Toast.LENGTH_SHORT).show();
         }
     }
+
 
     public void onClickReturn(View view){
         Intent intent = new Intent(this, LogIn_Activity.class );

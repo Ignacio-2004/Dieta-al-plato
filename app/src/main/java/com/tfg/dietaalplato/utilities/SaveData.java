@@ -115,7 +115,7 @@ public class SaveData {
         return foodDiets;
     }
 
-    public Client getCLient (String name){
+    public Client getClient (String name){
         return clients.get(name);
     }
 
