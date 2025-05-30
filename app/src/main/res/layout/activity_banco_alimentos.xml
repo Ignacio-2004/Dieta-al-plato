@@ -43,7 +43,7 @@
         app:layout_constraintEnd_toEndOf="parent">
 
         <ImageButton
-            android:id="@+id/bttReturn2"
+            android:id="@+id/return_button"
             android:layout_width="110dp"
             android:layout_height="99dp"
             android:layout_marginTop="16dp"
