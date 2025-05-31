@@ -216,6 +216,7 @@ public class LogIn_Activity extends AppCompatActivity {
                                                             else {
                                                                 Intent i = new Intent(this, InicioUsuarioActivity.class);
                                                                 Blocker.removeBlocker(this.findViewById(android.R.id.content));
+                                                                i.putExtra("esAdmin", false);
                                                                 startActivity(i);
                                                                 finish(); // Cerramos Login para que no se pueda volver atrás
                                                             }
