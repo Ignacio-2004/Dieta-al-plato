@@ -1,8 +1,8 @@
 package com.tfg.dietaalplato;
 
+
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -32,6 +32,9 @@ public class DietasActivity extends AppCompatActivity {
     Button boton1dias, boton3dias, boton7dias;
     ImageButton botonimage1dias, botonimage3dias, botonimage7dias;
     TextView nombreClienteText;
+
+    private boolean esAdmin;
+    private String idUser, clienteSeleccionado;
     private static final String msgErrorRepeatDiet = "Ya existe una dieta con las mismas credenciales, para modificarla entre en la ficha de la dieta.";
 
     @Override
@@ -39,37 +42,56 @@ public class DietasActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dietas);
 
-        saveData = SaveData.getInstance();
+        // Obtener datos del Intent
+        esAdmin = getIntent().getBooleanExtra("esAdmin", false);
 
-        Client cliente = saveData.getCurrentClient();
+        if(esAdmin) {
+            idUser = getIntent().getStringExtra("usuarioSeleccionado");
+        }
+
+        clienteSeleccionado = getIntent().getStringExtra("clienteSeleccionado");
+
+        initViews();
+        setupButtons();
+    }
+
+    private void initViews() {
         imagenCliente = findViewById(R.id.imgCliente);
         nombreClienteText = findViewById(R.id.nombrePaciente_textview);
-        nombreClienteText.setText((cliente.getName().substring(0, 1).toUpperCase() + cliente.getName().substring(1)));
+        nombreClienteText.setText((clienteSeleccionado.substring(0, 1).toUpperCase() + clienteSeleccionado.substring(1)));
+
 
         // Referenciar los botones
         boton1dias = findViewById(R.id.boton1dias_button);
         boton3dias = findViewById(R.id.boton3dias_button);
         boton7dias = findViewById(R.id.boton7dias_button);
 
+
         botonimage1dias = findViewById(R.id.boton1dias_imagebutton);
         botonimage3dias = findViewById(R.id.boton3dias_imagebutton);
         botonimage7dias = findViewById(R.id.boton7dias_imagebutton);
+    }
 
+    private void setupButtons() {
+        // Configurar listeners para los botones
+        View.OnClickListener listener1Dia = v -> abrirComidasActivity(1);
+        View.OnClickListener listener3Dias = v -> abrirDiasActivity(3);
+        View.OnClickListener listener7Dias = v -> abrirDiasActivity(7);
 
-        boton1dias.setOnClickListener(v -> abrirComidasActivity( 1));
-        boton3dias.setOnClickListener(v -> abrirDiasActivity( 3));
-        boton7dias.setOnClickListener(v -> abrirDiasActivity(7));
+        boton1dias.setOnClickListener(listener1Dia);
+        boton3dias.setOnClickListener(listener3Dias);
+        boton7dias.setOnClickListener(listener7Dias);
 
-        botonimage1dias.setOnClickListener(v -> abrirComidasActivity(1));
-        botonimage3dias.setOnClickListener(v -> abrirDiasActivity(3));
-        botonimage7dias.setOnClickListener(v -> abrirDiasActivity(7));
+        botonimage1dias.setOnClickListener(listener1Dia);
+        botonimage3dias.setOnClickListener(listener3Dias);
+        botonimage7dias.setOnClickListener(listener7Dias);
 
-        imagenCliente.setOnClickListener(v -> onClickOpenInfo(v, callback -> {
+        // Listeners para la información del cliente
+        View.OnClickListener infoListener = v -> onClickOpenInfo(v, callback -> {
             super.onRestart();
-        }));
-        nombreClienteText.setOnClickListener(v -> onClickOpenInfo(v, callback -> {
-            super.onRestart();
-        }));
+        });
+        imagenCliente.setOnClickListener(infoListener);
+        nombreClienteText.setOnClickListener(infoListener);
     }
 
     private void abrirDiasActivity( int dietaSeleccionada) {
@@ -105,6 +127,7 @@ public class DietasActivity extends AppCompatActivity {
                 }
         );
     }
+
 
     private void abrirComidasActivity(int dietaSeleccionada) { // en caso de que se seleccione la dieta de 1 día, pasará directamente a la ventana de comidas
         Blocker.createBlocker(this.findViewById(android.R.id.content), this);
