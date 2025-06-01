@@ -8,9 +8,6 @@ import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 public class ComidasActivity extends AppCompatActivity {
 
@@ -52,7 +49,7 @@ public class ComidasActivity extends AppCompatActivity {
     }
 
     private void abrirAlimentosActivity(String clienteSeleccionado, int dietaSeleccionada, int diaSeleccionado, String comidaSeleccionada) {
-        Intent intent = new Intent(this, AlimentosActivity.class);
+        Intent intent = new Intent(this, DietaIDia.class);
         intent.putExtra("clienteSeleccionado", clienteSeleccionado);
         intent.putExtra("dietaSeleccionada", dietaSeleccionada);
         intent.putExtra("diaSeleccionado", diaSeleccionado);

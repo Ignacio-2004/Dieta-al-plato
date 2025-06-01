@@ -77,7 +77,7 @@ public class FireBaseRemover {
                                 case "clientes":
                                     for(Client client: saveData.getClients().getAllAsArrayList()){
                                         if(client.getId().equals(id)){
-                                            saveData.removeClient(client.getName());
+                                            saveData.removeClient(client.getId());
                                         }
                                     }
                                     break;
@@ -85,7 +85,7 @@ public class FireBaseRemover {
                                     for (Map<String, Diet> diet : saveData.getDiets().getAllAsArrayList()){
                                         for (Diet diet1: diet.values()){
                                             if(diet1.getId().equals(id)){
-                                                saveData.removeDiet(diet1.getName());
+                                                saveData.removeDiet(diet1.getIdCli());
                                             }
                                         }
                                     }

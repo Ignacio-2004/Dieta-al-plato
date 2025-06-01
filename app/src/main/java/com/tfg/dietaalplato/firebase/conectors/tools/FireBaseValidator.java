@@ -49,7 +49,7 @@ public class FireBaseValidator {
                                 for (User user : users) {
                                     if (user.getName().equals(result.data.get("name"))) {
                                         Log.e("Firebase", user.getId());
-                                        taskCompletionSource.setResult(new ValidationResult(false, "El usuario ya existe", result.data));
+                                        taskCompletionSource.setResult(new ValidationResult(false, "El usuario ya existe", User.toDesMapObject(user)));
                                         return;
                                     }
                                 }
@@ -116,7 +116,7 @@ public class FireBaseValidator {
                                 if (client.getName().toUpperCase().equals(result.data.get("name").toUpperCase())) {
                                     if (client.getApe().toUpperCase().equals(result.data.get("ape").toUpperCase())){
                                         Log.e(TAG, client.getId());
-                                        taskCompletionSource.setResult(new ValidationResult(false, "El cliente ya existe", result.data));
+                                        taskCompletionSource.setResult(new ValidationResult(false, "El cliente ya existe", Client.toDesMapObject(client)));
                                         return;
                                     }
                                 }
@@ -141,7 +141,7 @@ public class FireBaseValidator {
                                 for (Food food : foodsCollection.values()) {
                                     if (food.getName().equals(result.data.get("name"))) {
                                         Log.e(TAG, food.getId());
-                                        taskCompletionSource.setResult(new ValidationResult(false, "El alimento ya existe", result.data));
+                                        taskCompletionSource.setResult(new ValidationResult(false, "El alimento ya existe", Food.toDesMapObject(food)));
                                         return;
                                     }
                                 }
@@ -172,7 +172,7 @@ public class FireBaseValidator {
                                     Log.d("Firebase", result.data.get("name"));
                                     if (diet.getName().equalsIgnoreCase(result.data.get("name"))) {
                                         Log.e("Firebase", diet.getId());
-                                        taskCompletionSource.setResult(new ValidationResult(false, "La dieta ya existe", result.data));
+                                        taskCompletionSource.setResult(new ValidationResult(false, "La dieta ya existe", Diet.toDesMapObject(diet)));
                                         return;
                                     }
                                 }
@@ -240,7 +240,7 @@ public class FireBaseValidator {
                                     for (FoodDiet foodDiet1 : foodDiet) {
                                         if (foodDiet1.getIdAlimento().equals(idFood)) {
                                             Log.e("Firebase", foodDiet1.getId());
-                                            taskCompletionSource.setResult(new ValidationResult(false, "La relacion ya existe", result.data));
+                                            taskCompletionSource.setResult(new ValidationResult(false, "La relacion ya existe", FoodDiet.toDesMapObject(foodDiet1)));
                                             return;
                                         }
                                     }

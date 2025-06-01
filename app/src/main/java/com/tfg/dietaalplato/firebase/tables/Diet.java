@@ -8,6 +8,7 @@ import com.tfg.dietaalplato.firebase.utilities.ValidationResult;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Diet extends BaseObject {
@@ -81,7 +82,7 @@ public class Diet extends BaseObject {
             }else{
                 keys.add("Dieta de "+data.get(0).trim()+" dia.");
             }
-            keys.add(data.get(0).trim());
+            keys.add(data.get(0).trim().toLowerCase());
             keys.add(idCliente.toUpperCase());
             keys.add(data.get(1).trim());
 
@@ -96,7 +97,7 @@ public class Diet extends BaseObject {
             }
 
             for (int i = 0; i < keys.size(); i++) {
-                result.data.put(fieldName[i], keys.get(i).toLowerCase());
+                result.data.put(fieldName[i], keys.get(i));
             }
 
             result.exit = true;
@@ -110,6 +111,20 @@ public class Diet extends BaseObject {
         }
 
         return result;
+    }
+
+    public static Map<String,String> toDesMapObject(Diet diet){
+        HashMap<String,String> data = new HashMap<>();
+        String[] fieldName = {"id","name","tip", "idCli", "just"};
+
+        data.put(fieldName[0], diet.getId());
+        data.put(fieldName[1], diet.getName());
+        data.put(fieldName[2], diet.getTip());
+        data.put(fieldName[3], diet.getIdCli());
+        data.put(fieldName[4], diet.getJust());
+
+
+        return data;
     }
 
     public boolean exist() throws FBCException {

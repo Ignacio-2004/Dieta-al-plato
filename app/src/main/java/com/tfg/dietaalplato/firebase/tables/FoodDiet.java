@@ -11,6 +11,7 @@ import com.tfg.dietaalplato.firebase.utilities.ValidationResult;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class FoodDiet extends BaseObject {
@@ -149,6 +150,21 @@ public class FoodDiet extends BaseObject {
         }
 
         return result;
+    }
+
+    public static Map<String,String> toDesMapObject(FoodDiet foodDiet) {
+
+        HashMap<String,String> data = new HashMap<>();
+        data.put("idDieta", foodDiet.getIdDieta());
+        data.put("idAlimento", foodDiet.getIdAlimento());
+        data.put("comida", foodDiet.getComida());
+        data.put("numeroPlato", foodDiet.getNumeroPlato());
+        data.put("dia", foodDiet.getDia());
+        data.put("gramos", foodDiet.getG());
+        data.put("id", foodDiet.getId());
+        data.put("nombreReceta", foodDiet.getName());
+
+        return data;
     }
 
     public boolean exist() throws FBCException {

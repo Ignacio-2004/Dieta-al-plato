@@ -1,6 +1,5 @@
 package com.tfg.dietaalplato.firebase.conectors.tools;
 
-import android.nfc.Tag;
 import android.util.Log;
 
 import com.google.android.gms.tasks.Task;
@@ -25,7 +24,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 public class FireBaseReader {
@@ -375,7 +373,7 @@ public class FireBaseReader {
         SaveData saveData = SaveData.getInstance();
         TaskCompletionSource<ObjectResult<ArrayList<Client>>> taskCompletionSource = new TaskCompletionSource<>();
 
-        if ((saveData.getClients().isLoaded()&&!saveData.getClients().isEmpty())&&saveData.getClients().getAllAsArrayList().get(0).getIdUsr().equals(idUsr)){
+        if (saveData.getClients().isLoaded()){
             Log.d(TAG, "📖 Clientes encontrados en cache");
 
             ArrayList<Client> clientes = saveData.getClients().getAllAsArrayList();
@@ -387,7 +385,7 @@ public class FireBaseReader {
 
                 for (int i = 0; i < clientes.size(); i++) {
                     Client c = clientes.get(i);
-                    Log.d(TAG, "|    Cliente[" + i + "]: { id: " + c.getId() + ", nombre: " + c.getName() + ", idUsr: " + c.getIdUsr() + "minKcal: " + c.getMinKcal() + ", maxKcal: " + c.getMaxKcal()  +" }");
+                    Log.d(TAG, "|    Cliente[" + i + "]: { id: " + c.getId() + ", nombre: " + c.getName() + ", idUsr: " + c.getIdUsr() + "minKcal: " + c.getMinKal() + ", maxKcal: " + c.getMaxKal()  +" }");
                 }
 
                 taskCompletionSource.setResult(new ObjectResult<>(true, "Clientes cargados", clientes));
@@ -416,7 +414,7 @@ public class FireBaseReader {
                                 if (client != null) {
                                     Log.d("Firebase", "📖 Cliente encontrado: " + client.getName());
                                     clients.add(client);
-                                    clientsCache.add(client.getName()+" "+client.getApe(), client);
+                                    clientsCache.add(client.getId(), client);
                                 }else{
                                     Log.d("Firebase", "⚠️ Documento encontrado pero no se pudo convertir a Cliente");
                                 }

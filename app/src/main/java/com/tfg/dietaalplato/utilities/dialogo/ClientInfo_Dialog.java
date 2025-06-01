@@ -71,14 +71,14 @@ public class ClientInfo_Dialog extends DialogFragment {
                 .setCancelable(true);
 
         if (haveFill){
-            client = saveData.getIdCurrentClient();
+            client = saveData.getCurrentClient();
             Log.d("Client",client.toString());
             editTextNombre.setText(client.getName());
             editTextApellido.setText(client.getApe());
             alergias = client.getAlergias();
             patologias = client.getPatologias();
-            minKal.setText(client.getMinKcal());
-            maxKal.setText(client.getMaxKcal());
+            minKal.setText(client.getMinKal());
+            maxKal.setText(client.getMaxKal());
         }else{
             alergias = new ArrayList<>();
             patologias = new ArrayList<>();
@@ -112,6 +112,7 @@ public class ClientInfo_Dialog extends DialogFragment {
                     views.add(maxKal);
 
                     ValidationResult result = Client.toMapData(views,alergias, patologias,saveData.getUser().getId());
+                    Log.d("FireBase",result.data.get("minKcal")+" "+result.data.get("maxKcal"));
 
                     if (!result.exit){
                         textError.setText(result.message);
@@ -121,29 +122,60 @@ public class ClientInfo_Dialog extends DialogFragment {
                         return;
                     }else{
                         if (haveFill){
-                            FireBaseRemover.remove(saveData.getIdCurrentClient().getId());
-                        }
-
-                        FireBaseWriter.saveData(Client.class, result).addOnFailureListener(
-                                e -> {
-                                    if (e instanceof ComplexFBCE) {
-                                        textError.setText(((ComplexFBCE) e).reason.message);
-                                    }else{
-                                        textError.setText("Error al guardar el cliente");
+                            FireBaseRemover.remove(saveData.getCurrentClient().getId()).addOnSuccessListener(
+                                    validationResult -> {
+                                        FireBaseWriter.saveData(Client.class, result).addOnFailureListener(
+                                                e -> {
+                                                    if (e instanceof ComplexFBCE) {
+                                                        textError.setText(((ComplexFBCE) e).reason.message);
+                                                    }else{
+                                                        textError.setText("Error al guardar el cliente");
+                                                    }
+                                                    textError.setVisibility(View.VISIBLE);
+                                                    Blocker.removeBlocker(parent);
+                                                    mostrarTextError();
+                                                }
+                                        ).addOnSuccessListener(
+                                                validationResult2 -> {
+                                                    saveData.setCurrentClient((Client) validationResult2.result);
+                                                    Blocker.removeBlocker(parent);
+                                                    textError.setText("Cliente guardado correctamente");
+                                                    textError.setVisibility(View.VISIBLE);
+                                                    mostrarTextError();
+                                                }
+                                        );
                                     }
-                                    textError.setVisibility(View.VISIBLE);
-                                    Blocker.removeBlocker(parent);
-                                    mostrarTextError();
-                                }
-                        ).addOnSuccessListener(
-                                validationResult -> {
-                                    saveData.setIdCurrentClient((Client) validationResult.result);
-                                    Blocker.removeBlocker(parent);
-                                    textError.setText("Cliente guardado correctamente");
-                                    textError.setVisibility(View.VISIBLE);
-                                    mostrarTextError();
-                                }
-                        );
+                            ).addOnFailureListener(
+                                    e -> {
+                                        if (e instanceof ComplexFBCE) {
+                                            textError.setText(((ComplexFBCE) e).reason.message);
+                                        } else {
+                                            textError.setText("Error al guardar el cliente");
+                                        }
+                                    }
+                            );
+                        }else{
+                            FireBaseWriter.saveData(Client.class, result).addOnFailureListener(
+                                    e -> {
+                                        if (e instanceof ComplexFBCE) {
+                                            textError.setText(((ComplexFBCE) e).reason.message);
+                                        }else{
+                                            textError.setText("Error al guardar el cliente");
+                                        }
+                                        textError.setVisibility(View.VISIBLE);
+                                        Blocker.removeBlocker(parent);
+                                        mostrarTextError();
+                                    }
+                            ).addOnSuccessListener(
+                                    validationResult -> {
+                                        saveData.setCurrentClient((Client) validationResult.result);
+                                        Blocker.removeBlocker(parent);
+                                        textError.setText("Cliente guardado correctamente");
+                                        textError.setVisibility(View.VISIBLE);
+                                        mostrarTextError();
+                                    }
+                            );
+                        }
                     }
                 }
         );

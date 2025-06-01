@@ -12,14 +12,15 @@ import com.tfg.dietaalplato.firebase.utilities.ValidationResult;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Client extends BaseObject {
 
     private String ape;
     private String idUsr;
-    private String minKcal;
-    private String maxKcal;
+    private String minKal;
+    private String maxKal;
     private ArrayList<String> alergias;
     private ArrayList<String> patologias;
 
@@ -32,26 +33,26 @@ public class Client extends BaseObject {
         super(id, name);
         this.ape = ape;
         this.idUsr = idUsr;
-        this.minKcal = minKcal;
-        this.maxKcal = maxKcal;
+        this.minKal = minKcal;
+        this.maxKal = maxKcal;
         this.alergias = alergias;
         this.patologias = patologias;
     }
 
-    public String getMinKcal() {
-        return minKcal;
+    public String getMinKal() {
+        return minKal;
     }
 
-    public void setMinKcal(String minKcal) {
-        this.minKcal = minKcal;
+    public void setMinKal(String minKal) {
+        this.minKal = minKal;
     }
 
-    public String getMaxKcal() {
-        return maxKcal;
+    public String getMaxKal() {
+        return maxKal;
     }
 
-    public void setMaxKcal(String maxKcal) {
-        this.maxKcal = maxKcal;
+    public void setMaxKal(String maxKal) {
+        this.maxKal = maxKal;
     }
 
     public String getApe() {
@@ -91,8 +92,8 @@ public class Client extends BaseObject {
         return "Client{" +
                 "ape='" + ape + '\'' +
                 ", idUsr='" + idUsr + '\'' +
-                ", minKcal='" + minKcal + '\'' +
-                ", maxKcal='" + maxKcal + '\'' +
+                ", minKcal='" + minKal + '\'' +
+                ", maxKcal='" + maxKal + '\'' +
                 ", alergias=" + alergias +
                 ", patologias=" + patologias +
                 '}';
@@ -156,6 +157,30 @@ public class Client extends BaseObject {
         Log.d("Client",result.data.toString());
 
         return result;
+    }
+
+    public static Map<String,String> toDesMapObject(Client client){
+
+        HashMap<String,String> data = new HashMap<>();
+        data.put("name",client.getName());
+        data.put("ape",client.getApe());
+        data.put("minKcal",client.getMinKal());
+        data.put("maxKcal",client.getMaxKal());
+        data.put("idUsr",client.getIdUsr());
+
+        String compoundCharacteristic = "";
+        for (String allergy : client.getAlergias()) {
+            compoundCharacteristic = compoundCharacteristic + allergy + ",";
+        }
+        data.put("alergias",compoundCharacteristic);
+
+        compoundCharacteristic = "";
+        for (String pathology : client.getPatologias()) {
+            compoundCharacteristic = compoundCharacteristic + pathology + ",";
+        }
+        data.put("patologias",compoundCharacteristic);
+
+        return data;
     }
 
     public boolean exist() throws FBCException {

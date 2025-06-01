@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="#DDE9EFDF"
+    android:padding="16dp">
+
+    <!-- TÍTULO PRINCIPAL -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="¿Porque esta dieta?"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:textColor="#027C68"
+        android:fontFamily="@font/lily_script_one"
+        android:gravity="center"
+        android:paddingBottom="16dp" />
+
+    <EditText
+        android:id="@+id/editTextMultiline"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:hint="Escribe la justificacion de porque has elegido esta dieta ..."
+        android:inputType="textMultiLine"
+        android:gravity="top|start"
+        android:background="@drawable/bg_food_item"
+        android:padding="12dp"
+        android:maxLines="10"
+        android:scrollbars="vertical"
+    />
+
+    <!-- BOTONES -->
+    <LinearLayout
+        style="?android:attr/buttonBarStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="end"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp"
+        android:weightSum="2"
+        android:paddingTop="8dp">
+
+        <Button
+            android:id="@+id/btnGuardar"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/guardar"
+            android:textAllCaps="false"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#027C68" />
+
+        <Button
+            android:id="@+id/btnCancelar"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/cancelar"
+            android:textAllCaps="false"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#027C68"
+            android:layout_marginStart="8dp" />
+    </LinearLayout>
+
+    <!-- MENSAJE DE ERROR -->
+    <TextView
+        android:id="@+id/txtMensajeErrorAlimento"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingTop="4dp"
+        android:paddingBottom="8dp"
+        android:text=""
+        android:textColor="#B00020"
+        android:textSize="14sp"
+        android:visibility="gone" />
+
+
+</LinearLayout>

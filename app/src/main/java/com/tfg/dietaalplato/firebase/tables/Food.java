@@ -11,6 +11,7 @@ import com.tfg.dietaalplato.firebase.utilities.ValidationResult;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Food extends BaseObject {
@@ -263,6 +264,36 @@ public class Food extends BaseObject {
         return result;
 
     }
+
+    public static Map<String, String> toDesMapObject(Food food) {
+
+        HashMap<String,String> data = new HashMap<>();
+        data.put("idUsr", food.getIdUsr());
+        data.put("name", food.getName());
+        data.put("pc", food.getPc());
+        data.put("energia", food.getEnergia());
+        data.put("proteina", food.getProteina());
+        data.put("grasa", food.getGrasa());
+        data.put("ags", food.getAgs());
+        data.put("agmi", food.getAgmi());
+        data.put("agpi", food.getAgpi());
+        data.put("colesterol", food.getColesterol());
+        data.put("hc", food.getHc());
+        data.put("fibra", food.getFibra());
+        data.put("vitC", food.getVitC());
+        data.put("vitB6", food.getVitB6());
+        data.put("vitE", food.getVitE());
+        data.put("hierro", food.getHierro());
+        data.put("sodio", food.getSodio());
+        data.put("calcio", food.getCalcio());
+        data.put("potasio", food.getPotasio());
+        data.put("id", food.getId());
+
+        return data;
+    }
+
+
+
 
     public boolean exist() throws FBCException {
 

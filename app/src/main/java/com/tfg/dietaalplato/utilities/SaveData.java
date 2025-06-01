@@ -1,5 +1,7 @@
 package com.tfg.dietaalplato.utilities;
 
+import android.util.Log;
+
 import com.tfg.dietaalplato.firebase.tables.Client;
 import com.tfg.dietaalplato.firebase.tables.Diet;
 import com.tfg.dietaalplato.firebase.tables.Food;
@@ -29,19 +31,21 @@ public class SaveData {
     private CacheCollection<Map<String, Diet>> diets;
     private CacheCollection<Map<String, ArrayList<FoodDiet>>> foodDiets;
 
-    private Client idCurrentClient;
-    private Diet idCurrentDiet;
-    private FoodDiet idCurrentFood;
+    private Client currentClient;
+    private Diet currentDiet;
+    private FoodDiet currentFood;
+    private final String TAG = "SaveData";
 
     private SaveData() {
+        Log.d(TAG, "SaveData instanciando");
         user = new User("","","");
         clients = new CacheCollection<>();
         foods = new CacheCollection<>();
         diets = new CacheCollection<>();
         foodDiets = new CacheCollection<>();
-        idCurrentClient = new Client();
-        idCurrentDiet = new Diet();
-        idCurrentFood = new FoodDiet();
+        currentClient = new Client();
+        currentDiet = new Diet();
+        currentFood = new FoodDiet();
     }
 
     public static SaveData getInstance() {
@@ -51,75 +55,93 @@ public class SaveData {
         return saveData;
     }
 
-    public Client getIdCurrentClient() {
-        return idCurrentClient;
+    public Client getCurrentClient() {
+        Log.d(TAG, "getCurrentClient: " + currentClient);
+        return currentClient;
     }
 
-    public void setIdCurrentClient(Client idCurrentClient) {
-        this.idCurrentClient = idCurrentClient;
+    public void setCurrentClient(Client currentClient) {
+        this.currentClient = currentClient;
+        Log.d(TAG, "setCurrentClient: " + currentClient.getName());
     }
 
-    public Diet getIdCurrentDiet() {
-        return idCurrentDiet;
+    public Diet getCurrentDiet() {
+        Log.d(TAG, "getCurrentDiet: " + currentDiet);
+        return currentDiet;
     }
 
-    public void setIdCurrentDiet(Diet idCurrentDiet) {
-        this.idCurrentDiet = idCurrentDiet;
+    public void setCurrentDiet(Diet currentDiet) {
+        Log.d(TAG, "setCurrentDiet: " + currentDiet);
+        this.currentDiet = currentDiet;
     }
 
-    public FoodDiet getIdCurrentFood() {
-        return idCurrentFood;
+    public FoodDiet getCurrentFood() {
+        Log.d(TAG, "getCurrentFood: " + currentFood);
+        return currentFood;
     }
 
-    public void setIdCurrentFood(FoodDiet idCurrentFood) {
-        this.idCurrentFood = idCurrentFood;
+    public void setCurrentFood(FoodDiet currentFood) {
+        Log.d(TAG, "setCurrentFood: " + currentFood);
+        this.currentFood = currentFood;
     }
 
     public User getUser() {
+        Log.d(TAG, "getUser: " + user);
         return user;
     }
 
     public void setUser(User user) {
+        Log.d(TAG, "setUser: " + user);
         this.user = user;
     }
 
     public void setCollectionClient ( CacheCollection<Client> cacheCollection){
         this.clients = cacheCollection;
+        Log.d(TAG, "setCollectionClient: " + clients);
     }
 
     public void setCollectionFood ( CacheCollection<Food> cacheCollection) {
         this.foods = cacheCollection;
+        Log.d(TAG, "setCollectionFood: " + foods);
     }
 
     public void setCollectionDiet ( CacheCollection<Map<String, Diet>> cacheCollection) {
         this.diets = cacheCollection;
+        Log.d(TAG, "setCollectionDiet: " + diets);
     }
 
     public void setCollectionFoodDiet ( CacheCollection<Map<String, ArrayList<FoodDiet>>> cacheCollection) {
         this.foodDiets = cacheCollection;
+        Log.d(TAG, "setCollectionFoodDiet: " + foodDiets);
     }
 
     public CacheCollection<Client> getClients() {
+        Log.d(TAG, "getClients: " + clients);
         return clients;
     }
 
     public CacheCollection<Food> getFoods() {
+        Log.d(TAG, "getFoods: " + foods);
         return foods;
     }
 
     public CacheCollection<Map<String, Diet>> getDiets() {
+        Log.d(TAG, "getDiets: " + diets);
         return diets;
     }
 
     public CacheCollection<Map<String, ArrayList<FoodDiet>>> getFoodDiets() {
+        Log.d(TAG, "getFoodDiets: " + foodDiets);
         return foodDiets;
     }
 
     public Client getClient (String name){
+        Log.d(TAG, "getClient: " + clients.get(name));
         return clients.get(name);
     }
 
     public Food getFood (String name){
+        Log.d(TAG, "getFood: " + foods.get(name));
         return foods.get(name);
     }
 
@@ -127,27 +149,33 @@ public class SaveData {
         if (diets.get(idClient) == null){
             return new HashMap<>();
         }else{
+            Log.d(TAG, "getDietsOfClient: " + diets.get(idClient));
             return diets.get(idClient);
         }
     }
 
     public Map<String, ArrayList<FoodDiet>> getFoodDietsOfDiet (String idDiet){
+        Log.d(TAG, "getFoodDietsOfDiet: " + foodDiets.get(idDiet));
         return foodDiets.get(idDiet);
     }
 
     public Diet getDiet (String idClient,String name){
+        Log.d(TAG, "getDiet: " + getDietsOfClient(idClient).get(name));
         return getDietsOfClient(idClient).get(name);
     }
 
     public ArrayList<FoodDiet> getFoodDiet (String idDiet, String name){
+        Log.d(TAG, "getFoodDiet: " + getFoodDietsOfDiet(idDiet).get(name));
         return getFoodDietsOfDiet(idDiet).get(name);
     }
 
     public void addClient (Client client){
+        Log.d(TAG, "addClient: " + client);
         clients.add(client.getId(), client);
     }
 
     public void addFood (Food food){
+        Log.d(TAG, "addFood: " + food);
         foods.add(food.getId(), food);
     }
 
@@ -156,9 +184,12 @@ public class SaveData {
         getDietsOfClient(diet.getIdCli()).clear();
         diets.putIfAbsent(diet.getName(), diet);
         this.diets.add(diet.getIdCli(),diets);
+        Log.d(TAG, "addDiet: " + diet);
+        Log.d(TAG, "addDiet: " + diets);
     }
 
     public void addFoodDiet(FoodDiet foodDiet) {
+        Log.d(TAG, "addFoodDiet: " + foodDiet);
         String idDieta = foodDiet.getIdDieta(); // clave externa
         String comida = foodDiet.getComida();   // clave interna
 
@@ -177,11 +208,13 @@ public class SaveData {
 
         // Actualizar en el CacheCollection
         foodDiets.update(idDieta, comidaMap);
+        Log.d(TAG, "addFoodDiet: " + foodDiets);
     }
 
 
     public void updateClient (Client client){
         clients.update(client.getName(), client);
+        Log.d(TAG, "updateClient: " + client);
     }
 
     public void updateFood (Food food){
@@ -200,22 +233,31 @@ public class SaveData {
 
 
     public void removeClient (String name){
+        Log.d(TAG, "removeClient: " + name);
         clients.remove(name);
+        Log.d(TAG, "removeClient: " + clients);
     }
 
     public void removeFood (String name){
+        Log.d(TAG, "removeFood: " + name);
         foods.remove(name);
+        Log.d(TAG, "removeFood: " + foods);
     }
 
     public void removeDiet (String name){
+        Log.d(TAG, "removeDiet: " + name);
         diets.remove(name);
+        Log.d(TAG, "removeDiet: " + diets);
     }
 
     public void removeFoodDiet (String name){
+        Log.d(TAG, "removeFoodDiet: " + name);
         foodDiets.remove(name);
+        Log.d(TAG, "removeFoodDiet: " + foodDiets);
     }
 
     public void clear(){
+        Log.d(TAG, "-------------clear--------------");
         user = new User("","","");
         clients.clear();
         foods.clear();

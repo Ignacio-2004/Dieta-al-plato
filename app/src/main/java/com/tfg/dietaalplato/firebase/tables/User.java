@@ -11,6 +11,7 @@ import com.tfg.dietaalplato.firebase.utilities.ValidationResult;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class User extends BaseObject {
@@ -86,6 +87,18 @@ public class User extends BaseObject {
         }
 
         return result;
+    }
+
+    public static Map<String,String> toDesMapObject(User user){
+
+
+        HashMap<String, String> data = new HashMap<>();
+        data.put("id", user.getId());
+        data.put("name", user.getName());
+        data.put("psw", user.getPsw());
+
+        return data;
+
     }
 
     public boolean exist() throws  FBCException {

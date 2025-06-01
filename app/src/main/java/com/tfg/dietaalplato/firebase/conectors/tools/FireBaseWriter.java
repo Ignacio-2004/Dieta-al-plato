@@ -71,7 +71,7 @@ public class FireBaseWriter {
                             validationResult -> {
                                 if (!validationResult.exit) {
                                     Log.w(TAG, "Usuario existente, operacion sin permisos de sobreescritura");
-                                    finalresoult.setException(new ComplexFBCE(new ObjectResult<>(false, msgErrorRepeatUser,null )));
+                                    finalresoult.setException(new ComplexFBCE(new ObjectResult<>(false, msgErrorRepeatUser,validationResult.data )));
                                 }else{
                                     Log.d(TAG, "Usuario no existente, inicio del guardado.");
                                     save(result,classData, validationResult.message,"-1").addOnSuccessListener(
@@ -98,7 +98,7 @@ public class FireBaseWriter {
                             validationResult -> {
                                 if (!validationResult.exit) {
                                     Log.w(TAG, "Dieta existente, operacion sin permisos de sobreescritura");
-                                    finalresoult.setException(new ComplexFBCE(new ObjectResult<>(false, msgErrorRepeatDiet,null )));
+                                    finalresoult.setException(new ComplexFBCE(new ObjectResult<>(false, msgErrorRepeatDiet,validationResult.data )));
                                 }else{
                                     Log.d(TAG, "Dieta no existente, inicio del guardado.");
                                     save(result,classData, validationResult.message,result.data.get("idCli")).addOnSuccessListener(
@@ -127,9 +127,9 @@ public class FireBaseWriter {
                                 if (!validationResult.exit) {
                                     Log.w(TAG, classData.data+" existente, operacion sin permisos de sobreescritura");
                                     if (classData.data.equals("alimentos")) {
-                                        finalresoult.setException(new ComplexFBCE(new ObjectResult<>(false, msgErrorRepeatFood,null )));
+                                        finalresoult.setException(new ComplexFBCE(new ObjectResult<>(false, msgErrorRepeatFood,validationResult.data )));
                                     }else{
-                                        finalresoult.setException(new ComplexFBCE(new ObjectResult<>(false, msgErrorRepeatClient,null )));
+                                        finalresoult.setException(new ComplexFBCE(new ObjectResult<>(false, msgErrorRepeatClient,validationResult.data )));
                                     }
                                 }else{
                                     Log.d(TAG, classData.data+" no existente, inicio del guardado.");
@@ -157,7 +157,7 @@ public class FireBaseWriter {
                                 Log.d(TAG, "FoodDiet no existente, inicio del guardado.");
                                 if (!validationResult.exit) {
                                     Log.w(TAG, "FoodDiet existente, operacion sin permisos de sobreescritura");
-                                    finalresoult.setException(new ComplexFBCE(new ObjectResult<>(false, msgErrorRepeatFoodDiet,null )));
+                                    finalresoult.setException(new ComplexFBCE(new ObjectResult<>(false, msgErrorRepeatFoodDiet,validationResult.data )));
                                 } else {
                                     Log.d(TAG, "FoodDiet existente, operacion sin permisos de sobreescritura");
                                     save(result,classData, validationResult.message,result.data.get("idDieta")).addOnSuccessListener(
@@ -240,9 +240,29 @@ public class FireBaseWriter {
                         if (validationResult.exit) {
                             FireBaseRemover.remove(validationResult.data.get("id")).addOnSuccessListener(
                                     validationResult1 -> {
-                                        taskCompletionSource.set(finalResultOfForce(validationResult1, classType));
+                                        finalResultOfForce(result,classType).addOnSuccessListener(
+                                                validationResult2 -> {
+                                                    TaskCompletionSource taskCompletionSource2 = new TaskCompletionSource();
+                                                    taskCompletionSource2.setResult(validationResult2);
+                                                    taskCompletionSource.set(taskCompletionSource2);
+                                                }
+                                        ).addOnFailureListener(
+                                                e -> {
+                                                    result.exit = false;
+                                                    result.message = ((ComplexFBCE) e).reason.message;
+                                                    TaskCompletionSource taskCompletionSource2 = new TaskCompletionSource();
+                                                    taskCompletionSource2.setException(e);
+                                                    taskCompletionSource.set(taskCompletionSource2);
+
+                                                }
+                                        );
                                     }
-                            );
+                            ).addOnFailureListener(
+                                    e -> {
+                                        TaskCompletionSource taskCompletionSource2 = new TaskCompletionSource();
+                                        taskCompletionSource2.setResult(validationResult);
+                                        taskCompletionSource.set(taskCompletionSource2);
+                            });
                         }
                     }).addOnFailureListener(
                             e -> {
@@ -253,12 +273,33 @@ public class FireBaseWriter {
 
                     break;
                 case "DIE":
-                    repeatObject(result, classData.data, result.data.get("idCliente")).addOnSuccessListener(
+                    repeatObject(result, classData.data, result.data.get("idCli")).addOnSuccessListener(
                             validationResult -> {
                                 if (!validationResult.exit) {
                                     FireBaseRemover.remove(validationResult.data.get("id")).addOnSuccessListener(
                                             validationResult1 -> {
-                                                taskCompletionSource.set(finalResultOfForce(validationResult1,classType));
+                                                finalResultOfForce(result,classType).addOnSuccessListener(
+                                                        validationResult2 -> {
+                                                            TaskCompletionSource taskCompletionSource2 = new TaskCompletionSource();
+                                                            taskCompletionSource2.setResult(validationResult2);
+                                                            taskCompletionSource.set(taskCompletionSource2);
+                                                        }
+                                                ).addOnFailureListener(
+                                                        e -> {
+                                                            result.exit = false;
+                                                            result.message = ((ComplexFBCE) e).reason.message;
+                                                            TaskCompletionSource taskCompletionSource2 = new TaskCompletionSource();
+                                                            taskCompletionSource2.setException(e);
+                                                            taskCompletionSource.set(taskCompletionSource2);
+
+                                                        }
+                                                );
+                                            }
+                                    ).addOnFailureListener(
+                                            e -> {
+                                                TaskCompletionSource taskCompletionSource2 = new TaskCompletionSource();
+                                                taskCompletionSource2.setResult(validationResult);
+                                                taskCompletionSource.set(taskCompletionSource2);
                                             });
                                 }
                             }
@@ -277,11 +318,28 @@ public class FireBaseWriter {
                                     Log.w(TAG, classData.data+" existente, operacion con permisos de sobreescritura");
                                     FireBaseRemover.remove(validationResult.data.get("id")).addOnSuccessListener(
                                             validationResult1 -> {
-                                                taskCompletionSource.set(finalResultOfForce(validationResult1,classType));
+                                                finalResultOfForce(result,classType).addOnSuccessListener(
+                                                        validationResult2 -> {
+                                                            TaskCompletionSource taskCompletionSource2 = new TaskCompletionSource();
+                                                            taskCompletionSource2.setResult(validationResult2);
+                                                            taskCompletionSource.set(taskCompletionSource2);
+                                                        }
+                                                ).addOnFailureListener(
+                                                        e -> {
+                                                            result.exit = false;
+                                                            result.message = ((ComplexFBCE) e).reason.message;
+                                                            TaskCompletionSource taskCompletionSource2 = new TaskCompletionSource();
+                                                            taskCompletionSource2.setException(e);
+                                                            taskCompletionSource.set(taskCompletionSource2);
+
+                                                        }
+                                                );
                                             }
                                     );
                                 }else{
-                                    taskCompletionSource.set(finalResultOfForce(validationResult,classType));
+                                    TaskCompletionSource taskCompletionSource2 = new TaskCompletionSource();
+                                    taskCompletionSource2.setResult(validationResult);
+                                    taskCompletionSource.set(taskCompletionSource2);
                                 }
                             }
                     ).addOnFailureListener(
@@ -298,11 +356,28 @@ public class FireBaseWriter {
                                 if (!validationResult.exit) {
                                     FireBaseRemover.remove(validationResult.data.get("id")).addOnSuccessListener(
                                             validationResult1 -> {
-                                                taskCompletionSource.set(finalResultOfForce(validationResult1,classType));
+                                                finalResultOfForce(result,classType).addOnSuccessListener(
+                                                        validationResult2 -> {
+                                                            TaskCompletionSource taskCompletionSource2 = new TaskCompletionSource();
+                                                            taskCompletionSource2.setResult(validationResult2);
+                                                            taskCompletionSource.set(taskCompletionSource2);
+                                                        }
+                                                ).addOnFailureListener(
+                                                        e -> {
+                                                            result.exit = false;
+                                                            result.message = ((ComplexFBCE) e).reason.message;
+                                                            TaskCompletionSource taskCompletionSource2 = new TaskCompletionSource();
+                                                            taskCompletionSource2.setException(e);
+                                                            taskCompletionSource.set(taskCompletionSource2);
+
+                                                        }
+                                                );
                                             }
                                     );
                                 }else{
-                                    taskCompletionSource.set(finalResultOfForce(validationResult,classType));
+                                    TaskCompletionSource taskCompletionSource2 = new TaskCompletionSource();
+                                    taskCompletionSource2.setResult(validationResult);
+                                    taskCompletionSource.set(taskCompletionSource2);
                                 }
                             }
                     ).addOnFailureListener(
@@ -376,7 +451,7 @@ public class FireBaseWriter {
                     }
 
 
-                    save(new Client(id.toUpperCase(), result.data.get("name"), result.data.get("ape"), result.data.get("idUsr").toUpperCase(),result.data.get("mincKal"),result.data.get("maxcKal"), alergies, pathologies)).addOnSuccessListener(
+                    save(new Client(id.toUpperCase(), result.data.get("name"), result.data.get("ape"), result.data.get("idUsr").toUpperCase(),result.data.get("minKcal"),result.data.get("maxKcal"), alergies, pathologies)).addOnSuccessListener(
                             clientResult -> {
                                 Log.d(TAG, "✅ Cliente guardado con éxito en Firestore");
                                 taskCompletionSource.setResult(new ObjectResult<>(clientResult.exit, clientResult.message, clientResult.result));
@@ -392,7 +467,7 @@ public class FireBaseWriter {
                     break;
                 case "dietas":
                     Log.d(TAG, "💾"+classData.key+" "+classData.data);
-                    save(new Diet(id.toUpperCase(), result.data.get("name"), result.data.get("tip"), result.data.get("idCli").toUpperCase(), result.data.get("just").toUpperCase())).addOnSuccessListener(
+                    save(new Diet(id.toUpperCase(), result.data.get("name"), result.data.get("tip"), result.data.get("idCli").toUpperCase(), result.data.get("just"))).addOnSuccessListener(
                             dietResult -> {
                                 Log.d(TAG, "✅ Dieta guardado con éxito en Firestore");
                                 taskCompletionSource.setResult(new ObjectResult<>(dietResult.exit, dietResult.message, dietResult.result));
@@ -574,8 +649,9 @@ public class FireBaseWriter {
         client.put("idUsr", cli.getIdUsr());
         client.put("alergias", cli.getAlergias());
         client.put("patologias", cli.getPatologias());
-        client.put("minKal", cli.getMinKcal());
-        client.put("maxKal", cli.getMaxKcal());
+        client.put("minKal", cli.getMinKal());
+        client.put("maxKal", cli.getMaxKal());
+        Log.d(TAG, "✅ minKal: "+cli.getMinKal()+ "maxKal: "+cli.getMaxKal());
 
 
 
@@ -621,7 +697,7 @@ public class FireBaseWriter {
         return callback.getTask();
     }
 
-    private static TaskCompletionSource<ObjectResult<BaseObject>> finalResultOfForce(ValidationResult result, Class<?> classType){
+    private static Task<ObjectResult<BaseObject>> finalResultOfForce(ValidationResult result, Class<?> classType){
 
         TaskCompletionSource<ObjectResult<BaseObject>> taskResult = new TaskCompletionSource<>();
 
@@ -663,6 +739,6 @@ public class FireBaseWriter {
             );;
         }
 
-        return taskResult;
+        return taskResult.getTask();
     }
 }

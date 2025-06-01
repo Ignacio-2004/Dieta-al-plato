@@ -1,8 +1,6 @@
 package com.tfg.dietaalplato;
 
 
-
-
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -16,11 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-
-
 import androidx.appcompat.app.AppCompatActivity;
-
-
 
 
 import com.tfg.dietaalplato.utilities.Blocker;
@@ -32,17 +26,11 @@ import com.tfg.dietaalplato.utilities.SaveData;
 import com.tfg.dietaalplato.utilities.dialogo.ClientInfo_Dialog;
 
 
-
-
 public class PacientesActivity extends AppCompatActivity {
-
-
 
 
     private LinearLayout layoutClientes;
     private SaveData saveData;
-
-
 
 
     @Override
@@ -50,9 +38,9 @@ public class PacientesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pacientes);
 
+        String clienteSeleccionado = getIntent().getStringExtra("clienteSeleccionado");
 
         layoutClientes = findViewById(R.id.layoutClientes);
-
 
         saveData = SaveData.getInstance();
 
@@ -107,7 +95,7 @@ public class PacientesActivity extends AppCompatActivity {
 
                                 item.setOnClickListener(v ->{
                                             Log.d("Cliente", "Nombre del cliente: " + cliente.getName());
-                                            saveData.setIdCurrentClient(cliente);
+                                            saveData.setCurrentClient(cliente);
 
 
                                             Intent intent = new Intent(this, DietasActivity.class);
@@ -119,8 +107,8 @@ public class PacientesActivity extends AppCompatActivity {
                                 );
                                 item.addView(nombre);
                                 layoutClientes.addView(item);
-                                Blocker.removeBlocker(this.findViewById(android.R.id.content));
                             }
+                            Blocker.removeBlocker(this.findViewById(android.R.id.content));
                         }
                 ).addOnFailureListener(
                         e -> {
@@ -133,7 +121,6 @@ public class PacientesActivity extends AppCompatActivity {
                 Blocker.removeBlocker(this.findViewById(android.R.id.content));
             }
         }
-
 
     }
 
