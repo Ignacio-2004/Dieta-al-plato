@@ -94,7 +94,7 @@ public class PacientesActivity extends AppCompatActivity {
 
                                 item.setOnClickListener(v ->{
                                             Log.d("Cliente", "Nombre del cliente: " + cliente.getName());
-                                            saveData.setIdCurrentClient(cliente);
+                                            saveData.setCurrentClient(cliente);
 
                                             Intent intent = new Intent(this, DietasActivity.class);
 
