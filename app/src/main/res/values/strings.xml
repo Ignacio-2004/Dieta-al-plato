@@ -47,4 +47,6 @@
     <string name="hintEmail">nnnnnnnn@dietetica.davinci</string>
     <string name="rango_de_calorias_objetivo">Rango de calorias objetivo</string>
     <string name="minkcal">minKcal</string>
+    <string name="registrar">Iniciar Sesión</string>
+    <string name="iniciar_sesi_n">Registrar</string>
 </resources>

@@ -8,15 +8,16 @@
 
     <!-- TÍTULO PRINCIPAL -->
     <TextView
+        android:id="@+id/titulo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/registra_un_nuevo_alimento"
-        android:textSize="22sp"
-        android:textStyle="bold"
-        android:textColor="#027C68"
         android:fontFamily="@font/lily_script_one"
         android:gravity="center"
-        android:paddingBottom="16dp" />
+        android:paddingBottom="16dp"
+        android:text="@string/registra_un_nuevo_alimento"
+        android:textColor="#027C68"
+        android:textSize="22sp"
+        android:textStyle="bold" />
 
     <!-- CONTENIDO SCROLLABLE -->
     <ScrollView
@@ -236,15 +237,15 @@
                     android:background="@android:drawable/edit_text" />
 
                 <Button
-                    android:id="@+id/btnIncrementAgs100"
+                    android:id="@+id/btnDecrementAgs100"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:minWidth="48dp"
                     android:backgroundTint="#40027C68"
-                    android:text="–" />
+                    android:text="-" />
 
                 <Button
-                    android:id="@+id/btnDecrementAgs100"
+                    android:id="@+id/btnIncrementAgs100"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:minWidth="48dp"
@@ -273,15 +274,15 @@
                     android:background="@android:drawable/edit_text" />
 
                 <Button
-                    android:id="@+id/btnIncrementAgmi100"
+                    android:id="@+id/btnDecrementAgmi100"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:minWidth="48dp"
                     android:backgroundTint="#40027C68"
-                    android:text="–" />
+                    android:text="-" />
 
                 <Button
-                    android:id="@+id/btnDecrementAgmi100"
+                    android:id="@+id/btnIncrementAgmi100"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:minWidth="48dp"
@@ -310,16 +311,17 @@
                     android:textSize="16sp"
                     android:background="@android:drawable/edit_text" />
 
+
                 <Button
-                    android:id="@+id/btnIncrementAgpi100"
+                    android:id="@+id/btnDecrementAgpi100"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:minWidth="48dp"
                     android:backgroundTint="#40027C68"
-                    android:text="–" />
+                    android:text="-" />
 
                 <Button
-                    android:id="@+id/btnDecrementAgpi100"
+                    android:id="@+id/btnIncrementAgpi100"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:minWidth="48dp"
@@ -349,15 +351,15 @@
                     android:background="@android:drawable/edit_text" />
 
                 <Button
-                    android:id="@+id/btnIncrementColesterol100"
+                    android:id="@+id/btnDecrementColesterol100"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:minWidth="48dp"
                     android:backgroundTint="#40027C68"
-                    android:text="–" />
+                    android:text="-" />
 
                 <Button
-                    android:id="@+id/btnDecremenColesterol100"
+                    android:id="@+id/btnIncrementColesterol100"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:minWidth="48dp"
@@ -377,7 +379,7 @@
             <!--fibra-->
             <TextView android:text="@string/fibra_100" style="@style/FormLabel" />
             <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal">
-                <EditText android:id="@+id/inputFibra100" style="@style/FormInput" android:layout_width="0dp" android:layout_weight="1" android:autofillHints="" android:text="@string/_0" />
+                <EditText android:id="@+id/inputFibra100" style="@style/FormInput" android:layout_width="0dp" android:layout_weight="1" android:autofillHints="" android:hint="@string/_0" />
                 <Button android:id="@+id/btnMinusFibra" android:backgroundTint="#40027C68" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="–" android:minWidth="48dp"/>
                 <Button android:id="@+id/btnPlusFibra"  android:backgroundTint="#40027C68" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="+" android:minWidth="48dp"/>
             </LinearLayout>
@@ -396,7 +398,7 @@
             <!--vitamina c-->
             <TextView android:text="@string/vitamina_c_vit_c_100" style="@style/FormLabel" />
             <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal">
-                <EditText android:id="@+id/inputVitC100" style="@style/FormInput" android:layout_width="0dp" android:layout_weight="1" android:autofillHints="" android:text="@string/_0" />
+                <EditText android:id="@+id/inputVitC100" style="@style/FormInput" android:layout_width="0dp" android:layout_weight="1" android:autofillHints="" android:hint="@string/_0" />
                 <Button android:id="@+id/btnMinusVitC" android:backgroundTint="#40027C68" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="–" android:minWidth="48dp"/>
                 <Button android:id="@+id/btnPlusVitC" android:backgroundTint="#40027C68"  android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="+" android:minWidth="48dp"/>
             </LinearLayout>
@@ -404,7 +406,7 @@
             <!--vitamina b6-->
             <TextView android:text="@string/vitamina_b6_vit_b6_100" style="@style/FormLabel" />
             <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal">
-                <EditText android:id="@+id/inputVitB6100" style="@style/FormInput" android:layout_width="0dp" android:layout_weight="1" android:autofillHints="" android:text="@string/_0" />
+                <EditText android:id="@+id/inputVitB6100" style="@style/FormInput" android:layout_width="0dp" android:layout_weight="1" android:autofillHints="" android:hint="@string/_0" />
                 <Button android:id="@+id/btnMinusVitB6" android:backgroundTint="#40027C68" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="–" android:minWidth="48dp"/>
                 <Button android:id="@+id/btnPlusVitB6" android:backgroundTint="#40027C68"  android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="+" android:minWidth="48dp"/>
             </LinearLayout>
@@ -412,7 +414,7 @@
             <!--vitamina e -->
             <TextView android:text="@string/vitamina_e_vit_e_100" style="@style/FormLabel" />
             <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal">
-                <EditText android:id="@+id/inputVitE100" style="@style/FormInput" android:layout_width="0dp" android:layout_weight="1" android:autofillHints="" android:text="@string/_0" />
+                <EditText android:id="@+id/inputVitE100" style="@style/FormInput" android:layout_width="0dp" android:layout_weight="1" android:autofillHints="" android:hint="@string/_0" />
                 <Button android:id="@+id/btnMinusVitE" android:backgroundTint="#40027C68" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="–" android:minWidth="48dp"/>
                 <Button android:id="@+id/btnPlusVitE" android:backgroundTint="#40027C68" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="+" android:minWidth="48dp"/>
             </LinearLayout>
@@ -420,7 +422,7 @@
             <!--hierro -->
             <TextView android:text="@string/hierro_fe_100" style="@style/FormLabel" />
             <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal">
-                <EditText android:id="@+id/inputFe100" style="@style/FormInput" android:layout_width="0dp" android:layout_weight="1" android:autofillHints="" android:text="@string/_0" />
+                <EditText android:id="@+id/inputFe100" style="@style/FormInput" android:layout_width="0dp" android:layout_weight="1" android:autofillHints="" android:hint="@string/_0" />
                 <Button android:id="@+id/btnMinusFe" android:backgroundTint="#40027C68" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="–" android:minWidth="48dp"/>
                 <Button android:id="@+id/btnPlusFe" android:backgroundTint="#40027C68" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="+" android:minWidth="48dp"/>
             </LinearLayout>
@@ -428,7 +430,7 @@
             <!--agpi-->
             <TextView android:text="@string/sodio_na_100" style="@style/FormLabel" />
             <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal">
-                <EditText android:id="@+id/inputNa100" style="@style/FormInput" android:layout_width="0dp" android:layout_weight="1" android:autofillHints="" android:text="@string/_0" />
+                <EditText android:id="@+id/inputNa100" style="@style/FormInput" android:layout_width="0dp" android:layout_weight="1" android:autofillHints="" android:hint="@string/_0" />
                 <Button android:id="@+id/btnMinusNa" android:backgroundTint="#40027C68" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="–" android:minWidth="48dp"/>
                 <Button android:id="@+id/btnPlusNa" android:backgroundTint="#40027C68" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="+" android:minWidth="48dp"/>
             </LinearLayout>
@@ -436,7 +438,7 @@
             <!--calcio-->
             <TextView android:text="@string/calcio_ca_100" style="@style/FormLabel" />
             <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal">
-                <EditText android:id="@+id/inputCa100" style="@style/FormInput" android:layout_width="0dp" android:layout_weight="1" android:autofillHints="" android:text="@string/_0" />
+                <EditText android:id="@+id/inputCa100" style="@style/FormInput" android:layout_width="0dp" android:layout_weight="1" android:autofillHints="" android:hint="@string/_0" />
                 <Button android:id="@+id/btnMinusCa" android:backgroundTint="#40027C68" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="–" android:minWidth="48dp"/>
                 <Button android:id="@+id/btnPlusCa" android:backgroundTint="#40027C68" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="+" android:minWidth="48dp"/>
             </LinearLayout>
@@ -444,7 +446,7 @@
             <!--potasio-->
             <TextView android:text="@string/potasio_k_100" style="@style/FormLabel" />
             <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal">
-                <EditText android:id="@+id/inputK100" style="@style/FormInput" android:layout_width="0dp" android:layout_weight="1" android:autofillHints="" android:text="@string/_0" />
+                <EditText android:id="@+id/inputK100" style="@style/FormInput" android:layout_width="0dp" android:layout_weight="1" android:autofillHints="" android:hint="@string/_0" />
                 <Button android:id="@+id/btnMinusK" android:backgroundTint="#40027C68" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="–" android:minWidth="48dp"/>
                 <Button android:id="@+id/btnPlusK" android:backgroundTint="#40027C68" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="+" android:minWidth="48dp"/>
             </LinearLayout>

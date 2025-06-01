@@ -43,7 +43,8 @@ public class SignUp_Dialogo extends DialogFragment {
 
         //comprobaciones de correo y paswd
         String passwRegex = "^(?=.*[A-Z])(?=.*\\d)(?=.*[!\\-_#])[A-Za-z\\d!\\-_#]{8,12}$";
-        String emailRegex = "^[a-zA-Z]+(\\.[a-zA-Z]+)?@dietetica\\.davinci$";
+        String emailRegex = "^[a-zA-Z]+\\.[a-zA-Z]+@dietetica\\.davinci$";
+
 
         // boton de confirmar
         Button btnConfirmar = view.findViewById(R.id.buttonConfirmar);
@@ -146,6 +147,6 @@ public class SignUp_Dialogo extends DialogFragment {
         return builder.create();
     }
     public void mostrarTextError() {
-        textError.postDelayed(() -> textError.setVisibility(View.GONE), 2000);
+        textError.postDelayed(() -> textError.setVisibility(View.GONE), 8000);
     }
 }

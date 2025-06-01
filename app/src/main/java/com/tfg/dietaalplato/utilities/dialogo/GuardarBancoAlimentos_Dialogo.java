@@ -25,7 +25,7 @@ import com.tfg.dietaalplato.utilities.SaveData;
 import java.util.ArrayList;
 import java.util.Locale;
 
-public class BancoAlimentos_Dialogo extends DialogFragment {
+public class GuardarBancoAlimentos_Dialogo extends DialogFragment {
 
     private TextView textError;
     private EditText inputAlimento, inputPC, inputE100, inputProt100, inputGrasa100, inputAGS100,
@@ -63,9 +63,15 @@ public class BancoAlimentos_Dialogo extends DialogFragment {
         inputK100 = mainView.findViewById(R.id.inputK100);
         textError = mainView.findViewById(R.id.txtMensajeErrorAlimento);
 
-        // Asociar botones increment/decrement a EditTexts con setupIncrementDecrement()
+        // Configurar botones con los IDs correctos del XML
+        setupIncrementDecrement(R.id.btnPlusPC, R.id.btnMinusPC, inputPC);
+        setupIncrementDecrement(R.id.btnIncrementE100, R.id.btnDecrementE100, inputE100);
+        setupIncrementDecrement(R.id.btnIncrementGrasa100, R.id.btnDecrementGrasa100, inputGrasa100);
+        setupIncrementDecrement(R.id.btnIncrementProt100, R.id.btnDecrementProt100, inputProt100);
+        setupIncrementDecrement(R.id.btnIncrementAgs100, R.id.btnDecrementAgs100, inputAGS100);
+        setupIncrementDecrement(R.id.btnIncrementAgmi100, R.id.btnDecrementAgmi100, inputAGMI100);
         setupIncrementDecrement(R.id.btnIncrementAgpi100, R.id.btnDecrementAgpi100, inputAGPI100);
-        setupIncrementDecrement(R.id.btnIncrementColesterol100, R.id.btnDecremenColesterol100, inputCol100); // corregido ID
+        setupIncrementDecrement(R.id.btnIncrementColesterol100, R.id.btnDecrementColesterol100, inputCol100);
         setupIncrementDecrement(R.id.btnPlusHC, R.id.btnMinusHC, inputHC100);
         setupIncrementDecrement(R.id.btnPlusFibra, R.id.btnMinusFibra, inputFibra100);
         setupIncrementDecrement(R.id.btnPlusVitC, R.id.btnMinusVitC, inputVitC100);
@@ -87,6 +93,7 @@ public class BancoAlimentos_Dialogo extends DialogFragment {
                 .setView(mainView)
                 .create();
     }
+
 
     private void guardarAlimento() {
         Blocker.createBlocker((ViewGroup) mainView.getRootView(), requireActivity());
@@ -112,7 +119,6 @@ public class BancoAlimentos_Dialogo extends DialogFragment {
         campos.add(inputK100);
 
         String idUsuario = SaveData.getInstance().getUser().getId();
-
         ValidationResult alimentoData = Food.toMapData(campos, idUsuario);
 
         if (!alimentoData.exit) {
@@ -142,6 +148,7 @@ public class BancoAlimentos_Dialogo extends DialogFragment {
                 });
     }
 
+
     public void mostrarTextError() {
         textError.postDelayed(() -> textError.setVisibility(View.GONE), 3000);
     }
@@ -149,18 +156,35 @@ public class BancoAlimentos_Dialogo extends DialogFragment {
     private void modificarValor(EditText input, float delta) {
         float valorActual = 0f;
         String texto = input.getText().toString();
-        if (!texto.isEmpty()) {
+
+        if (!texto.isEmpty()) { // en caso de tener valor aumentamos
             try {
                 valorActual = Float.parseFloat(texto);
             } catch (NumberFormatException e) {
                 input.setError("Número inválido");
                 return;
             }
+        } else {
+            // esta vacio usamos el hint como referencia
+            String hint = input.getHint() != null ? input.getHint().toString() : "0";
+            try {
+                valorActual = Float.parseFloat(hint);
+            } catch (NumberFormatException e) {
+                valorActual = 0f;
+            }
         }
+
+        // disminuye si es mayor que cero
+        if (delta < 0 && valorActual <= 0f) {
+            return; // No hacemos nada si se intenta reducir por debajo de 0
+        }
+
         float nuevoValor = valorActual + delta;
-        if (nuevoValor < 0) nuevoValor = 0;
+        if (nuevoValor < 0f) nuevoValor = 0f;
+
         input.setText(String.format(Locale.getDefault(), "%.1f", nuevoValor));
     }
+
 
     private void setupIncrementDecrement(int btnIncrementId, int btnDecrementId, EditText editText) {
         Button btnIncrement = mainView.findViewById(btnIncrementId);

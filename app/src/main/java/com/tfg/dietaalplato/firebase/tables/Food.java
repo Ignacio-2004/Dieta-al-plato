@@ -9,12 +9,13 @@ import com.tfg.dietaalplato.firebase.tables.parents.BaseObject;
 import com.tfg.dietaalplato.firebase.utilities.TablesNames;
 import com.tfg.dietaalplato.firebase.utilities.ValidationResult;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class Food extends BaseObject {
+public class Food extends BaseObject  implements Serializable {
 
     private String idUsr;
     private String pc;
@@ -209,61 +210,63 @@ public class Food extends BaseObject {
 
     //++IP - 23/04/2025 -
 
-    public static ValidationResult toMapData(ArrayList<View> data,String idUser){
+    public static ValidationResult toMapData(ArrayList<View> data, String idUser) {
         ValidationResult result = new ValidationResult();
 
-        String[] fieldName = {"idUsr","name","pc","energia","proteina","grasa","ags","agmi","agpi","colesterol","hc","fibra","vitC","vitB6","vitE","hierro","sodio","calcio","potasio"};
+        // Nombres de las claves en el mapa
+        String[] fieldName = {
+                "idUsr", "name", "pc", "energia", "proteina", "grasa",
+                "ags", "agmi", "agpi", "colesterol", "hc", "fibra",
+                "vitC", "vitB6", "vitE", "hierro", "sodio", "calcio", "potasio"
+        };
 
-        try{
+        try {
             result.data = new HashMap<>();
-
             ArrayList<String> keys = new ArrayList<>();
-            keys.add(idUser);
-            keys.add(((EditText) data.get(0)).getText().toString().trim());
-            keys.add(((EditText) data.get(1)).getText().toString().trim());
-            keys.add(((EditText) data.get(2)).getText().toString().trim());
-            keys.add(((EditText) data.get(3)).getText().toString().trim());
-            keys.add(((EditText) data.get(4)).getText().toString().trim());
-            keys.add(((EditText) data.get(5)).getText().toString().trim());
-            keys.add(((EditText) data.get(6)).getText().toString().trim());
-            keys.add(((EditText) data.get(7)).getText().toString().trim());
-            keys.add(((EditText) data.get(8)).getText().toString().trim());
-            keys.add(((EditText) data.get(9)).getText().toString().trim());
-            keys.add(((EditText) data.get(10)).getText().toString().trim());
-            keys.add(((EditText) data.get(11)).getText().toString().trim());
-            keys.add(((EditText) data.get(12)).getText().toString().trim());
-            keys.add(((EditText) data.get(13)).getText().toString().trim());
-            keys.add(((EditText) data.get(14)).getText().toString().trim());
-            keys.add(((EditText) data.get(15)).getText().toString().trim());
-            keys.add(((EditText) data.get(16)).getText().toString().trim());
 
-            for (int i = 0; i < keys.size()-1; i++) {
-
-                //Comprobamos que no haya campos vacios
-
-                if (keys.get(i).isEmpty()) {
-                    throw new Exception("El campo " + data.get(i-1).getTag().toString() + " no puede estar vacio");
-                    //Con tag devuelvo el nombre del campo vacio
-                }
+            // Rellenamos los valores desde las vistas
+            keys.add(idUser); // idUsr
+            for (int i = 0; i < data.size(); i++) {
+                String valor = ((EditText) data.get(i)).getText().toString().trim();
+                keys.add(valor.isEmpty() ? "0" : valor); // Si está vacío, poner "0"
             }
 
+            String nombre = keys.get(1);
+            if (nombre.isEmpty() || nombre.equals("0")) {
+                throw new Exception("El campo 'Nombre' es obligatorio");
+            }
+
+            // Validar que los campos clave no sean todos 0
+            int[] camposClave = {2, 3, 4, 5, 10}; // posiciones: pc, energia, proteina, grasa, hc
+            boolean todosCero = true;
+            for (int index : camposClave) {
+                double valor = Double.parseDouble(keys.get(index));
+                if (valor != 0.0) {
+                    todosCero = false;
+                    break;
+                }
+            }
+            if (todosCero) {
+                throw new Exception("Los campos obligatorios (PC, Energía, Proteína, Grasa y HC) no pueden ser todos cero");
+            }
+
+
+            // Rellenamos el mapa final
             for (int i = 0; i < keys.size(); i++) {
                 result.data.put(fieldName[i], keys.get(i).toLowerCase());
             }
 
             result.exit = true;
-            result.message = "Datos validos";
+            result.message = "Datos válidos";
 
-        }catch (Exception e){
-
+        } catch (Exception e) {
             result.exit = false;
-            result.message = "Error : Todos los campos obligatorios (*) deben de estar rellenos ";
-
+            result.message = "❌ " + e.getMessage();
         }
 
         return result;
-
     }
+
 
     public static Map<String, String> toDesMapObject(Food food) {
 

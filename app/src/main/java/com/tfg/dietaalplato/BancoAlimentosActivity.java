@@ -6,7 +6,6 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,7 +17,8 @@ import com.tfg.dietaalplato.firebase.exceptions.FBCException;
 import com.tfg.dietaalplato.firebase.tables.Food;
 import com.tfg.dietaalplato.utilities.Blocker;
 import com.tfg.dietaalplato.utilities.SaveData;
-import com.tfg.dietaalplato.utilities.dialogo.BancoAlimentos_Dialogo;
+import com.tfg.dietaalplato.utilities.dialogo.EditarBancoAlimentos_Dialogo;
+import com.tfg.dietaalplato.utilities.dialogo.GuardarBancoAlimentos_Dialogo;
 
 public class BancoAlimentosActivity extends AppCompatActivity {
 
@@ -50,6 +50,12 @@ public class BancoAlimentosActivity extends AppCompatActivity {
                                 item.setBackgroundResource(R.drawable.bg_food_background);
                                 item.setPadding(12, 12, 12, 12);
                                 item.setElevation(8f);
+
+                                // esto es para cuando haga click en el alimento
+                                item.setOnClickListener(v -> {
+                                    EditarBancoAlimentos_Dialogo dialogo = EditarBancoAlimentos_Dialogo.newInstance(alimento);
+                                    dialogo.show(getSupportFragmentManager(), "editarAlimento");
+                                });
 
                                 TextView nombre = new TextView(this);
                                 nombre.setText(alimento.getName().substring(0, 1).toUpperCase() + alimento.getName().substring(1).toLowerCase());
@@ -84,7 +90,7 @@ public class BancoAlimentosActivity extends AppCompatActivity {
 
     // metodo para mostrar el dialogo cuando se hace clic en INSERTAR ALIMENTO
     public void insertarAlimento(View view) {
-        BancoAlimentos_Dialogo dialogo = new BancoAlimentos_Dialogo();
+        GuardarBancoAlimentos_Dialogo dialogo = new GuardarBancoAlimentos_Dialogo();
         dialogo.show(getSupportFragmentManager(), "dialogoNuevoAlimento");
     }
     public void onClickBackNavigation(View view){

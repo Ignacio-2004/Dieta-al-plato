@@ -163,7 +163,8 @@ public class LogIn_Activity extends AppCompatActivity {
 
         nam_user = findViewById(R.id.text_usuario); //almacenamos lo que ha introducio el usario
         String nomusuario_introducido = nam_user.getText().toString().trim().toLowerCase(); // lo ponemos en tipo String
-        String emailRegex = "^[a-zA-Z]+(\\.[a-zA-Z]+)?@dietetica\\.davinci$";
+        String emailRegex = "^[a-zA-Z]+\\.[a-zA-Z]+@dietetica\\.davinci$";
+
 
         passw = findViewById(R.id.Password); // almacenamos lo que ha introducido el usuario
         String passwd_introducida = passw.getText().toString().trim(); // lo ponemos en tipo String
@@ -180,6 +181,7 @@ public class LogIn_Activity extends AppCompatActivity {
           Ejemplo válido: Develop1!
         */
         String passwRegex = "^(?=.*[A-Z])(?=.*\\d)(?=.*[!\\-_#])[A-Za-z\\d!\\-_#]{8,12}$";
+
 
 
         // COMPROBAMOS NOMBRE USUARIO
@@ -293,7 +295,7 @@ public class LogIn_Activity extends AppCompatActivity {
             public void run() {
                 text_error.setVisibility(View.GONE); // text view desaparece
             }
-        }, 2000);
+        }, 8000);
         Blocker.removeBlocker(this.findViewById(android.R.id.content));
     }
 
