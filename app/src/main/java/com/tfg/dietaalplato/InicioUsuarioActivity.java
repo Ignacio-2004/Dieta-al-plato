@@ -29,8 +29,10 @@ public class InicioUsuarioActivity extends AppCompatActivity {
         botonLogout = findViewById(R.id.logout_button);
 
         esAdmin = getIntent().getBooleanExtra("esAdmin", false);
-        idUser = esAdmin ? getIntent().getStringExtra("usuarioSeleccionado") : SaveData.getInstance().getUser().getId();
 
+        if(esAdmin) {
+            idUser = getIntent().getStringExtra("usuarioSeleccionado");
+        }
         // Configurar visibilidad de botones
         botonRetorno.setVisibility(esAdmin ? View.VISIBLE : View.INVISIBLE);
         botonLogout.setVisibility(esAdmin ? View.INVISIBLE : View.VISIBLE);
@@ -59,7 +61,10 @@ public class InicioUsuarioActivity extends AppCompatActivity {
         Intent intent = new Intent(this, cls);
 
         intent.putExtra("esAdmin", esAdmin);
-        idUser = esAdmin ? getIntent().getStringExtra("usuarioSeleccionado") : SaveData.getInstance().getUser().getId();
+
+        if(esAdmin) {
+            intent.putExtra("usuarioSeleccionado", idUser);
+        }
 
         startActivity(intent);
     }

@@ -110,6 +110,14 @@ public class DietasActivity extends AppCompatActivity {
                     Intent intent = new Intent(this, DiasActivity.class);
                     try{
                         saveData.setCurrentDiet((Diet) validationResult.result);
+
+                        intent.putExtra("esAdmin", esAdmin);
+                        if(esAdmin) {
+                            intent.putExtra("usuarioSeleccionado", idUser);
+                        }
+                        intent.putExtra("clienteSeleccionado", clienteSeleccionado);
+                        intent.putExtra("dietaSeleccionada", dietaSeleccionada);
+
                         startActivity(intent);
                     }catch (Exception e){
                         Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
@@ -142,9 +150,17 @@ public class DietasActivity extends AppCompatActivity {
                 validationResult -> {
                     Log.d("Dieta", validationResult.toString());
                     Blocker.removeBlocker(this.findViewById(android.R.id.content));
-                    Intent intent = new Intent(this, DietaIDia.class);
+                    Intent intent = new Intent(this, ComidasActivity.class);
                     try{
                         saveData.setCurrentDiet((Diet) validationResult.result);
+
+                        intent.putExtra("esAdmin", esAdmin);
+                        if(esAdmin) {
+                            intent.putExtra("usuarioSeleccionado", idUser);
+                        }
+                        intent.putExtra("clienteSeleccionado", clienteSeleccionado);
+                        intent.putExtra("dietaSeleccionada", dietaSeleccionada);
+
                         startActivity(intent);
                     }catch (Exception e) {
                         Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
@@ -157,7 +173,7 @@ public class DietasActivity extends AppCompatActivity {
                         Blocker.removeBlocker(this.findViewById(android.R.id.content));
                     }else{
                         Blocker.removeBlocker(this.findViewById(android.R.id.content));
-                        Intent intent = new Intent(this, DietaIDia.class);
+                        Intent intent = new Intent(this, ComidasActivity.class);
                         try{
                             Map<String,String> datas = (Map<String, String>) ((ComplexFBCE) e).reason.result;
                             Diet diet = new Diet(datas.get("id"), datas.get("name"), datas.get("tip"), datas.get("idCli"), datas.get("just"));
@@ -172,16 +188,13 @@ public class DietasActivity extends AppCompatActivity {
     }
 
 
-    public void onClickReturn(View view){ //si volvemos para atrás, solo queremos saber si es admin y el cliente que había seleccionado
+    public void onClickBackNavigation(View view){ //si volvemos para atrás, solo queremos saber si es admin y el cliente que había seleccionado
         Intent intent = new Intent(this, PacientesActivity.class );
 
-
-        boolean esAdmin = getIntent().getBooleanExtra("esAdmin", false); //comprobamos si es admin
         intent.putExtra("esAdmin", esAdmin);
-
-
-        String clienteSeleccionado = getIntent().getStringExtra("clienteSeleccionado");
-        intent.putExtra("clienteSeleccionado", clienteSeleccionado);
+        if(esAdmin) {
+            intent.putExtra("usuarioSeleccionado", idUser);
+        }
         startActivity(intent);
     }
 

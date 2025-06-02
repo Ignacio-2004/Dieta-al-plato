@@ -82,7 +82,7 @@ public class InicioAdminActivity extends AppCompatActivity {
     }
 
 
-    public void onClickReturn(View view){
+    public void onClickBackNavigation(View view){
         Intent intent = new Intent(this, LogIn_Activity.class );
         startActivity(intent);
     }

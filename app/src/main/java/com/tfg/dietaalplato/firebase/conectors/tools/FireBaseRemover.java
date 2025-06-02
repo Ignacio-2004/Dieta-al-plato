@@ -85,7 +85,7 @@ public class FireBaseRemover {
                                     for (Map<String, Diet> diet : saveData.getDiets().getAllAsArrayList()){
                                         for (Diet diet1: diet.values()){
                                             if(diet1.getId().equals(id)){
-                                                saveData.removeDiet(diet1.getIdCli());
+                                                //saveData.removeDiet(diet1.getIdCli());
                                             }
                                         }
                                     }
@@ -96,7 +96,7 @@ public class FireBaseRemover {
                                     for (Map<String, Diet> dietMap: foodDiet.getAllAsArrayList()){
                                         for (Diet diet: dietMap.values()){
                                             if(diet.getId().equals(id)){
-                                                saveData.removeDiet(diet.getName());
+                                                //saveData.removeDiet(diet.getName());
                                             }
                                         }
                                     }

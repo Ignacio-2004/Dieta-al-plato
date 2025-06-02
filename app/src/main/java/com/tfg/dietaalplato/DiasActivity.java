@@ -92,24 +92,30 @@ public class DiasActivity extends AppCompatActivity {
     }
 
     private void abrirComidasActivity(int diaSeleccionado) {
-        Intent intent = createBaseIntent(ComidasActivity.class);
+        Intent intent = new Intent(this, ComidasActivity.class);
+
+        intent.putExtra("esAdmin", esAdmin);
+        if(esAdmin) {
+            intent.putExtra("usuarioSeleccionado", idUser);
+        }
+        intent.putExtra("clienteSeleccionado", clienteSeleccionado);
         intent.putExtra("dietaSeleccionada", dietaSeleccionada);
         intent.putExtra("diaSeleccionado", diaSeleccionado);
-        startActivity(intent);
-    }
 
-    private Intent createBaseIntent(Class<?> destination) {
-        Intent intent = new Intent(this, destination);
-        intent.putExtra("esAdmin", esAdmin);
-        intent.putExtra("usuarioSeleccionado", idUser);
-        intent.putExtra("clienteSeleccionado", clienteSeleccionado);
-        return intent;
+        startActivity(intent);
     }
 
 
     public void onClickBackNavigation(View view){
-        Intent intent = createBaseIntent(DietasActivity.class);
+        Intent intent = new Intent(this, DietasActivity.class );
+
+        intent.putExtra("esAdmin", esAdmin);
+        if(esAdmin) {
+            intent.putExtra("usuarioSeleccionado", idUser);
+        }
+        intent.putExtra("clienteSeleccionado", clienteSeleccionado);
         intent.putExtra("dietaSeleccionada", dietaSeleccionada);
+
         startActivity(intent);
     }
 }

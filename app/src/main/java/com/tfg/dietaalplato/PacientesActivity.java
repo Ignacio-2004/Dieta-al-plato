@@ -41,10 +41,7 @@ public class PacientesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pacientes);
 
-        String clienteSeleccionado = getIntent().getStringExtra("clienteSeleccionado");
-
         layoutClientes = findViewById(R.id.layoutClientes);
-
         saveData = SaveData.getInstance();
 
         esAdmin = getIntent().getBooleanExtra("esAdmin", false); //comprobamos si es admin
@@ -60,9 +57,11 @@ public class PacientesActivity extends AppCompatActivity {
 
         if(esAdmin) { //si es admin, deberíamos mostrar los clientes del usuario que el admin haya seleccionado
             try {
+
                 Blocker.createBlocker(this.findViewById(android.R.id.content),this);
                 FireBaseReader.readClientFromUser(idUser).addOnSuccessListener(
                         clientes -> {
+
                             for (Client cliente : clientes.result) {
                                 LinearLayout item = new LinearLayout(this);
                                 item.setOrientation(LinearLayout.HORIZONTAL);
@@ -99,7 +98,9 @@ public class PacientesActivity extends AppCompatActivity {
                                             Intent intent = new Intent(this, DietasActivity.class);
 
                                             intent.putExtra("esAdmin", esAdmin);
-                                            intent.putExtra("usuarioSeleccionado", idUser);
+                                            if(esAdmin) {
+                                                intent.putExtra("usuarioSeleccionado", idUser);
+                                            }
                                             intent.putExtra("clienteSeleccionado", cliente.getName()); //al seleccionar un cliente, se manda el que se haya seleccionado
 
                                             startActivity(intent);
@@ -116,6 +117,7 @@ public class PacientesActivity extends AppCompatActivity {
                             Blocker.removeBlocker(this.findViewById(android.R.id.content));
                         }
                 );
+                Blocker.removeBlocker(this.findViewById(android.R.id.content));
             } catch (FBCException e) {
                 Toast.makeText(this, "Error al cargar clientes", Toast.LENGTH_SHORT).show();
                 Blocker.removeBlocker(this.findViewById(android.R.id.content));
@@ -166,7 +168,9 @@ public class PacientesActivity extends AppCompatActivity {
                                             Intent intent = new Intent(this, DietasActivity.class);
 
                                             intent.putExtra("esAdmin", esAdmin);
-                                            intent.putExtra("usuarioSeleccionado", idUser);
+                                            if(esAdmin) {
+                                                intent.putExtra("usuarioSeleccionado", idUser);
+                                            }
                                             intent.putExtra("clienteSeleccionado", cliente.getName()); //al seleccionar un cliente, se manda el que se haya seleccionado
 
                                             startActivity(intent);
@@ -192,8 +196,10 @@ public class PacientesActivity extends AppCompatActivity {
 
     public void onClickBackNavigation(View view){ //si volvemos para atrás, solo queremos saber si es admin
         Intent intent = new Intent(this, InicioUsuarioActivity.class);
-        intent.putExtra("esAdmin", true);
-        intent.putExtra("usuarioSeleccionado", idUser);
+        intent.putExtra("esAdmin", esAdmin);
+        if(esAdmin) {
+            intent.putExtra("usuarioSeleccionado", idUser);
+        }
         startActivity(intent);
     }
 
