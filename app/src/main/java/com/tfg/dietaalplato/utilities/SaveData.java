@@ -244,9 +244,15 @@ public class SaveData {
         Log.d(TAG, "removeFood: " + foods);
     }
 
-    public void removeDiet (String name){
+    public void removeDiet (String idCli, String name){
         Log.d(TAG, "removeDiet: " + name);
+        Map<String ,Diet> diets = getDietsOfClient(idCli);
+        if (diets == null){
+            diets = new HashMap<>();
+        }
+        getDietsOfClient(idCli).clear();
         diets.remove(name);
+        this.diets.add(idCli,diets);
         Log.d(TAG, "removeDiet: " + diets);
     }
 

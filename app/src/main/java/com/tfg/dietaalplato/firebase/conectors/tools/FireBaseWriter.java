@@ -196,21 +196,21 @@ public class FireBaseWriter {
 
     /**
      * Metodo secundario para guardar los datos en la base de datos forzando sobreescribir en el caso de que ya exista un objeto con los mismos credenciales
-     * @param classType clase a guardar
-     * @param result datos a guardar
-     * @param force forzar a sobreescribir
-     * @return Task<ObjectResult<BaseObject>>
-     * @param <T> clase a guardar
-     * @throws FBCException excepcion
-     */
+     //* @param classType clase a guardar
+     //* @param result datos a guardar
+     //* @param force forzar a sobreescribir
+     //* @return Task<ObjectResult<BaseObject>>
+     //* @param <T> clase a guardar
+     //* @throws FBCException excepcion
+     *//*
     public static <T> Task<ObjectResult<BaseObject>> saveData(Class<T> classType, ValidationResult result, boolean force) throws FBCException {
 
         final String TAG = "SaveDataForce";
-        AtomicReference<TaskCompletionSource<ObjectResult<BaseObject>>> taskCompletionSource = new AtomicReference<>(new TaskCompletionSource<>());
+        TaskCompletionSource<ObjectResult<BaseObject>> finalresoult = new TaskCompletionSource<>();
 
-        /*
+        *//*
          * Si es false llamo al original que filtra los repetidos
-         */
+         *//*
         if (!force){
             Log.d(TAG, "force = false, derivando al metodo principal ...");
             saveData(classType, result).addOnSuccessListener(
@@ -399,7 +399,7 @@ public class FireBaseWriter {
 
         return taskCompletionSource.get().getTask();
 
-    }
+    }*/
 
     private static Task<ObjectResult<BaseObject>> save(ValidationResult result, ClassData classData, String rawId, String idExt) {
 

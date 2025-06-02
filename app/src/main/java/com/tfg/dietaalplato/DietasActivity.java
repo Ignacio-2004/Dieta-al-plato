@@ -28,7 +28,7 @@ import java.util.Map;
 
 public class DietasActivity extends AppCompatActivity {
 
-    private SaveData saveData;
+    private SaveData saveData = SaveData.getInstance();
     ImageView imagenCliente;
     Button boton1dias, boton3dias, boton7dias;
     ImageButton botonimage1dias, botonimage3dias, botonimage7dias;

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -14,22 +15,30 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
 import com.tfg.dietaalplato.R;
+import com.tfg.dietaalplato.firebase.conectors.tools.FireBaseRemover;
 import com.tfg.dietaalplato.firebase.conectors.tools.FireBaseWriter;
 import com.tfg.dietaalplato.firebase.exceptions.FBCException;
 import com.tfg.dietaalplato.firebase.tables.Diet;
 import com.tfg.dietaalplato.firebase.utilities.ValidationResult;
+import com.tfg.dietaalplato.utilities.Blocker;
 import com.tfg.dietaalplato.utilities.SaveData;
 
 import java.util.ArrayList;
 
 public class DialogAddJustification extends DialogFragment {
 
+
     private static Button btnGuardar;
     private static Button btnCancelar;
     private static EditText editTextMultiline;
     private static TextView txtMensajeErrorAlimento;
     private static SaveData saveData = SaveData.getInstance();
+    private static boolean haveFill;
 
+    public static DialogAddJustification getInstance(boolean fill) {
+        haveFill = fill;
+        return new DialogAddJustification();
+    }
 
     private View mainView;
     @Override
@@ -42,8 +51,16 @@ public class DialogAddJustification extends DialogFragment {
         btnGuardar = mainView.findViewById(R.id.btnGuardar);
         btnCancelar = mainView.findViewById(R.id.btnCancelar);
 
+        if (haveFill){
+            Diet currentDiet = saveData.getCurrentDiet();
+
+            editTextMultiline.setText(currentDiet.getJust());
+        }
+
         btnCancelar.setOnClickListener(v -> dismiss());
         btnGuardar.setOnClickListener(v ->{
+            ViewGroup parent = (ViewGroup) mainView.getRootView();
+            Blocker.createBlocker(parent,requireActivity());
             String just = editTextMultiline.getText().toString();
             String idCli = saveData.getCurrentClient().getId();
             String tip = saveData.getCurrentDiet().getTip();
@@ -55,25 +72,42 @@ public class DialogAddJustification extends DialogFragment {
             ValidationResult result = Diet.toMapData(data, idCli);
 
             try {
-                FireBaseWriter.saveData(Diet.class,result,true).addOnSuccessListener(
+                FireBaseRemover.remove(saveData.getCurrentDiet().getId()).addOnSuccessListener(
                         aVoid -> {
-                            Log.d("TAG", "✅ Justificacion guardada correctamente");
-                            txtMensajeErrorAlimento.setText("✅ Justificacion guardada correctamente");
-                            txtMensajeErrorAlimento.setVisibility(View.VISIBLE);
-                            mostrarTextError();
+                            FireBaseWriter.saveData(Diet.class,result).addOnSuccessListener(
+                                    aVoid2 -> {
+                                        Log.d("TAG", "✅ Justificacion guardada correctamente");
+                                        txtMensajeErrorAlimento.setText("✅ Justificacion guardada correctamente");
+                                        txtMensajeErrorAlimento.setVisibility(View.VISIBLE);
+                                        Blocker.removeBlocker(parent);
+                                        mostrarTextError();
+                                    }
+                            ).addOnFailureListener(
+                                    e -> {
+                                        Log.d("TAG", "❌ Error al guardar la justificacion");
+                                        txtMensajeErrorAlimento.setText("❌ Error al guardar la justificacion");
+                                        txtMensajeErrorAlimento.setVisibility(View.VISIBLE);
+                                        Blocker.removeBlocker(parent);
+                                        mostrarTextError();
+                                    }
+                            );
                         }
                 ).addOnFailureListener(
                         e -> {
-                            Log.d("TAG", "❌ Error al guardar la justificacion");
-                            txtMensajeErrorAlimento.setText("❌ Error al guardar la justificacion");
+                            Log.d("TAG", "❌ Error al eliminar la dieta");
+                            txtMensajeErrorAlimento.setText("❌ Error al eliminar la dieta");
                             txtMensajeErrorAlimento.setVisibility(View.VISIBLE);
+                            Blocker.removeBlocker(parent);
                             mostrarTextError();
                         }
                 );
+
+
             } catch (Exception e) {
                 Log.d("TAG", "No se ha podido gaurdar la justificacion");
                 txtMensajeErrorAlimento.setText( "No se ha podido gaurdar la justificacion");
                 txtMensajeErrorAlimento.setVisibility(View.VISIBLE);
+                Blocker.removeBlocker(parent);
                 mostrarTextError();
             }
             Log.d("TAG", "Guardando justificacion");
