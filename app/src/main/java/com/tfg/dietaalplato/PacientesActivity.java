@@ -32,10 +32,6 @@ public class PacientesActivity extends AppCompatActivity {
     private LinearLayout layoutClientes;
     private SaveData saveData;
 
-
-    private boolean esAdmin;
-    private String idUser;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,22 +40,16 @@ public class PacientesActivity extends AppCompatActivity {
         layoutClientes = findViewById(R.id.layoutClientes);
         saveData = SaveData.getInstance();
 
-        esAdmin = getIntent().getBooleanExtra("esAdmin", false); //comprobamos si es admin
-
-        if(esAdmin) {
-            idUser = getIntent().getStringExtra("usuarioSeleccionado");
-        }
-
         ImageView botonRefrescar = findViewById(R.id.imageView3);
         ImageView botonAñadir = findViewById(R.id.imageView);
-        botonRefrescar.setVisibility(esAdmin ? View.INVISIBLE : View.VISIBLE);
-        botonAñadir.setVisibility(esAdmin ? View.INVISIBLE : View.VISIBLE);
+        botonRefrescar.setVisibility(saveData.isAdmin() ? View.INVISIBLE : View.VISIBLE);
+        botonAñadir.setVisibility(saveData.isAdmin() ? View.INVISIBLE : View.VISIBLE);
 
-        if(esAdmin) { //si es admin, deberíamos mostrar los clientes del usuario que el admin haya seleccionado
+        if(saveData.isAdmin()) { //si es admin, deberíamos mostrar los clientes del usuario que el admin haya seleccionado
             try {
 
                 Blocker.createBlocker(this.findViewById(android.R.id.content),this);
-                FireBaseReader.readClientFromUser(idUser).addOnSuccessListener(
+                FireBaseReader.readClientFromUser(saveData.getCurrentStudent().getIdUsr()).addOnSuccessListener(
                         clientes -> {
 
                             for (Client cliente : clientes.result) {
@@ -96,13 +86,6 @@ public class PacientesActivity extends AppCompatActivity {
                                             saveData.setCurrentClient(cliente);
 
                                             Intent intent = new Intent(this, DietasActivity.class);
-
-                                            intent.putExtra("esAdmin", esAdmin);
-                                            if(esAdmin) {
-                                                intent.putExtra("usuarioSeleccionado", idUser);
-                                            }
-                                            intent.putExtra("clienteSeleccionado", cliente.getName()); //al seleccionar un cliente, se manda el que se haya seleccionado
-
                                             startActivity(intent);
                                         }
                                 );
@@ -135,9 +118,6 @@ public class PacientesActivity extends AppCompatActivity {
                                 item.setElevation(8f);
                                 layoutClientes.addView(item);
 
-
-
-
                                 item = new LinearLayout(this);
                                 item.setOrientation(LinearLayout.HORIZONTAL);
                                 item.setBackgroundResource(R.drawable.bg_food_background);
@@ -166,13 +146,6 @@ public class PacientesActivity extends AppCompatActivity {
                                             saveData.setCurrentClient(cliente);
 
                                             Intent intent = new Intent(this, DietasActivity.class);
-
-                                            intent.putExtra("esAdmin", esAdmin);
-                                            if(esAdmin) {
-                                                intent.putExtra("usuarioSeleccionado", idUser);
-                                            }
-                                            intent.putExtra("clienteSeleccionado", cliente.getName()); //al seleccionar un cliente, se manda el que se haya seleccionado
-
                                             startActivity(intent);
                                         }
                                 );
@@ -196,10 +169,6 @@ public class PacientesActivity extends AppCompatActivity {
 
     public void onClickBackNavigation(View view){ //si volvemos para atrás, solo queremos saber si es admin
         Intent intent = new Intent(this, InicioUsuarioActivity.class);
-        intent.putExtra("esAdmin", esAdmin);
-        if(esAdmin) {
-            intent.putExtra("usuarioSeleccionado", idUser);
-        }
         startActivity(intent);
     }
 

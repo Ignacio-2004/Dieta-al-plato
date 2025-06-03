@@ -33,9 +33,6 @@ public class DietasActivity extends AppCompatActivity {
     Button boton1dias, boton3dias, boton7dias;
     ImageButton botonimage1dias, botonimage3dias, botonimage7dias;
     TextView nombreClienteText;
-
-    private boolean esAdmin;
-    private String idUser, clienteSeleccionado;
     private static final String msgErrorRepeatDiet = "Ya existe una dieta con las mismas credenciales, para modificarla entre en la ficha de la dieta.";
 
     @Override
@@ -43,37 +40,19 @@ public class DietasActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dietas);
 
-        // Obtener datos del Intent
-        esAdmin = getIntent().getBooleanExtra("esAdmin", false);
-
-        if(esAdmin) {
-            idUser = getIntent().getStringExtra("usuarioSeleccionado");
-        }
-
-        clienteSeleccionado = getIntent().getStringExtra("clienteSeleccionado");
-
-        initViews();
-        setupButtons();
-    }
-
-    private void initViews() {
         imagenCliente = findViewById(R.id.imgCliente);
         nombreClienteText = findViewById(R.id.nombrePaciente_textview);
-        nombreClienteText.setText((clienteSeleccionado.substring(0, 1).toUpperCase() + clienteSeleccionado.substring(1)));
-
+        nombreClienteText.setText((saveData.getCurrentClient().getName().substring(0, 1).toUpperCase() + saveData.getCurrentClient().getName().substring(1)));
 
         // Referenciar los botones
         boton1dias = findViewById(R.id.boton1dias_button);
         boton3dias = findViewById(R.id.boton3dias_button);
         boton7dias = findViewById(R.id.boton7dias_button);
 
-
         botonimage1dias = findViewById(R.id.boton1dias_imagebutton);
         botonimage3dias = findViewById(R.id.boton3dias_imagebutton);
         botonimage7dias = findViewById(R.id.boton7dias_imagebutton);
-    }
 
-    private void setupButtons() {
         // Configurar listeners para los botones
         View.OnClickListener listener1Dia = v -> abrirComidasActivity(1);
         View.OnClickListener listener3Dias = v -> abrirDiasActivity(3);
@@ -111,14 +90,8 @@ public class DietasActivity extends AppCompatActivity {
                     try{
                         saveData.setCurrentDiet((Diet) validationResult.result);
 
-                        intent.putExtra("esAdmin", esAdmin);
-                        if(esAdmin) {
-                            intent.putExtra("usuarioSeleccionado", idUser);
-                        }
-                        intent.putExtra("clienteSeleccionado", clienteSeleccionado);
-                        intent.putExtra("dietaSeleccionada", dietaSeleccionada);
-
                         startActivity(intent);
+
                     }catch (Exception e){
                         Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
                     }
@@ -154,13 +127,6 @@ public class DietasActivity extends AppCompatActivity {
                     try{
                         saveData.setCurrentDiet((Diet) validationResult.result);
 
-                        intent.putExtra("esAdmin", esAdmin);
-                        if(esAdmin) {
-                            intent.putExtra("usuarioSeleccionado", idUser);
-                        }
-                        intent.putExtra("clienteSeleccionado", clienteSeleccionado);
-                        intent.putExtra("dietaSeleccionada", dietaSeleccionada);
-
                         startActivity(intent);
                     }catch (Exception e) {
                         Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
@@ -188,13 +154,8 @@ public class DietasActivity extends AppCompatActivity {
     }
 
 
-    public void onClickBackNavigation(View view){ //si volvemos para atrás, solo queremos saber si es admin y el cliente que había seleccionado
+    public void onClickBackNavigation(View view){
         Intent intent = new Intent(this, PacientesActivity.class );
-
-        intent.putExtra("esAdmin", esAdmin);
-        if(esAdmin) {
-            intent.putExtra("usuarioSeleccionado", idUser);
-        }
         startActivity(intent);
     }
 

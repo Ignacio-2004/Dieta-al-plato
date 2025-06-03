@@ -23,9 +23,7 @@ import com.tfg.dietaalplato.utilities.dialogo.GuardarBancoAlimentos_Dialogo;
 public class BancoAlimentosActivity extends AppCompatActivity {
 
     private LinearLayout layoutSV;
-
-    private boolean esAdmin;
-    private String idUser;
+    private SaveData saveData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,16 +33,10 @@ public class BancoAlimentosActivity extends AppCompatActivity {
         layoutSV = findViewById(R.id.layoutAlimentos);
         SaveData saveData = SaveData.getInstance();
 
-        esAdmin = getIntent().getBooleanExtra("esAdmin", false); //comprobamos si es admin
-
-        if(esAdmin) {
-            idUser = getIntent().getStringExtra("usuarioSeleccionado");
-        }
-
-        if(esAdmin) { //si es admin, deberíamos mostrar los clientes del usuario que el admin haya seleccionado
+        if(saveData.isAdmin()) { //si es admin, deberíamos mostrar los clientes del usuario que el admin haya seleccionado
             try{
                 Blocker.createBlocker(this.findViewById(android.R.id.content),this);
-                FireBaseReader.readAllFoodFromUser(idUser).addOnSuccessListener(
+                FireBaseReader.readAllFoodFromUser(saveData.getCurrentStudent().getIdUsr()).addOnSuccessListener(
                         alimentos -> {
                             if (alimentos.exit){
                                 for (Food alimento : alimentos.result.values()) {
@@ -159,8 +151,6 @@ public class BancoAlimentosActivity extends AppCompatActivity {
     }
     public void onClickBackNavigation(View view){
         Intent intent = new Intent(this, InicioUsuarioActivity.class);
-        intent.putExtra("esAdmin", esAdmin);
-        intent.putExtra("usuarioSeleccionado", idUser);
         startActivity(intent);
     }
     public void actualizarBancoAlimentos(View view){

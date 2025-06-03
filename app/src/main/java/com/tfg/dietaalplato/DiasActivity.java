@@ -6,34 +6,22 @@ import android.view.View;
 import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.tfg.dietaalplato.utilities.SaveData;
+
 public class DiasActivity extends AppCompatActivity {
 
-    private boolean esAdmin;
-    private String idUser;
-    private String clienteSeleccionado;
-    private int dietaSeleccionada;
+    private SaveData saveData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dias);
 
-        // Obtener datos del Intent
-        esAdmin = getIntent().getBooleanExtra("esAdmin", false);
-
-        if(esAdmin) {
-            idUser = getIntent().getStringExtra("usuarioSeleccionado");
-        }
-
-        clienteSeleccionado = getIntent().getStringExtra("clienteSeleccionado");
-        dietaSeleccionada = getIntent().getIntExtra("dietaSeleccionada", 3);
-
         // Obtener los botones de los días
         Button[] botonesDias3 = new Button[3];
         botonesDias3[0] = findViewById(R.id.boton1Dias3);
         botonesDias3[1] = findViewById(R.id.boton2Dias3);
         botonesDias3[2] = findViewById(R.id.boton3Dias3);
-
 
         setupDayButtons();
     }
@@ -43,9 +31,9 @@ public class DiasActivity extends AppCompatActivity {
         hideAllDayButtons();
 
         // Mostrar solo los botones necesarios según el tipo de dieta
-        if (dietaSeleccionada == 3) {
+        if (saveData.getCurrentDiet().getTip().equals("3")) {
             setupButtonsFor3DayDiet();
-        } else if (dietaSeleccionada == 7) {
+        } else if (saveData.getCurrentDiet().getTip().equals("7")) {
             setupButtonsFor7DayDiet();
         }
     }
@@ -93,28 +81,13 @@ public class DiasActivity extends AppCompatActivity {
 
     private void abrirComidasActivity(int diaSeleccionado) {
         Intent intent = new Intent(this, ComidasActivity.class);
-
-        intent.putExtra("esAdmin", esAdmin);
-        if(esAdmin) {
-            intent.putExtra("usuarioSeleccionado", idUser);
-        }
-        intent.putExtra("clienteSeleccionado", clienteSeleccionado);
-        intent.putExtra("dietaSeleccionada", dietaSeleccionada);
-        intent.putExtra("diaSeleccionado", diaSeleccionado);
-
+        saveData.setCurrentDay(diaSeleccionado);
         startActivity(intent);
     }
 
 
     public void onClickBackNavigation(View view){
         Intent intent = new Intent(this, DietasActivity.class );
-
-        intent.putExtra("esAdmin", esAdmin);
-        if(esAdmin) {
-            intent.putExtra("usuarioSeleccionado", idUser);
-        }
-        intent.putExtra("clienteSeleccionado", clienteSeleccionado);
-
         startActivity(intent);
     }
 }

@@ -15,8 +15,7 @@ public class InicioUsuarioActivity extends AppCompatActivity {
 
     Button botonLogout;
     ImageButton botonRetorno;
-    private boolean esAdmin;
-    private String idUser;
+    private SaveData saveData;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -28,14 +27,9 @@ public class InicioUsuarioActivity extends AppCompatActivity {
         botonRetorno = findViewById(R.id.return_button);
         botonLogout = findViewById(R.id.logout_button);
 
-        esAdmin = getIntent().getBooleanExtra("esAdmin", false);
-
-        if(esAdmin) {
-            idUser = getIntent().getStringExtra("usuarioSeleccionado");
-        }
         // Configurar visibilidad de botones
-        botonRetorno.setVisibility(esAdmin ? View.VISIBLE : View.INVISIBLE);
-        botonLogout.setVisibility(esAdmin ? View.INVISIBLE : View.VISIBLE);
+        botonRetorno.setVisibility(saveData.isAdmin() ? View.VISIBLE : View.INVISIBLE);
+        botonLogout.setVisibility(saveData.isAdmin() ? View.INVISIBLE : View.VISIBLE);
     }
 
     public void onClickBackNavigation(View view){ //este botón es solo visible si es admin
@@ -44,28 +38,17 @@ public class InicioUsuarioActivity extends AppCompatActivity {
     }
 
     public void onClickPatient(View view) {
-        startNewActivity(PacientesActivity.class);
+        Intent intent = new Intent(this, PacientesActivity.class);
+        startActivity(intent);
     }
 
     public void onClickAlimentos(View view) {
-        startNewActivity(BancoAlimentosActivity.class);
+        Intent intent = new Intent(this, BancoAlimentosActivity.class);
+        startActivity(intent);
     }
 
     public void onClickCloseSesion(View view){ //seleccionamos cerrar sesión, este botón no aparece si somos admin
         Intent intent = new Intent(this, LogIn_Activity.class );
-        startActivity(intent);
-    }
-
-    //helper para evitar código repetido
-    private void startNewActivity(Class<?> cls) {
-        Intent intent = new Intent(this, cls);
-
-        intent.putExtra("esAdmin", esAdmin);
-
-        if(esAdmin) {
-            intent.putExtra("usuarioSeleccionado", idUser);
-        }
-
         startActivity(intent);
     }
 }

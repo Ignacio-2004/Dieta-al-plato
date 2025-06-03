@@ -212,13 +212,14 @@ public class LogIn_Activity extends AppCompatActivity {
                                                             if (nomusuario_introducido.equals("admin.admin@dietetica.davinci")){
                                                                 Intent i = new Intent(this, InicioAdminActivity.class);
                                                                 Blocker.removeBlocker(this.findViewById(android.R.id.content));
+                                                                saveData.setAdmin(true);
                                                                 startActivity(i);
                                                                 finish(); // Cerramos Login para que no se pueda volver atrás
                                                             }
                                                             else {
                                                                 Intent i = new Intent(this, InicioUsuarioActivity.class);
                                                                 Blocker.removeBlocker(this.findViewById(android.R.id.content));
-                                                                i.putExtra("esAdmin", false);
+                                                                saveData.setAdmin(false);
                                                                 startActivity(i);
                                                                 finish(); // Cerramos Login para que no se pueda volver atrás
                                                             }

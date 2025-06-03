@@ -26,15 +26,18 @@ public class SaveData {
 
     private static SaveData saveData;
     private User user;
+    private boolean admin;
     private CacheCollection<User> students;
     private CacheCollection<Client> clients;
     private CacheCollection<Food> foods;
     private CacheCollection<Map<String, Diet>> diets;
     private CacheCollection<Map<String, ArrayList<FoodDiet>>> foodDiets;
 
+    private User currentStudent;
     private Client currentClient;
     private Diet currentDiet;
     private FoodDiet currentFood;
+    private int currentDay;
     private final String TAG = "SaveData";
 
     private SaveData() {
@@ -295,5 +298,32 @@ public class SaveData {
 
     public void setStudents(CacheCollection<User> students) {
         this.students = students;
+    }
+
+    public Client getCurrentStudent() {
+        Log.d(TAG, "getCurrentStudent: " + currentStudent);
+        return currentClient;
+    }
+
+    public void setCurrentStudent(User currentStudent) {
+        this.currentStudent = currentStudent;
+        Log.d(TAG, "setCurrentStudent: " + currentStudent.getName());
+    }
+
+    public boolean isAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(boolean admin) {
+        this.admin = admin;
+    }
+
+
+    public int getCurrentDay() {
+        return currentDay;
+    }
+
+    public void setCurrentDay(int currentDay) {
+        this.currentDay = currentDay;
     }
 }

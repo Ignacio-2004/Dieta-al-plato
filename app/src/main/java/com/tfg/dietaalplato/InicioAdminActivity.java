@@ -62,13 +62,9 @@ public class InicioAdminActivity extends AppCompatActivity {
 
                             item.setOnClickListener(v ->{
                                         Log.d("Usuario", "Nombre del usuario: " + usuario.getName());
-                                        //saveData.setIdActualClient(usuario);
+                                        saveData.setCurrentStudent(usuario);
 
                                         Intent intent = new Intent(this, InicioUsuarioActivity.class);
-
-                                        intent.putExtra("esAdmin", true); //como es admin, mandamos true
-                                        intent.putExtra("usuarioSeleccionado", usuario.getId());
-
                                         startActivity(intent);
                                     }
                             );
