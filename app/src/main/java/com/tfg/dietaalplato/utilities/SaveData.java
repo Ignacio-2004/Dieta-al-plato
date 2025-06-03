@@ -26,6 +26,7 @@ public class SaveData {
 
     private static SaveData saveData;
     private User user;
+    private CacheCollection<User> students;
     private CacheCollection<Client> clients;
     private CacheCollection<Food> foods;
     private CacheCollection<Map<String, Diet>> diets;
@@ -288,5 +289,11 @@ public class SaveData {
         }
     }
 
+    public CacheCollection<User> getStudents() {
+        return students;
+    }
 
+    public void setStudents(CacheCollection<User> students) {
+        this.students = students;
+    }
 }

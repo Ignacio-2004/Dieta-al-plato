@@ -114,7 +114,6 @@ public class DiasActivity extends AppCompatActivity {
             intent.putExtra("usuarioSeleccionado", idUser);
         }
         intent.putExtra("clienteSeleccionado", clienteSeleccionado);
-        intent.putExtra("dietaSeleccionada", dietaSeleccionada);
 
         startActivity(intent);
     }

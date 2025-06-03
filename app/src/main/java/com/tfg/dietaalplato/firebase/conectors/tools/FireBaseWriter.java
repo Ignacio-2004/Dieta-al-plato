@@ -48,7 +48,7 @@ public class FireBaseWriter {
 
         ClassData classData;
         AtomicReference<Integer> rawId = new AtomicReference<>(-1);
-        TaskCompletionSource<ObjectResult<BaseObject>> finalresoult = new TaskCompletionSource<>();
+        TaskCompletionSource<ObjectResult<BaseObject>> finalresult = new TaskCompletionSource<>();
 
 
         String id;
@@ -71,16 +71,16 @@ public class FireBaseWriter {
                             validationResult -> {
                                 if (!validationResult.exit) {
                                     Log.w(TAG, "Usuario existente, operacion sin permisos de sobreescritura");
-                                    finalresoult.setException(new ComplexFBCE(new ObjectResult<>(false, msgErrorRepeatUser,validationResult.data )));
+                                    finalresult.setException(new ComplexFBCE(new ObjectResult<>(false, msgErrorRepeatUser,validationResult.data )));
                                 }else{
                                     Log.d(TAG, "Usuario no existente, inicio del guardado.");
                                     save(result,classData, validationResult.message,"-1").addOnSuccessListener(
                                             saveResult ->{
-                                                finalresoult.setResult(saveResult);
+                                                finalresult.setResult(saveResult);
                                             }
                                     ).addOnFailureListener(
                                             e -> {
-                                                finalresoult.setException(new ComplexFBCE(new ObjectResult<>(false, "Error al guardar el usuario", result)));
+                                                finalresult.setException(new ComplexFBCE(new ObjectResult<>(false, "Error al guardar el usuario", result)));
                                             }
                                     );
                                 }
@@ -98,16 +98,16 @@ public class FireBaseWriter {
                             validationResult -> {
                                 if (!validationResult.exit) {
                                     Log.w(TAG, "Dieta existente, operacion sin permisos de sobreescritura");
-                                    finalresoult.setException(new ComplexFBCE(new ObjectResult<>(false, msgErrorRepeatDiet,validationResult.data )));
+                                    finalresult.setException(new ComplexFBCE(new ObjectResult<>(false, msgErrorRepeatDiet,validationResult.data )));
                                 }else{
                                     Log.d(TAG, "Dieta no existente, inicio del guardado.");
                                     save(result,classData, validationResult.message,result.data.get("idCli")).addOnSuccessListener(
                                             saveResult ->{
-                                                finalresoult.setResult(saveResult);
+                                                finalresult.setResult(saveResult);
                                             }
                                     ).addOnFailureListener(
                                             e -> {
-                                                finalresoult.setException(new ComplexFBCE(new ObjectResult<>(false, e.getMessage(), result)));
+                                                finalresult.setException(new ComplexFBCE(new ObjectResult<>(false, e.getMessage(), result)));
                                             }
                                     );
                                 }
@@ -127,19 +127,19 @@ public class FireBaseWriter {
                                 if (!validationResult.exit) {
                                     Log.w(TAG, classData.data+" existente, operacion sin permisos de sobreescritura");
                                     if (classData.data.equals("alimentos")) {
-                                        finalresoult.setException(new ComplexFBCE(new ObjectResult<>(false, msgErrorRepeatFood,validationResult.data )));
+                                        finalresult.setException(new ComplexFBCE(new ObjectResult<>(false, msgErrorRepeatFood,validationResult.data )));
                                     }else{
-                                        finalresoult.setException(new ComplexFBCE(new ObjectResult<>(false, msgErrorRepeatClient,validationResult.data )));
+                                        finalresult.setException(new ComplexFBCE(new ObjectResult<>(false, msgErrorRepeatClient,validationResult.data )));
                                     }
                                 }else{
                                     Log.d(TAG, classData.data+" no existente, inicio del guardado.");
                                     save(result,classData, validationResult.message,result.data.get("idUsr")).addOnSuccessListener(
                                             saveResult ->{
-                                                finalresoult.setResult(saveResult);
+                                                finalresult.setResult(saveResult);
                                             }
                                     ).addOnFailureListener(
                                             e -> {
-                                                finalresoult.setException(new ComplexFBCE(new ObjectResult<>(false, e.getMessage(), result)));
+                                                finalresult.setException(new ComplexFBCE(new ObjectResult<>(false, e.getMessage(), result)));
                                             }
                                     );
                                 }
@@ -157,16 +157,16 @@ public class FireBaseWriter {
                                 Log.d(TAG, "FoodDiet no existente, inicio del guardado.");
                                 if (!validationResult.exit) {
                                     Log.w(TAG, "FoodDiet existente, operacion sin permisos de sobreescritura");
-                                    finalresoult.setException(new ComplexFBCE(new ObjectResult<>(false, msgErrorRepeatFoodDiet,validationResult.data )));
+                                    finalresult.setException(new ComplexFBCE(new ObjectResult<>(false, msgErrorRepeatFoodDiet,validationResult.data )));
                                 } else {
                                     Log.d(TAG, "FoodDiet existente, operacion sin permisos de sobreescritura");
                                     save(result,classData, validationResult.message,result.data.get("idDieta")).addOnSuccessListener(
                                             saveResult ->{
-                                                finalresoult.setResult(saveResult);
+                                                finalresult.setResult(saveResult);
                                             }
                                     ).addOnFailureListener(
                                             e -> {
-                                                finalresoult.setException(new ComplexFBCE(new ObjectResult<>(false, e.getMessage(), result)));
+                                                finalresult.setException(new ComplexFBCE(new ObjectResult<>(false, e.getMessage(), result)));
                                             }
                                     );
                                 }
@@ -189,9 +189,9 @@ public class FireBaseWriter {
         } catch (FBCException e) {
             Log.d(TAG, "❌ Error al guardar los datos: " + e.getMessage());
             Log.d(TAG, "🏁 Fin del proceso");
-            finalresoult.setException(e);
+            finalresult.setException(e);
         }
-        return finalresoult.getTask();
+        return finalresult.getTask();
     }
 
     /**
