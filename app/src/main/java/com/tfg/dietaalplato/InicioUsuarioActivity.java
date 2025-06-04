@@ -17,7 +17,6 @@ public class InicioUsuarioActivity extends AppCompatActivity {
     ImageButton botonRetorno;
     private SaveData saveData;
 
-    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,7 +26,16 @@ public class InicioUsuarioActivity extends AppCompatActivity {
         botonRetorno = findViewById(R.id.return_button);
         botonLogout = findViewById(R.id.logout_button);
 
+        saveData = SaveData.getInstance();
+
         // Configurar visibilidad de botones
+        /*if (saveData.isAdmin()){
+            botonRetorno.setVisibility(View.VISIBLE);
+            botonLogout.setVisibility(View.INVISIBLE);
+        }else{
+            botonRetorno.setVisibility(View.INVISIBLE);
+            botonLogout.setVisibility(View.VISIBLE);
+        }*/
         botonRetorno.setVisibility(saveData.isAdmin() ? View.VISIBLE : View.INVISIBLE);
         botonLogout.setVisibility(saveData.isAdmin() ? View.INVISIBLE : View.VISIBLE);
     }

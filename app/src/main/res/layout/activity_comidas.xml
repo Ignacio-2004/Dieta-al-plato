@@ -21,30 +21,33 @@
         app:layout_constraintEnd_toEndOf="parent" />
 
     <!-- Velo (superposición semitransparente) -->
+
+
     <View
         android:id="@+id/velo"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="#DDE9EFDF"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/titulo_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="40dp"
         android:fontFamily="@font/lily_script_one"
-        android:textStyle="bold"
-        android:textAllCaps="false"
-        android:textColor="#1E1D21"
         android:text="¿Qué comida quieres visualizar?"
+        android:textAllCaps="false"
+        android:textColor="#027C68"
         android:textSize="60sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.501"
+        app:layout_constraintHorizontal_bias="0.492"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -52,6 +55,7 @@
         android:id="@+id/return_button"
         android:layout_width="110dp"
         android:layout_height="99dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="28dp"
         android:backgroundTint="#00FFFFFF"
         android:onClick="onClickBackNavigation"
@@ -251,5 +255,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/recena_boton"
         app:layout_constraintVertical_bias="0.714" />
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="73dp"
+        android:layout_height="79dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="16dp"
+        android:onClick="just"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/question_mark" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

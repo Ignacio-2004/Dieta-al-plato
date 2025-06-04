@@ -47,10 +47,11 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageButton
-            android:id="@+id/bttReturn2"
+            android:id="@+id/bttReturn"
             android:layout_width="110dp"
             android:layout_height="99dp"
             android:layout_marginTop="16dp"
+            android:layout_weight="1"
             android:backgroundTint="#00FFFFFF"
             android:onClick="onClickReturn"
             app:srcCompat="@drawable/gobacksinfondo" />
@@ -70,14 +71,16 @@
             android:textSize="50dp"
             android:textStyle="bold" />
 
-        <ImageView
-            android:id="@+id/imageView2"
-            android:layout_width="71dp"
-            android:layout_height="71dp"
-            android:layout_marginTop="30dp"
-            android:layout_marginEnd="30dp"
-            android:onClick="just"
-            app:srcCompat="@drawable/question_mark" />
+        <ImageButton
+            android:id="@+id/bttReturn2"
+            android:layout_width="110dp"
+            android:layout_height="99dp"
+            android:layout_marginTop="16dp"
+            android:backgroundTint="#00FFFFFF"
+            android:onClick="onClickReturn"
+            android:visibility="invisible"
+            app:srcCompat="@drawable/gobacksinfondo" />
+
     </LinearLayout>
 
     <ScrollView

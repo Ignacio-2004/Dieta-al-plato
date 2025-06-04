@@ -24,21 +24,16 @@ import com.tfg.dietaalplato.utilities.Blocker;
 import com.tfg.dietaalplato.utilities.SaveData;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class DialogAddJustification extends DialogFragment {
 
 
-    private static Button btnGuardar;
-    private static Button btnCancelar;
-    private static EditText editTextMultiline;
-    private static TextView txtMensajeErrorAlimento;
-    private static SaveData saveData = SaveData.getInstance();
-    private static boolean haveFill;
-
-    public static DialogAddJustification getInstance(boolean fill) {
-        haveFill = fill;
-        return new DialogAddJustification();
-    }
+    private Button btnGuardar;
+    private Button btnCancelar;
+    private EditText editTextMultiline;
+    private TextView txtMensajeErrorAlimento;
+    private SaveData saveData;
 
     private View mainView;
     @Override
@@ -50,8 +45,9 @@ public class DialogAddJustification extends DialogFragment {
 
         btnGuardar = mainView.findViewById(R.id.btnGuardar);
         btnCancelar = mainView.findViewById(R.id.btnCancelar);
+        saveData = SaveData.getInstance();
 
-        if (haveFill){
+        if (saveData.getCurrentDiet().getJust() != null && !Objects.equals(saveData.getCurrentDiet().getJust(), "") && !saveData.getCurrentDiet().getJust().equals("null")){
             Diet currentDiet = saveData.getCurrentDiet();
 
             editTextMultiline.setText(currentDiet.getJust());

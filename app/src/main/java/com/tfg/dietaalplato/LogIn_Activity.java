@@ -206,9 +206,10 @@ public class LogIn_Activity extends AppCompatActivity {
 
                                                     if(passwDB.matches(passwRegex)){ // Contraseña correcta
 
-                                                        saveData.setUser(usuario);//Guardamos el usuario que se logea
+
 
                                                         if (passwd_introducida.equals(passwDB)) {
+                                                            saveData.setUser(usuario);//Guardamos el usuario que se logea
                                                             if (nomusuario_introducido.equals("admin.admin@dietetica.davinci")){
                                                                 Intent i = new Intent(this, InicioAdminActivity.class);
                                                                 Blocker.removeBlocker(this.findViewById(android.R.id.content));

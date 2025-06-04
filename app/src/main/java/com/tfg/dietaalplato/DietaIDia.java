@@ -34,7 +34,7 @@ public class DietaIDia extends AppCompatActivity {
     }
 
     public void onClickReturn(View view){
-        Intent intent = new Intent(this, ComidasActivity.class);;
+        Intent intent = new Intent(this, ComidasActivity.class);
         startActivity(intent);
     }
 

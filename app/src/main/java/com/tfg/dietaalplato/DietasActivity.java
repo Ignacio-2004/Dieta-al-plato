@@ -25,6 +25,7 @@ import com.tfg.dietaalplato.utilities.dialogo.ClientInfo_Dialog;
 
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Objects;
 
 public class DietasActivity extends AppCompatActivity {
 
@@ -54,7 +55,7 @@ public class DietasActivity extends AppCompatActivity {
         botonimage7dias = findViewById(R.id.boton7dias_imagebutton);
 
         // Configurar listeners para los botones
-        View.OnClickListener listener1Dia = v -> abrirComidasActivity(1);
+        View.OnClickListener listener1Dia = v -> abrirDiasActivity(1);
         View.OnClickListener listener3Dias = v -> abrirDiasActivity(3);
         View.OnClickListener listener7Dias = v -> abrirDiasActivity(7);
 
@@ -85,15 +86,24 @@ public class DietasActivity extends AppCompatActivity {
         FireBaseWriter.saveData(Diet.class, result).addOnSuccessListener(
                 validationResult -> {
                     Log.d("Dieta", validationResult.toString());
-                    Blocker.removeBlocker(this.findViewById(android.R.id.content));
-                    Intent intent = new Intent(this, DiasActivity.class);
                     try{
-                        saveData.setCurrentDiet((Diet) validationResult.result);
+                        Diet diet = (Diet) validationResult.result;
+
+                        Blocker.removeBlocker(this.findViewById(android.R.id.content));
+                        Intent intent;
+                        if (!Objects.equals(diet.getTip(), "1")){
+                            intent = new Intent(this, DiasActivity.class);
+                        }else{
+                            intent = new Intent(this, ComidasActivity.class);
+                        }
+
+                        saveData.setCurrentDiet(diet);
 
                         startActivity(intent);
 
                     }catch (Exception e){
                         Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
+                        Blocker.removeBlocker(this.findViewById(android.R.id.content));
                     }
                 }
         ).addOnFailureListener(
@@ -102,51 +112,25 @@ public class DietasActivity extends AppCompatActivity {
                         Toast.makeText(this, "Error al guardar la dieta", Toast.LENGTH_SHORT).show();
                         Blocker.removeBlocker(this.findViewById(android.R.id.content));
                     }else{
-                        Blocker.removeBlocker(this.findViewById(android.R.id.content));
-                        Intent intent = new Intent(this, DiasActivity.class);
-                        startActivity(intent);
-                    }
-                }
-        );
-    }
-
-
-    private void abrirComidasActivity(int dietaSeleccionada) { // en caso de que se seleccione la dieta de 1 día, pasará directamente a la ventana de comidas
-        Blocker.createBlocker(this.findViewById(android.R.id.content), this);
-        ArrayList<String> data = new ArrayList<>();
-        data.add(String.valueOf(dietaSeleccionada));
-        data.add("null");
-        ValidationResult result = Diet.toMapData(data, saveData.getCurrentClient().getId());
-        Log.d("Cliente", "Cliente: "+saveData.getCurrentClient().toString());
-        Log.d("Cliente", result.toString());
-        FireBaseWriter.saveData(Diet.class, result).addOnSuccessListener(
-                validationResult -> {
-                    Log.d("Dieta", validationResult.toString());
-                    Blocker.removeBlocker(this.findViewById(android.R.id.content));
-                    Intent intent = new Intent(this, ComidasActivity.class);
-                    try{
-                        saveData.setCurrentDiet((Diet) validationResult.result);
-
-                        startActivity(intent);
-                    }catch (Exception e) {
-                        Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
-                    }
-                }
-        ).addOnFailureListener(
-                e -> {
-                    if (!((ComplexFBCE) e).reason.message.equals(msgErrorRepeatDiet)) {
-                        Toast.makeText(this, "Error al guardar la dieta", Toast.LENGTH_SHORT).show();
-                        Blocker.removeBlocker(this.findViewById(android.R.id.content));
-                    }else{
-                        Blocker.removeBlocker(this.findViewById(android.R.id.content));
-                        Intent intent = new Intent(this, ComidasActivity.class);
                         try{
-                            Map<String,String> datas = (Map<String, String>) ((ComplexFBCE) e).reason.result;
-                            Diet diet = new Diet(datas.get("id"), datas.get("name"), datas.get("tip"), datas.get("idCli"), datas.get("just"));
+                            Map<String,String> map = (Map<String, String>) ((ComplexFBCE) e).reason.result;
+                            Diet diet = new Diet(map.get("id"),map.get("name"),map.get("tip"),map.get("idCli"),map.get("just"));
+
+                            Blocker.removeBlocker(this.findViewById(android.R.id.content));
+                            Intent intent;
+                            if (!Objects.equals(diet.getTip(), "1")){
+                                intent = new Intent(this, DiasActivity.class);
+                            }else{
+                                intent = new Intent(this, ComidasActivity.class);
+                            }
+
                             saveData.setCurrentDiet(diet);
+
                             startActivity(intent);
-                        }catch (Exception e2) {
+
+                        }catch (Exception e2){
                             Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
+                            Blocker.removeBlocker(this.findViewById(android.R.id.content));
                         }
                     }
                 }

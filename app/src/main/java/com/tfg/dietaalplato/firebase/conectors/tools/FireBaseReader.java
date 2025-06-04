@@ -232,6 +232,7 @@ public class FireBaseReader {
                         if (!diets.isEmpty()){
                             dietsCache.setLoaded(true);
                             dietsCache.add(idCli.toUpperCase(),diets);
+                            saveData.setCollectionDiet(dietsCache);
 
                             if (saveData.getDiets().isLoaded()){
                                 Log.d(TAG, "📖 Dietas guardadas en cache");

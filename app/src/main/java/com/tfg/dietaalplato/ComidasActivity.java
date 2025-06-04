@@ -4,23 +4,27 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.tfg.dietaalplato.utilities.SaveData;
+import com.tfg.dietaalplato.utilities.dialogo.DialogAddJustification;
 
 public class ComidasActivity extends AppCompatActivity {
 
     TextView diaText;
     ImageButton botonDesayuno, botonAlmuerzo, botonComida, botonMerienda, botonCena, botonRecena;
+    private ImageView btnJust;
     private SaveData saveData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_comidas);
+        saveData = SaveData.getInstance();
 
         diaText = findViewById(R.id.titulo_textview);
         botonDesayuno = findViewById(R.id.desayuno_boton);
@@ -29,6 +33,12 @@ public class ComidasActivity extends AppCompatActivity {
         botonMerienda = findViewById(R.id.merienda_boton);
         botonCena = findViewById(R.id.cena_boton);
         botonRecena = findViewById(R.id.recena_boton);
+        btnJust = findViewById(R.id.imageView2);
+
+        if (!saveData.getCurrentDiet().getTip().equals("1")) {
+            btnJust.setVisibility(View.INVISIBLE);
+            btnJust.setEnabled(false);
+        }
 
         if (saveData.getCurrentDiet().getTip().equals("1")) {
             diaText.setText("¿Qué comida quieres visualizar?");
@@ -66,14 +76,24 @@ public class ComidasActivity extends AppCompatActivity {
         botonRecena.setOnClickListener(comidaClickListener);
     }
 
+    public void just(View view){
+        DialogAddJustification dialog = new DialogAddJustification();
+        dialog.show(getSupportFragmentManager(), "DialogAddJustification");
+    }
+
     private void abrirAlimentosActivity(String comidaSeleccionada) {
         Intent intent = new Intent(this, DietaIDia.class );
         startActivity(intent);
     }
 
     public void onClickBackNavigation(View view) {
-        Intent intent = new Intent(this, DiasActivity.class );
-        startActivity(intent);
+        if (saveData.getCurrentDiet().getTip().equals("1")) {
+            Intent intent = new Intent(this, DietasActivity.class);
+            startActivity(intent);
+        } else {
+            Intent intent = new Intent(this, DiasActivity.class);
+            startActivity(intent);
+        }
     }
 
 }

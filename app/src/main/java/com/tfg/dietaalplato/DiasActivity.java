@@ -7,6 +7,7 @@ import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.tfg.dietaalplato.utilities.SaveData;
+import com.tfg.dietaalplato.utilities.dialogo.DialogAddJustification;
 
 public class DiasActivity extends AppCompatActivity {
 
@@ -16,6 +17,7 @@ public class DiasActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dias);
+        saveData = SaveData.getInstance();
 
         // Obtener los botones de los días
         Button[] botonesDias3 = new Button[3];
@@ -36,6 +38,11 @@ public class DiasActivity extends AppCompatActivity {
         } else if (saveData.getCurrentDiet().getTip().equals("7")) {
             setupButtonsFor7DayDiet();
         }
+    }
+
+    public void just(View view){
+        DialogAddJustification dialog = new DialogAddJustification();
+        dialog.show(getSupportFragmentManager(), "DialogAddJustification");
     }
 
     private void hideAllDayButtons() {
