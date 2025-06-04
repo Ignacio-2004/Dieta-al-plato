@@ -11,13 +11,19 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.tfg.dietaalplato.utilities.DietaTableGenerator;
 import com.tfg.dietaalplato.utilities.SaveData;
 import com.tfg.dietaalplato.utilities.dialogo.DialogAddJustification;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class DietaIDia extends AppCompatActivity {
 
     SaveData saveData = SaveData.getInstance();
     private LinearLayout layoutSV;
+    DietaTableGenerator generator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +35,14 @@ public class DietaIDia extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        layoutSV = findViewById(R.id.layoutAlimentos);
+
+        // Simulamos datos de prueba
+        List<List<String>> datosPrueba = new ArrayList<>();
+        datosPrueba.add(Arrays.asList("Receta 1", "Pollo, arroz", "500", "30", "20", "40"));
+        datosPrueba.add(Arrays.asList("Receta 2", "Pescado, patata", "400", "25", "15", "30"));
+
+        // Llamamos a la clase generadora
+        DietaTableGenerator.generarTabla(this, findViewById(R.id.layoutTabla), datosPrueba);
 
     }
 

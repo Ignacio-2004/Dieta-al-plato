@@ -185,11 +185,10 @@ public class SaveData {
 
     public void addDiet (Diet diet){
         Map<String, Diet> diets = this.diets.get(diet.getIdCli());
+        this.diets.remove(diet.getIdCli());
         diets.putIfAbsent(diet.getName(), diet);
 
-        for (Diet diet1: diets.values()){
-            this.diets.add(diet1.getIdCli(),diets);
-        }
+        this.diets.add(diet.getIdCli(),diets);
 
         Log.d(TAG, "addDiet: " + diet);
         Log.d(TAG, "addDiet: " + diets);
