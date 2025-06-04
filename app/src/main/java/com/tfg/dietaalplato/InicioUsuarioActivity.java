@@ -15,7 +15,6 @@ public class InicioUsuarioActivity extends AppCompatActivity {
 
     Button botonLogout;
     ImageButton botonRetorno;
-    private SaveData saveData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,16 +25,8 @@ public class InicioUsuarioActivity extends AppCompatActivity {
         botonRetorno = findViewById(R.id.return_button);
         botonLogout = findViewById(R.id.logout_button);
 
-        saveData = SaveData.getInstance();
+        SaveData saveData = SaveData.getInstance();
 
-        // Configurar visibilidad de botones
-        /*if (saveData.isAdmin()){
-            botonRetorno.setVisibility(View.VISIBLE);
-            botonLogout.setVisibility(View.INVISIBLE);
-        }else{
-            botonRetorno.setVisibility(View.INVISIBLE);
-            botonLogout.setVisibility(View.VISIBLE);
-        }*/
         botonRetorno.setVisibility(saveData.isAdmin() ? View.VISIBLE : View.INVISIBLE);
         botonLogout.setVisibility(saveData.isAdmin() ? View.INVISIBLE : View.VISIBLE);
     }

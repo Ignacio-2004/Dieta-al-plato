@@ -248,7 +248,7 @@
         android:layout_height="45dp"
         android:layout_marginEnd="15dp"
         android:background="@android:color/transparent"
-        android:onClick="mostrarPassword"
+        android:onClick="ocultarPassword"
         android:scaleType="fitXY"
         android:src="@drawable/open_eye"
         android:visibility="gone"

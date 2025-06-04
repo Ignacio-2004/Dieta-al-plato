@@ -375,7 +375,7 @@ public class FireBaseReader {
         TaskCompletionSource<ObjectResult<ArrayList<Client>>> taskCompletionSource = new TaskCompletionSource<>();
 
         if (saveData.getClients().isLoaded()){
-            Log.d(TAG, "📖 Clientes encontrados en cache");
+            Log.d("CurrentStudent", "📖 Clientes encontrados en cache: " + idUsr);
 
             ArrayList<Client> clientes = saveData.getClients().getAllAsArrayList();
             if (!clientes.isEmpty()) {

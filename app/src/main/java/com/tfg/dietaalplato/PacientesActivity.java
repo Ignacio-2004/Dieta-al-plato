@@ -49,7 +49,7 @@ public class PacientesActivity extends AppCompatActivity {
             try {
 
                 Blocker.createBlocker(this.findViewById(android.R.id.content),this);
-                FireBaseReader.readClientFromUser(saveData.getCurrentStudent().getIdUsr()).addOnSuccessListener(
+                FireBaseReader.readClientFromUser(saveData.getCurrentStudent().getId()).addOnSuccessListener(
                         clientes -> {
 
                             for (Client cliente : clientes.result) {

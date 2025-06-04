@@ -36,7 +36,7 @@ public class BancoAlimentosActivity extends AppCompatActivity {
         if(saveData.isAdmin()) { //si es admin, deberíamos mostrar los clientes del usuario que el admin haya seleccionado
             try{
                 Blocker.createBlocker(this.findViewById(android.R.id.content),this);
-                FireBaseReader.readAllFoodFromUser(saveData.getCurrentStudent().getIdUsr()).addOnSuccessListener(
+                FireBaseReader.readAllFoodFromUser(saveData.getCurrentStudent().getId()).addOnSuccessListener(
                         alimentos -> {
                             if (alimentos.exit){
                                 for (Food alimento : alimentos.result.values()) {

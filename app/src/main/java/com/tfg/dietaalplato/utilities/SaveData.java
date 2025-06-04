@@ -303,14 +303,15 @@ public class SaveData {
         this.students = students;
     }
 
-    public Client getCurrentStudent() {
-        Log.d(TAG, "getCurrentStudent: " + currentStudent);
-        return currentClient;
+    public User getCurrentStudent() {
+        Log.d("CurrentStudent", "getCurrentStudent: " + currentStudent.getName());
+
+        return currentStudent;
     }
 
     public void setCurrentStudent(User currentStudent) {
         this.currentStudent = currentStudent;
-        Log.d(TAG, "setCurrentStudent: " + currentStudent.getName());
+        Log.d("CurrentStudent", "setCurrentStudent: " + this.currentStudent.getName());
     }
 
     public boolean isAdmin() {

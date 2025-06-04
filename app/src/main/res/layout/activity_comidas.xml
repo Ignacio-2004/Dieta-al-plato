@@ -267,4 +267,18 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/question_mark" />
 
+    <TextView
+        android:id="@+id/tv_nutrition_summary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="12dp"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:text="Calculando datos nutricionales..."
+        app:layout_constraintBottom_toTopOf="@+id/almuerzo_boton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/titulo_textview"
+        app:layout_constraintVertical_bias="0.421" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
