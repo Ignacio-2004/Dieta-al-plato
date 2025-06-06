@@ -84,16 +84,22 @@ public class ComidasActivity extends AppCompatActivity {
 
             if (id == R.id.desayuno_boton) {
                 tipoComida = "desayuno";
+                saveData.setMomentOfDay("1");
             } else if (id == R.id.almuerzo_boton) {
                 tipoComida = "almuerzo";
+                saveData.setMomentOfDay("2");
             } else if (id == R.id.comida_boton) {
                 tipoComida = "comida";
+                saveData.setMomentOfDay("3");
             } else if (id == R.id.merienda_boton) {
                 tipoComida = "merienda";
+                saveData.setMomentOfDay("4");
             } else if (id == R.id.cena_boton) {
                 tipoComida = "cena";
+                saveData.setMomentOfDay("5");
             } else if (id == R.id.recena_boton) {
                 tipoComida = "recena";
+                saveData.setMomentOfDay("6");
             } else {
                 tipoComida = "";
             }

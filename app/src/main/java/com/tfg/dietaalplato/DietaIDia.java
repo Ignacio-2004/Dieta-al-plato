@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,13 +12,14 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.tfg.dietaalplato.firebase.exceptions.FBCException;
 import com.tfg.dietaalplato.utilities.DietaTableGenerator;
+import com.tfg.dietaalplato.utilities.HeaderColumns;
 import com.tfg.dietaalplato.utilities.SaveData;
 import com.tfg.dietaalplato.utilities.dialogo.DialogAddJustification;
+import com.tfg.dietaalplato.utilities.TableGenerator;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class DietaIDia extends AppCompatActivity {
 
@@ -36,13 +38,22 @@ public class DietaIDia extends AppCompatActivity {
             return insets;
         });
 
-        // Simulamos datos de prueba
-        List<List<String>> datosPrueba = new ArrayList<>();
-        datosPrueba.add(Arrays.asList("Receta 1", "Pollo, arroz", "500", "30", "20", "40"));
-        datosPrueba.add(Arrays.asList("Receta 2", "Pescado, patata", "400", "25", "15", "30"));
+        ArrayList<HeaderColumns> headers = new ArrayList<>();
+        headers.add(HeaderColumns.Nombre);
+        headers.add(HeaderColumns.Alimento);
+        headers.add(HeaderColumns.Kcal);
+        headers.add(HeaderColumns.Proteina);
+        headers.add(HeaderColumns.HC);
+        headers.add(HeaderColumns.Grasa);
 
-        // Llamamos a la clase generadora
-//        DietaTableGenerator.generarTabla(this, findViewById(R.id.layoutTabla), datosPrueba);
+        layoutSV = findViewById(R.id.layoutTabla);
+
+
+        try {
+            TableGenerator.generarTabla(this, layoutSV, headers );
+        } catch (FBCException e) {
+            Toast.makeText(this, "No es posible generar la tabla", Toast.LENGTH_SHORT).show();
+        }
 
     }
 

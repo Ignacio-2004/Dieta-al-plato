@@ -1,5 +1,6 @@
-package com.tfg.dietaalplato.utilities.tipe_collection;
+package com.tfg.dietaalplato.utilities;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -18,21 +19,22 @@ import androidx.core.content.res.ResourcesCompat;
 
 import com.tfg.dietaalplato.R;
 import com.tfg.dietaalplato.firebase.conectors.tools.FireBaseReader;
+import com.tfg.dietaalplato.firebase.exceptions.FBCException;
 import com.tfg.dietaalplato.firebase.tables.Food;
-import com.tfg.dietaalplato.utilities.HeaderColumns;
-import com.tfg.dietaalplato.utilities.SaveData;
+import com.tfg.dietaalplato.firebase.tables.FoodDiet;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TableGenerator {
 
-    SaveData saveData;
+    private static SaveData saveData;
 
     private TableGenerator() {
         throw new UnsupportedOperationException("Clase estática, no instanciable.");
     }
 
-    public void generarTabla(Context context, LinearLayout contenedor, String[] columns){
+    public static void generarTabla(Context context, LinearLayout contenedor, ArrayList<HeaderColumns> columns) throws FBCException {
         saveData = SaveData.getInstance();
 
         /*
@@ -53,7 +55,7 @@ public class TableGenerator {
             ++ Header of the table
          */
         TableRow headerRow = new TableRow(context);
-        for (String header: columns) {
+        for (HeaderColumns header: columns) {
             headerRow.addView(generateHeader(context, header));
         }
         headerRow.addView(addBtnPlus(context));
@@ -66,20 +68,79 @@ public class TableGenerator {
             ++ Body of the table
          */
 
+        if (saveData.getCurrentDiet().getId() != null && !saveData.getCurrentDiet().getId().isEmpty()) {
+            FireBaseReader.readFoodDietByDiet(saveData.getCurrentDiet().getId()).addOnFailureListener(
+                    e -> Toast.makeText(context, "Error al leer los alimentos", Toast.LENGTH_SHORT).show()
+            ).addOnSuccessListener(
+                    foodDiets -> {
+                        Toast.makeText(context, "Alimentos leidos", Toast.LENGTH_SHORT).show();
+
+                        if (foodDiets.result != null) {
+                            for (ArrayList<FoodDiet> fd: foodDiets.result.values()) {
+                                //La arraylist es cada receta unificada por el nombre
+
+                                FoodDiet f = fd.get(0);
+
+                                if (f.getDia().equals(saveData.getDay()) && f.getNumeroPlato().equals(saveData.getMomentOfDay())) {
+                                    //Con este filtro cogemos solo los que pertenecen a este dia y ese momento del dia
+
+                                    try {
+                                        FireBaseReader.readAllFoodFromUser(saveData.getCurrentClient().getId()).addOnFailureListener(
+                                                e -> Toast.makeText(context, "Error al leer los alimentos", Toast.LENGTH_SHORT).show()
+                                        ).addOnSuccessListener(
+                                                foods -> {
+                                                    ArrayList<Food> foodArrayList = new ArrayList<>();
+                                                    for (FoodDiet foodDiet: fd) {
+                                                        for (Food food: foods.result.values()) {
+                                                            if (foodDiet.getIdAlimento().equals(food.getId())) {
+                                                                foodArrayList.add(food);
+                                                            }
+                                                        }
+                                                    }
+                                                    table.addView(generateRow(context, f.getName(), foodArrayList, columns));
+                                                }
+                                        );
+                                    } catch (FBCException e) {
+                                        Toast.makeText(context, "Error al leer los alimentos", Toast.LENGTH_SHORT).show();
+                                    }
+
+                                }
+
+                            }
+                        }
+                         /*
+                        ++ Plus last row
+                        */
+
+                        table.addView(generateLastRow(context, columns));
+
+                        /*
+                        -- Plus last row
+                        */
+
+                        /*
+                        Add table to the container
+                        */
+                        if (contenedor != null && context instanceof Activity) {
+                            ((Activity) context).runOnUiThread(() -> {
+                                contenedor.addView(table);
+                            });
+                        }
+
+                    }
+            );
+        }else{
+            Toast.makeText(context, "No hay dieta seleccionada", Toast.LENGTH_SHORT).show();
+        }
 
         /*
             -- Body of the table
          */
-
-        /*
-        Add table to the container
-         */
-        contenedor.addView(table);
     }
 
-    private static TextView generateHeader(Context context, String header){
+    private static TextView generateHeader(Context context, HeaderColumns header){
         TextView th = new TextView(context);
-        th.setText(header);
+        th.setText(header.name());
         th.setTextColor(Color.parseColor("#027C68"));
         th.setTextSize(30);
         th.setPadding(20, 20, 20, 20);
@@ -179,15 +240,35 @@ public class TableGenerator {
         return addCol;
     }
 
-    private static TableRow generateRow (Context context, String nameRecipe, List<Food> foods,String[] headers){
+    private static TableRow generateRow (Context context, String nameRecipe, List<Food> foods,ArrayList<HeaderColumns> headers){
         TableRow row = new TableRow(context);
+        LinearLayout name = generateCommonCell(context, nameRecipe);
+        ScrollView scrollView = generateFoodCell(context, foods);
+        Button btn = addBtnPlus(context);
 
-        row.addView(generateCommonCell(context, nameRecipe));
-        row.addView(generateFoodCell(context,foods));
-
-        for (String header: headers) {
-            row.addView(generateCommonCell(context, addAttFood(foods, HeaderColumns.valueOf(header),context)));
+        if (name.getHeight() < scrollView.getHeight()) {
+            name.getLayoutParams().height = scrollView.getHeight();
+            name.requestLayout();
         }
+
+        name.setLayoutParams(margin());
+        scrollView.setLayoutParams(margin());
+        btn.setLayoutParams(margin());
+
+
+        row.addView(name);
+        row.addView(scrollView);
+
+        for (HeaderColumns header: headers) {
+            try {
+                HeaderColumns columna = HeaderColumns.valueOf(header.name());
+                row.addView(generateCommonCell(context, addAttFood(foods, columna, context)));
+            } catch (IllegalArgumentException e) {
+                Toast.makeText(context, "No ha sido posible cargar la siguiente columna: " + header, Toast.LENGTH_SHORT).show();
+            }
+        }
+
+        row.addView(btn);
 
         return row;
     }
@@ -220,6 +301,11 @@ public class TableGenerator {
         scrollView.setBackgroundColor(Color.TRANSPARENT);
         scrollView.setFillViewport(true);
 
+        LinearLayout alimentosLayout = new LinearLayout(context);
+        alimentosLayout.setOrientation(LinearLayout.HORIZONTAL);
+        alimentosLayout.setGravity(Gravity.CENTER_VERTICAL);
+        alimentosLayout.setBackgroundColor(Color.TRANSPARENT);
+
         for (Food f: food) {
             LinearLayout fRow = new LinearLayout(context);
             fRow.setOrientation(LinearLayout.HORIZONTAL);
@@ -243,11 +329,49 @@ public class TableGenerator {
 
             fRow.addView(name);
             fRow.addView(info);
-            scrollView.addView(fRow);
-            scrollView.addView(addBtnPlus(context));
+            alimentosLayout.addView(fRow);
+
         }
 
+        alimentosLayout.addView(addBtnPlus(context));
+
+        scrollView.addView(alimentosLayout);
         return scrollView;
+    }
+
+    private static TableRow generateLastRow(Context context, ArrayList<HeaderColumns> header){
+        TableRow row = new TableRow(context);
+        Button btn = addBtnPlus(context);
+        ScrollView scrollView = generateFoodCell(context, new ArrayList<>());
+
+        btn.setLayoutParams(margin());
+        row.addView(btn);
+        row.addView(scrollView);
+
+        // Esperamos a que ambas vistas estén medidas
+        btn.post(() -> {
+            int nameHeight = btn.getHeight();
+            int scrollHeight = scrollView.getHeight();
+
+            int maxHeight = Math.max(nameHeight, scrollHeight);
+
+            // Aplicamos misma altura a ambos
+            btn.getLayoutParams().height = maxHeight;
+            scrollView.getLayoutParams().height = maxHeight;
+
+            // Es necesario llamar a requestLayout para que el cambio se aplique
+            btn.requestLayout();
+            scrollView.requestLayout();
+        });
+
+
+
+
+        for (HeaderColumns headerC: header) {
+            row.addView(generateCommonCell(context, ""));
+        }
+
+        return row;
     }
 
 }

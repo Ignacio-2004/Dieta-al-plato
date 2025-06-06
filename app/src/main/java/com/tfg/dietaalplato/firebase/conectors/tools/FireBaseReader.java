@@ -586,7 +586,7 @@ public class FireBaseReader {
                         }
                     } else {
                         Log.d("Firebase", "⚠️ No se encontraron documentos con idDieta: " + idDieta);
-                        taskCompletionSource.setException(new ComplexFBCE(new ObjectResult<>(false, "FoodDiet no encontrado", null)));
+                        taskCompletionSource.setResult(new ObjectResult<>(false, "FoodDiet no encontrado", null));
                     }
                 })
                 .addOnFailureListener(e -> {
