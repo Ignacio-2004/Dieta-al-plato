@@ -42,7 +42,7 @@ public class DietaIDia extends AppCompatActivity {
         datosPrueba.add(Arrays.asList("Receta 2", "Pescado, patata", "400", "25", "15", "30"));
 
         // Llamamos a la clase generadora
-        DietaTableGenerator.generarTabla(this, findViewById(R.id.layoutTabla), datosPrueba);
+//        DietaTableGenerator.generarTabla(this, findViewById(R.id.layoutTabla), datosPrueba);
 
     }
 

@@ -29,7 +29,7 @@ import java.util.Objects;
 
 public class DietasActivity extends AppCompatActivity {
 
-    private SaveData saveData = SaveData.getInstance();
+    private SaveData saveData;
     ImageView imagenCliente;
     Button boton1dias, boton3dias, boton7dias;
     ImageButton botonimage1dias, botonimage3dias, botonimage7dias;
@@ -41,6 +41,7 @@ public class DietasActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dietas);
 
+        saveData = SaveData.getInstance();
         imagenCliente = findViewById(R.id.imgCliente);
         nombreClienteText = findViewById(R.id.nombrePaciente_textview);
         nombreClienteText.setText((saveData.getCurrentClient().getName().substring(0, 1).toUpperCase() + saveData.getCurrentClient().getName().substring(1)));
