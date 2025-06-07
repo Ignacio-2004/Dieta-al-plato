@@ -156,7 +156,7 @@
         android:background="@drawable/esquinas_redondeadas_boton_verde"
         android:fontFamily="@font/alfa_slab_one"
         android:onClick="onClickCloseSesion"
-        android:text="@string/log_out"
+        android:text="CERRAR SESIÓN"
         android:textColor="@android:color/white"
         android:textSize="18sp"
         android:textStyle="bold"

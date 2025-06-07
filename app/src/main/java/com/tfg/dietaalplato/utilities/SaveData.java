@@ -45,10 +45,12 @@ public class SaveData {
     private SaveData() {
         Log.d(TAG, "SaveData instanciando");
         user = new User("","","");
+        students = new CacheCollection<>();
         clients = new CacheCollection<>();
         foods = new CacheCollection<>();
         diets = new CacheCollection<>();
         foodDiets = new CacheCollection<>();
+        currentStudent = new User();
         currentClient = new Client();
         currentDiet = new Diet();
         currentFood = new FoodDiet();
@@ -294,6 +296,16 @@ public class SaveData {
         diets.clear();
         foodDiets.clear();
     }
+
+    public void clearAdmin(){
+        Log.d(TAG, "-------------clear--------------");
+        students.clear();
+        clients.clear();
+        foods.clear();
+        diets.clear();
+        foodDiets.clear();
+    }
+
 
     public void setCollectionLoaded(TablesNames type, boolean loaded) {
         switch (type) {

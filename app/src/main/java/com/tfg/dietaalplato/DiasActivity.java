@@ -29,15 +29,7 @@ public class DiasActivity extends AppCompatActivity {
         /*
             ++ Añadimos esto para saber que dia ha elegido
          */
-        findViewById(R.id.boton1Dias3).setOnClickListener(v -> onClickBackNavigation(1));
-        findViewById(R.id.boton2Dias3).setOnClickListener(v -> onClickBackNavigation(2));
-        findViewById(R.id.boton3Dias3).setOnClickListener(v -> onClickBackNavigation(3));
-        findViewById(R.id.boton1Dias7).setOnClickListener(v -> onClickBackNavigation(1));
-        findViewById(R.id.boton2Dias7).setOnClickListener(v -> onClickBackNavigation(2));
-        findViewById(R.id.boton3Dias7).setOnClickListener(v -> onClickBackNavigation(3));
-        findViewById(R.id.boton4Dias7).setOnClickListener(v -> onClickBackNavigation(4));
-        findViewById(R.id.boton5Dias7).setOnClickListener(v -> onClickBackNavigation(5));
-        findViewById(R.id.boton6Dias7).setOnClickListener(v -> onClickBackNavigation(6));
+
 
     }
 

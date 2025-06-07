@@ -10,19 +10,19 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="¿Porque esta dieta?"
-        android:textSize="22sp"
-        android:textStyle="bold"
-        android:textColor="#027C68"
         android:fontFamily="@font/lily_script_one"
         android:gravity="center"
-        android:paddingBottom="16dp" />
+        android:paddingBottom="16dp"
+        android:text="¿Por qué esta dieta?"
+        android:textColor="#027C68"
+        android:textSize="22sp"
+        android:textStyle="bold" />
 
     <EditText
         android:id="@+id/editTextMultiline"
         android:layout_width="match_parent"
         android:layout_height="150dp"
-        android:hint="Escribe la justificacion de porque has elegido esta dieta ..."
+        android:hint="Escribe la justificación de por qué has elegido esta dieta ..."
         android:inputType="textMultiLine"
         android:gravity="top|start"
         android:background="@drawable/bg_food_item"
