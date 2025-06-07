@@ -30,14 +30,22 @@ import java.util.List;
 public class TableGenerator {
 
     private static SaveData saveData;
+    public static ArrayList<HeaderColumns> columns = new ArrayList<>();
 
     private TableGenerator() {
         throw new UnsupportedOperationException("Clase estática, no instanciable.");
     }
 
-    public static void generarTabla(Context context, LinearLayout contenedor, ArrayList<HeaderColumns> columns) throws FBCException {
+    public static void generarTabla(Context context, LinearLayout contenedor, View.OnClickListener onClickAddHeader) throws FBCException {
         saveData = SaveData.getInstance();
-
+        if (columns.isEmpty()){
+            columns.add(HeaderColumns.Nombre);
+            columns.add(HeaderColumns.Alimentos);
+            columns.add(HeaderColumns.Kcal);
+            columns.add(HeaderColumns.Proteina);
+            columns.add(HeaderColumns.HC);
+            columns.add(HeaderColumns.Grasa);
+        }
         /*
             ++ Att of the table
          */
@@ -59,7 +67,7 @@ public class TableGenerator {
         for (HeaderColumns header: columns) {
             headerRow.addView(generateHeader(context, header));
         }
-        headerRow.addView(addBtnPlus(context));
+        headerRow.addView(addBtnPlus(context, onClickAddHeader));
         table.addView(headerRow);
         /*
             -- Header of the table
@@ -241,7 +249,7 @@ public class TableGenerator {
         return params;
     }
 
-    private static Button addBtnPlus(Context context){
+    private static Button addBtnPlus(Context context, View.OnClickListener onClickAddHeader){
         Button addCol = new Button(context);
         addCol.setText("+");
         addCol.setTextSize(30);
@@ -251,6 +259,7 @@ public class TableGenerator {
         ));
         addCol.setTextColor(Color.parseColor("#027C68"));
         addCol.setBackgroundResource(R.drawable.bg_food_item);
+        addCol.setOnClickListener(onClickAddHeader);
 
         return addCol;
     }
@@ -259,7 +268,13 @@ public class TableGenerator {
         TableRow row = new TableRow(context);
         LinearLayout name = generateCommonCell(context, nameRecipe);
         LinearLayout scrollView = generateFoodCell(context, foods);
-        Button btn = addBtnPlus(context);
+
+        //temp
+        View.OnClickListener onClickAddHeader = v -> {
+            Toast.makeText(context, "Añadir columna", Toast.LENGTH_SHORT).show();
+        };
+        //temp
+        Button btn = addBtnPlus(context, onClickAddHeader);
 
         scrollView.setLayoutParams(margin());
 
@@ -385,7 +400,12 @@ public class TableGenerator {
         }
 
         // Botón "+" para añadir alimentos
-        Button botonAdd = addBtnPlus(context);
+        //temp
+        View.OnClickListener onClickAddHeader = v -> {
+            Toast.makeText(context, "Añadir alimento", Toast.LENGTH_SHORT).show();
+        };
+        //temp
+        Button botonAdd = addBtnPlus(context, onClickAddHeader);
         botonAdd.setLayoutParams(insiteSVmargin());
         botonAdd.setBackgroundResource(R.drawable.bg_food_background);
         botonAdd.setTextColor(Color.WHITE);
@@ -409,7 +429,13 @@ public class TableGenerator {
 
     private static TableRow generateLastRow(Context context, ArrayList<HeaderColumns> header){
         TableRow row = new TableRow(context);
-        Button btn = addBtnPlus(context);
+
+        //temp
+        View.OnClickListener onClickAddHeader = v -> {
+            Toast.makeText(context, "Añadir receta", Toast.LENGTH_SHORT).show();
+        };
+        //temp
+        Button btn = addBtnPlus(context, onClickAddHeader);
         LinearLayout scrollView = generateFoodCell(context, new ArrayList<>());
 
         scrollView.setLayoutParams(margin());

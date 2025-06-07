@@ -38,19 +38,14 @@ public class DietaIDia extends AppCompatActivity {
             return insets;
         });
 
-        ArrayList<HeaderColumns> headers = new ArrayList<>();
-        headers.add(HeaderColumns.Nombre);
-        headers.add(HeaderColumns.Alimentos);
-        headers.add(HeaderColumns.Kcal);
-        headers.add(HeaderColumns.Proteina);
-        headers.add(HeaderColumns.HC);
-        headers.add(HeaderColumns.Grasa);
 
         layoutSV = findViewById(R.id.layoutTabla);
 
 
         try {
-            TableGenerator.generarTabla(this, layoutSV, headers );
+            TableGenerator.generarTabla(this, layoutSV, onClickAddHeader -> {
+                Toast.makeText(this, "Añadir columna", Toast.LENGTH_SHORT).show();
+            });
         } catch (FBCException e) {
             Toast.makeText(this, "No es posible generar la tabla", Toast.LENGTH_SHORT).show();
         }
