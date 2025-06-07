@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.view.Gravity;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -230,10 +231,24 @@ public class TableGenerator {
         return params;
     }
 
+    private static TableRow.LayoutParams insiteSVmargin(){
+        TableRow.LayoutParams params = new TableRow.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+        );
+        params.setMargins(10, 10, 10, 10);
+
+        return params;
+    }
+
     private static Button addBtnPlus(Context context){
         Button addCol = new Button(context);
         addCol.setText("+");
         addCol.setTextSize(30);
+        addCol.setLayoutParams(new TableRow.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+        ));
         addCol.setTextColor(Color.parseColor("#027C68"));
         addCol.setBackgroundResource(R.drawable.bg_food_item);
 
@@ -243,13 +258,10 @@ public class TableGenerator {
     private static TableRow generateRow (Context context, String nameRecipe, List<Food> foods,ArrayList<HeaderColumns> headers){
         TableRow row = new TableRow(context);
         LinearLayout name = generateCommonCell(context, nameRecipe);
-        ScrollView scrollView = generateFoodCell(context, foods);
+        LinearLayout scrollView = generateFoodCell(context, foods);
         Button btn = addBtnPlus(context);
 
-        if (name.getHeight() < scrollView.getHeight()) {
-            name.getLayoutParams().height = scrollView.getHeight();
-            name.requestLayout();
-        }
+        scrollView.setLayoutParams(margin());
 
         name.setLayoutParams(margin());
         scrollView.setLayoutParams(margin());
@@ -259,16 +271,39 @@ public class TableGenerator {
         row.addView(name);
         row.addView(scrollView);
 
+        ArrayList<LinearLayout> cells = new ArrayList<>();
         for (HeaderColumns header: headers) {
-            try {
-                HeaderColumns columna = HeaderColumns.valueOf(header.name());
-                row.addView(generateCommonCell(context, addAttFood(foods, columna, context)));
-            } catch (IllegalArgumentException e) {
-                Toast.makeText(context, "No ha sido posible cargar la siguiente columna: " + header, Toast.LENGTH_SHORT).show();
+            if (!header.equals(HeaderColumns.Nombre) && !header.equals(HeaderColumns.Alimentos)) {
+                try {
+                    HeaderColumns columna = HeaderColumns.valueOf(header.name());
+                    LinearLayout cell = generateCommonCell(context, addAttFood(foods, columna, context));
+                    row.addView(cell);
+                    cells.add(cell);
+                } catch (IllegalArgumentException e) {
+                    Toast.makeText(context, "No ha sido posible cargar la siguiente columna: " + header, Toast.LENGTH_SHORT).show();
+                }
             }
         }
 
         row.addView(btn);
+
+        // Ajustar alturas tras renderizado
+        scrollView.post(() -> {
+            int targetHeight = scrollView.getHeight();
+            name.getLayoutParams().height = targetHeight;
+            name.requestLayout();
+
+            for (LinearLayout cell : cells) {
+                cell.getLayoutParams().height = targetHeight;
+                cell.requestLayout();
+            }
+            for (int i = 2; i < row.getChildCount(); i++) {
+                View v = row.getChildAt(i);
+                ViewGroup.LayoutParams p = v.getLayoutParams();
+                p.height = targetHeight;
+                v.setLayoutParams(p);
+            }
+        });
 
         return row;
     }
@@ -282,6 +317,7 @@ public class TableGenerator {
 
         TextView tv = new TextView(context);
         tv.setText(text);
+        tv.setTextSize(20);
         tv.setPadding(15, 15, 15, 15);
         tv.setTextColor(Color.parseColor("#027C68"));
         cell.addView(tv);
@@ -290,86 +326,138 @@ public class TableGenerator {
         return cell;
     }
 
-    private static ScrollView generateFoodCell(Context context, List<Food> food){
-        ScrollView scrollView = new ScrollView(context);
-        LinearLayout.LayoutParams scrollParams = new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
+    private static LinearLayout generateFoodCell(Context context, List<Food> food) {
+        // Contenedor externo (la celda que se mete en la tabla)
+        LinearLayout container = new LinearLayout(context);
+        container.setOrientation(LinearLayout.VERTICAL);
+        container.setGravity(Gravity.CENTER);
+        container.setLayoutParams(margin());
+        container.setLayoutParams(new TableRow.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
-        );
-        scrollParams.height = 200; // Altura máxima en dp
-        scrollView.setLayoutParams(scrollParams);
-        scrollView.setBackgroundColor(Color.TRANSPARENT);
+        ));
+        container.setBackgroundResource(R.drawable.bg_food_item); // estilo como otras celdas
+
+        // ScrollView para lista vertical
+        ScrollView scrollView = new ScrollView(context);
+        scrollView.setLayoutParams(new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                dpToPx(context, 150)
+        ));
         scrollView.setFillViewport(true);
 
+        // Layout interno que contendrá los alimentos
         LinearLayout alimentosLayout = new LinearLayout(context);
-        alimentosLayout.setOrientation(LinearLayout.HORIZONTAL);
-        alimentosLayout.setGravity(Gravity.CENTER_VERTICAL);
-        alimentosLayout.setBackgroundColor(Color.TRANSPARENT);
+        alimentosLayout.setOrientation(LinearLayout.VERTICAL);
+        alimentosLayout.setLayoutParams(new ScrollView.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+        ));
 
-        for (Food f: food) {
+        // Añadir los alimentos
+        for (Food f : food) {
             LinearLayout fRow = new LinearLayout(context);
             fRow.setOrientation(LinearLayout.HORIZONTAL);
             fRow.setGravity(Gravity.CENTER_VERTICAL);
+            fRow.setLayoutParams(new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+            ));
             fRow.setBackgroundResource(R.drawable.bg_food_background);
+            fRow.setLayoutParams(insiteSVmargin());
 
             TextView name = new TextView(context);
             name.setText(f.getName());
             name.setTextSize(14);
             name.setPadding(10, 10, 10, 10);
-            name.setOnClickListener(v -> {
-                // Aquí puedes abrir un diálogo o ir a una nueva actividad
-            });
 
             ImageButton info = new ImageButton(context);
-            info.setImageResource(android.R.drawable.ic_menu_close_clear_cancel);
+            info.setImageResource(android.R.drawable.ic_menu_info_details);
             info.setBackgroundColor(Color.TRANSPARENT);
             info.setOnClickListener(v -> {
-                // Aquí puedes abrir un diálogo o ir a una nueva actividad
+                Toast.makeText(context, "Ver info de " + f.getName(), Toast.LENGTH_SHORT).show();
             });
 
             fRow.addView(name);
             fRow.addView(info);
-            alimentosLayout.addView(fRow);
 
+            alimentosLayout.addView(fRow);
         }
 
-        alimentosLayout.addView(addBtnPlus(context));
+        // Botón "+" para añadir alimentos
+        Button botonAdd = addBtnPlus(context);
+        botonAdd.setLayoutParams(insiteSVmargin());
+        botonAdd.setBackgroundResource(R.drawable.bg_food_background);
+        botonAdd.setTextColor(Color.WHITE);
+        botonAdd.setOnClickListener(v -> {
+            Toast.makeText(context, "Añadir alimento", Toast.LENGTH_SHORT).show();
+        });
+
+        alimentosLayout.addView(botonAdd);
 
         scrollView.addView(alimentosLayout);
-        return scrollView;
+        container.addView(scrollView);
+        return container;
     }
+
+    // Utilidad para convertir dp a px
+    private static int dpToPx(Context context, int dp) {
+        float density = context.getResources().getDisplayMetrics().density;
+        return Math.round(dp * density);
+    }
+
 
     private static TableRow generateLastRow(Context context, ArrayList<HeaderColumns> header){
         TableRow row = new TableRow(context);
         Button btn = addBtnPlus(context);
-        ScrollView scrollView = generateFoodCell(context, new ArrayList<>());
+        LinearLayout scrollView = generateFoodCell(context, new ArrayList<>());
+
+        scrollView.setLayoutParams(margin());
 
         btn.setLayoutParams(margin());
         row.addView(btn);
         row.addView(scrollView);
 
-        // Esperamos a que ambas vistas estén medidas
-        btn.post(() -> {
-            int nameHeight = btn.getHeight();
-            int scrollHeight = scrollView.getHeight();
-
-            int maxHeight = Math.max(nameHeight, scrollHeight);
-
-            // Aplicamos misma altura a ambos
-            btn.getLayoutParams().height = maxHeight;
-            scrollView.getLayoutParams().height = maxHeight;
-
-            // Es necesario llamar a requestLayout para que el cambio se aplique
-            btn.requestLayout();
+        if (scrollView.getHeight() < btn.getHeight()) {
+            scrollView.getLayoutParams().height = btn.getHeight();
             scrollView.requestLayout();
-        });
-
-
-
-
-        for (HeaderColumns headerC: header) {
-            row.addView(generateCommonCell(context, ""));
+        }else{
+            btn.getLayoutParams().height = scrollView.getHeight();
+            btn.requestLayout();
         }
+
+
+
+        ArrayList<LinearLayout> cells = new ArrayList<>();
+        for (HeaderColumns headerC: header) {
+            if (!headerC.equals(HeaderColumns.Nombre) && !headerC.equals(HeaderColumns.Alimentos)) {
+                try {
+                    LinearLayout cell = generateCommonCell(context, "-- --");
+                    row.addView(cell);
+                    cells.add(cell);
+                }catch (IllegalArgumentException e){
+                    Toast.makeText(context, "No ha sido posible cargar la siguiente columna: " + headerC, Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+
+        scrollView.post(() -> {
+            int targetHeight = scrollView.getHeight();
+            btn.getLayoutParams().height = targetHeight;
+            btn.requestLayout();
+
+            for (LinearLayout cell : cells) {
+                cell.getLayoutParams().height = targetHeight;
+                cell.requestLayout();
+            }
+
+            for (int i = 2; i < row.getChildCount(); i++) {
+                View v = row.getChildAt(i);
+                ViewGroup.LayoutParams p = v.getLayoutParams();
+                p.height = targetHeight;
+                v.setLayoutParams(p);
+            }
+        });
 
         return row;
     }

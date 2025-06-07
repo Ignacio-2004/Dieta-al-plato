@@ -40,7 +40,7 @@ public class DietaIDia extends AppCompatActivity {
 
         ArrayList<HeaderColumns> headers = new ArrayList<>();
         headers.add(HeaderColumns.Nombre);
-        headers.add(HeaderColumns.Alimento);
+        headers.add(HeaderColumns.Alimentos);
         headers.add(HeaderColumns.Kcal);
         headers.add(HeaderColumns.Proteina);
         headers.add(HeaderColumns.HC);
