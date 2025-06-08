@@ -33,6 +33,8 @@ public class InicioAdminActivity extends AppCompatActivity {
         layoutUsuarios = findViewById(R.id.layoutUsuarios);
 
         saveData = SaveData.getInstance();
+        saveData.clearAdmin();
+
         try {
             FireBaseReader.readAllFromCollection("usuarios", User.class)
                     .addOnSuccessListener(usuarios -> {

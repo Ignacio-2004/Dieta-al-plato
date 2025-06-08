@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#DDE9EFDF"
+    android:padding="16dp">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/lily_script_one"
+            android:gravity="center"
+            android:paddingBottom="16dp"
+            android:text="Resumen de macronutrientes"
+            android:textColor="#027C68"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+
+        <TextView
+            android:id="@+id/proteinas_textview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Proteínas"
+            android:textColor="#027C68"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+
+        <EditText
+            android:id="@+id/proteinas_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:autofillHints=""
+            android:background="@android:drawable/edit_text"
+            android:inputType="text"
+            android:padding="10dp"
+            android:textSize="16sp"
+            android:focusable="false"
+            android:clickable="false"/>
+
+
+        <TextView
+            android:id="@+id/carbohidratos_textview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Carbohidratos"
+            android:textColor="#027C68"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            />
+
+
+        <EditText
+            android:id="@+id/carbohidratos_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:autofillHints=""
+            android:background="@android:drawable/edit_text"
+            android:inputType="text"
+            android:padding="10dp"
+            android:textSize="16sp"
+            android:focusable="false"
+            android:clickable="false"/>
+
+
+        <TextView
+            android:id="@+id/grasas_textview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Grasas"
+            android:textColor="#027C68"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+
+        <EditText
+            android:id="@+id/grasas_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:autofillHints=""
+            android:background="@android:drawable/edit_text"
+            android:inputType="text"
+            android:padding="10dp"
+            android:textSize="16sp"
+            android:focusable="false"
+            android:clickable="false"/>
+
+
+        <TextView
+            android:id="@+id/calorias_textview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Total calorías"
+            android:textColor="#027C68"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+
+        <EditText
+            android:id="@+id/calorias_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:autofillHints=""
+            android:background="@android:drawable/edit_text"
+            android:inputType="text"
+            android:padding="10dp"
+            android:textSize="16sp"
+            android:focusable="false"
+            android:clickable="false"/>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="15dp"
+                android:text="Rango de calorías objetivo"
+                android:textColor="#027C68"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+
+            <EditText
+                android:id="@+id/minKal"
+                android:hint="@string/minkcal"
+                android:inputType="text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:autofillHints=""
+                android:background="@android:drawable/edit_text"
+                android:textSize="16sp"
+                android:focusable="false"
+                android:clickable="false"
+                />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="-"
+                android:textSize="36dp"
+                android:textStyle="bold"
+                android:textColor="#027C68" />
+
+
+            <EditText
+                android:id="@+id/maxKal"
+                android:hint="maxKcal"
+                android:inputType="text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:autofillHints=""
+                android:background="@android:drawable/edit_text"
+                android:padding="10dp"
+                android:textSize="16sp"
+                android:focusable="false"
+                android:clickable="false"
+                />
+
+
+        </LinearLayout>
+
+
+
+
+        <Button
+            android:id="@+id/cerrar_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#027C68"
+            android:text="Cerrar" />
+
+
+        <TextView
+            android:id="@+id/textError"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="8dp"
+            android:textColor="@android:color/holo_red_dark"
+            android:visibility="gone" />
+
+
+    </LinearLayout>
+</ScrollView>

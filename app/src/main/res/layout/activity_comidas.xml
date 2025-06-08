@@ -7,6 +7,7 @@
     android:layout_height="match_parent"
     tools:context=".ComidasActivity">
 
+
     <!-- Fondo -->
     <ImageView
         android:id="@+id/fondo"
@@ -20,7 +21,10 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
+
     <!-- Velo (superposición semitransparente) -->
+
+
 
 
     <View
@@ -30,10 +34,11 @@
         android:background="#DDE9EFDF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" />
+
 
     <TextView
         android:id="@+id/titulo_textview"
@@ -51,6 +56,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+
     <ImageButton
         android:id="@+id/return_button"
         android:layout_width="110dp"
@@ -64,6 +70,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/gobacksinfondo" />
+
 
     <ImageButton
         android:id="@+id/desayuno_boton"
@@ -80,6 +87,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/almuerzo_boton" />
 
+
     <ImageButton
         android:id="@+id/almuerzo_boton"
         android:layout_width="200dp"
@@ -94,6 +102,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.376" />
 
+
     <ImageButton
         android:id="@+id/comida_boton"
         android:layout_width="200dp"
@@ -107,6 +116,7 @@
         app:layout_constraintStart_toEndOf="@+id/almuerzo_boton"
         app:layout_constraintTop_toTopOf="@+id/almuerzo_boton" />
 
+
     <ImageButton
         android:id="@+id/merienda_boton"
         android:layout_width="200dp"
@@ -118,12 +128,14 @@
         android:src="@drawable/merienda"
         app:layout_constraintBottom_toBottomOf="parent"
 
+
         app:layout_constraintEnd_toEndOf="@+id/desayuno_boton"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/desayuno_boton"
         app:layout_constraintTop_toTopOf="@+id/cena_boton"
         app:layout_constraintVertical_bias="0.0"
         tools:ignore="MissingConstraints" />
+
 
     <ImageButton
         android:id="@+id/recena_boton"
@@ -136,12 +148,14 @@
         android:src="@drawable/recena"
         app:layout_constraintBottom_toBottomOf="parent"
 
+
         app:layout_constraintEnd_toEndOf="@+id/comida_boton"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/comida_boton"
         app:layout_constraintTop_toTopOf="@+id/cena_boton"
         app:layout_constraintVertical_bias="0.0"
         tools:ignore="MissingConstraints" />
+
 
     <ImageButton
         android:id="@+id/cena_boton"
@@ -155,12 +169,14 @@
         android:src="@drawable/cena"
         app:layout_constraintBottom_toBottomOf="parent"
 
+
         app:layout_constraintEnd_toEndOf="@+id/almuerzo_boton"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/almuerzo_boton"
         app:layout_constraintTop_toBottomOf="@+id/almuerzo_boton"
         app:layout_constraintVertical_bias="0.0"
         tools:ignore="MissingConstraints" />
+
 
     <TextView
         android:id="@+id/desayuno_textview"
@@ -178,6 +194,7 @@
         app:layout_constraintTop_toBottomOf="@+id/desayuno_boton"
         app:layout_constraintVertical_bias="0.0" />
 
+
     <TextView
         android:id="@+id/almuerzo_textview"
         android:layout_width="wrap_content"
@@ -193,6 +210,7 @@
         app:layout_constraintEnd_toStartOf="@+id/comida_textview"
         app:layout_constraintTop_toBottomOf="@+id/almuerzo_boton"
         app:layout_constraintVertical_bias="0.888" />
+
 
     <TextView
         android:id="@+id/comida_textview"
@@ -210,6 +228,7 @@
         app:layout_constraintTop_toBottomOf="@+id/comida_boton"
         app:layout_constraintVertical_bias="0.888" />
 
+
     <TextView
         android:id="@+id/merienda_textview"
         android:layout_width="wrap_content"
@@ -224,6 +243,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/merienda_boton"
         app:layout_constraintVertical_bias="1.0" />
+
 
     <TextView
         android:id="@+id/cena_textview"
@@ -241,6 +261,7 @@
         app:layout_constraintStart_toEndOf="@+id/merienda_textview"
         app:layout_constraintTop_toBottomOf="@+id/cena_boton" />
 
+
     <TextView
         android:id="@+id/recena_textview"
         android:layout_width="wrap_content"
@@ -256,29 +277,32 @@
         app:layout_constraintTop_toBottomOf="@+id/recena_boton"
         app:layout_constraintVertical_bias="0.714" />
 
+
     <ImageView
         android:id="@+id/imageView2"
         android:layout_width="73dp"
         android:layout_height="79dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="32dp"
         android:onClick="just"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/question_mark" />
 
-    <TextView
-        android:id="@+id/tv_nutrition_summary"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="12dp"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:text="Calculando datos nutricionales..."
-        app:layout_constraintBottom_toTopOf="@+id/almuerzo_boton"
+
+    <ImageView
+        android:id="@+id/imageview_macros"
+        android:layout_width="91dp"
+        android:layout_height="86dp"
+        android:layout_marginTop="16dp"
+        android:onClick="mostrarMacros"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.978"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/titulo_textview"
-        app:layout_constraintVertical_bias="0.421" />
+        app:layout_constraintTop_toBottomOf="@+id/imageView2"
+        app:layout_constraintVertical_bias="0.006"
+        app:srcCompat="@drawable/macros" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
