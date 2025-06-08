@@ -7,14 +7,19 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.DialogFragment;
 
 import com.tfg.dietaalplato.R;
+import com.tfg.dietaalplato.firebase.exceptions.FBCException;
+import com.tfg.dietaalplato.utilities.Blocker;
 import com.tfg.dietaalplato.utilities.HeaderColumns;
 import com.tfg.dietaalplato.utilities.TableGenerator;
 
@@ -23,9 +28,11 @@ import java.util.ArrayList;
 public class DialogHeaders extends DialogFragment {
     private View mainView;
     private ArrayList<HeaderColumns> currentHeaderColumns;
+    private ArrayList<HeaderColumns> foreceHeaders;
     private LinearLayout currentLayout;
     private LinearLayout toAddLayout;
     private TableGenerator tableGenerator;
+
 
     public static DialogHeaders getInstance() {
         return new DialogHeaders();
@@ -34,6 +41,13 @@ public class DialogHeaders extends DialogFragment {
     private DialogHeaders(){
         tableGenerator = TableGenerator.getInstance();
         currentHeaderColumns = tableGenerator.getColumns();
+        foreceHeaders = new ArrayList<>();
+        foreceHeaders.add(HeaderColumns.Nombre);
+        foreceHeaders.add(HeaderColumns.Alimentos);
+        foreceHeaders.add(HeaderColumns.Kcal);
+        foreceHeaders.add(HeaderColumns.Proteina);
+        foreceHeaders.add(HeaderColumns.HC);
+        foreceHeaders.add(HeaderColumns.Grasa);
     }
 
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -87,9 +101,47 @@ public class DialogHeaders extends DialogFragment {
 
         for (HeaderColumns header : columns) {
             if (currentHeaderColumns.contains(header)){
-                cln.addView(generateList(header));
+                if (!foreceHeaders.contains(header)){
+                    cln.addView(addRermoveBotton(generateList(header, v -> {
+
+                    }),v -> {
+                        currentHeaderColumns.remove(header);
+                        tableGenerator.setColumns(currentHeaderColumns);
+                        ViewGroup parent = (ViewGroup) mainView.getRootView();
+                         try {
+                            Blocker.createBlocker(parent,requireActivity());
+                            tableGenerator.resetAndGenerateTable();
+                            Blocker.removeBlocker(parent);
+                        } catch (FBCException e) {
+                            Toast.makeText(mainView.getContext(), "Error al generar la tabla", Toast.LENGTH_SHORT).show();
+                            currentHeaderColumns.add(header);
+                            tableGenerator.setColumns(currentHeaderColumns);
+                            Blocker.removeBlocker(parent);
+                        }
+                        dismiss();
+                    }));
+                }else{
+                    cln.addView(generateList(header, v -> {
+
+                    }));
+                }
             }else{
-               ln.addView(generateList(header));
+               ln.addView(generateList(header, v -> {
+                   currentHeaderColumns.add(header);
+                   tableGenerator.setColumns(currentHeaderColumns);
+                   ViewGroup parent = (ViewGroup) mainView.getRootView();
+                   try {
+                       Blocker.createBlocker(parent,requireActivity());
+                       tableGenerator.resetAndGenerateTable();
+                       Blocker.removeBlocker(parent);
+                   } catch (FBCException e) {
+                       Toast.makeText(mainView.getContext(), "Error al generar la tabla", Toast.LENGTH_SHORT).show();
+                       currentHeaderColumns.remove(header);
+                       tableGenerator.setColumns(currentHeaderColumns);
+                       Blocker.removeBlocker(parent);
+                   }
+                   dismiss();
+               }));
             }
         }
 
@@ -101,7 +153,7 @@ public class DialogHeaders extends DialogFragment {
         return builder.create();
     }
 
-    private LinearLayout generateList(HeaderColumns header){
+    private LinearLayout generateList(HeaderColumns header,View.OnClickListener listener){
         LinearLayout ln = new LinearLayout(mainView.getContext());
         ln.setBackgroundResource(R.drawable.bg_food_background);
         ln.setOrientation(LinearLayout.HORIZONTAL);
@@ -111,7 +163,7 @@ public class DialogHeaders extends DialogFragment {
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
         );
-        params.setMargins(20, 5, 20, 5); // izquierda, arriba, derecha, abajo
+        params.setMargins(20, 5, 20, 5);
         ln.setLayoutParams(params);
 
 
@@ -121,11 +173,38 @@ public class DialogHeaders extends DialogFragment {
         tv.setTextSize(18);
         tv.setGravity(Gravity.CENTER);
         tv.setTextColor(Color.WHITE);
+        tv.setOnClickListener(listener);
         Typeface customFont = ResourcesCompat.getFont(mainView.getContext(), R.font.lily_script_one);
         if (customFont != null){
             tv.setTypeface(customFont);
         }
         ln.addView(tv);
         return ln;
+    }
+
+    private LinearLayout addRermoveBotton(LinearLayout ln,View.OnClickListener listener){
+
+        ImageButton remove = new ImageButton(mainView.getContext());
+
+        remove.setImageResource(android.R.drawable.ic_menu_close_clear_cancel);
+        remove.setBackgroundColor(Color.TRANSPARENT);
+        remove.setScaleX(0.8f);
+        remove.setScaleY(0.8f);
+        remove.setOnClickListener(listener);
+
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+        );
+        params.setMargins(0,0,0,0);
+        remove.setLayoutParams(params);
+
+        ln.addView(remove);
+
+        return ln;
+    }
+
+    public void onReturn(View view){
+        dismiss();
     }
 }

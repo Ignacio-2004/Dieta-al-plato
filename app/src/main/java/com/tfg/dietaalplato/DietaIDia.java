@@ -42,10 +42,13 @@ public class DietaIDia extends AppCompatActivity {
 
 
         try {
-            tableGenerator.generarTabla(this, layoutSV, onClickAddHeader -> {
+            tableGenerator.setContenedor(layoutSV);
+            tableGenerator.setContext(this);
+            tableGenerator.setOnClickAddHeader(v -> {
                 DialogHeaders dialog = DialogHeaders.getInstance();
                 dialog.show(getSupportFragmentManager(), "DialogScrollView");
             });
+            tableGenerator.generarTabla();
         } catch (FBCException e) {
             Toast.makeText(this, "No es posible generar la tabla", Toast.LENGTH_SHORT).show();
         }

@@ -25,12 +25,18 @@ import com.tfg.dietaalplato.firebase.tables.Food;
 import com.tfg.dietaalplato.firebase.tables.FoodDiet;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class TableGenerator {
 
     private SaveData saveData;
     private ArrayList<HeaderColumns> columns;
+    private TableLayout table;
+    private Context context;
+    private LinearLayout contenedor;
+    private View.OnClickListener onClickAddHeader;
 
     private static TableGenerator instance;
 
@@ -63,12 +69,24 @@ public class TableGenerator {
         columns.add(header);
     }
 
-    public void generarTabla(Context context, LinearLayout contenedor, View.OnClickListener onClickAddHeader) throws FBCException {
+    public void setContenedor(LinearLayout contenedor){
+        this.contenedor = contenedor;
+    }
+
+    public void setContext(Context context) {
+        this.context = context;
+        this.table = new TableLayout(context);
+    }
+
+    public void setOnClickAddHeader(View.OnClickListener onClickAddHeader){
+        this.onClickAddHeader = onClickAddHeader;
+    }
+
+    public void generarTabla() throws FBCException {
         saveData = SaveData.getInstance();
         /*
             ++ Att of the table
          */
-        TableLayout table = new TableLayout(context);
         table.setStretchAllColumns(true);
         table.setBackgroundColor(Color.TRANSPARENT);
         table.setLayoutParams(new TableLayout.LayoutParams(
@@ -101,22 +119,22 @@ public class TableGenerator {
                     e -> Toast.makeText(context, "Error al leer los alimentos", Toast.LENGTH_SHORT).show()
             ).addOnSuccessListener(
                     foodDiets -> {
-                        Toast.makeText(context, "Alimentos leidos", Toast.LENGTH_SHORT).show();
+                        try {
+                            FireBaseReader.readAllFoodFromUser(saveData.getCurrentClient().getId()).addOnFailureListener(
+                                    e -> Toast.makeText(context, "Error al leer los alimentos", Toast.LENGTH_SHORT).show()
+                            ).addOnSuccessListener(
+                                    foods -> {
+                                        Toast.makeText(context, "Alimentos leidos", Toast.LENGTH_SHORT).show();
 
-                        if (foodDiets.result != null) {
-                            for (ArrayList<FoodDiet> fd: foodDiets.result.values()) {
-                                //La arraylist es cada receta unificada por el nombre
+                                        if (foodDiets.result != null) {
+                                            for (ArrayList<FoodDiet> fd: foodDiets.result.values()) {
+                                                //La arraylist es cada receta unificada por el nombre
 
-                                FoodDiet f = fd.get(0);
+                                                FoodDiet f = fd.get(0);
 
-                                if (f.getDia().equals(saveData.getDay()) && f.getNumeroPlato().equals(saveData.getMomentOfDay())) {
-                                    //Con este filtro cogemos solo los que pertenecen a este dia y ese momento del dia
+                                                if (f.getDia().equals(saveData.getDay()) && f.getNumeroPlato().equals(saveData.getMomentOfDay())) {
+                                                    //Con este filtro cogemos solo los que pertenecen a este dia y ese momento del dia
 
-                                    try {
-                                        FireBaseReader.readAllFoodFromUser(saveData.getCurrentClient().getId()).addOnFailureListener(
-                                                e -> Toast.makeText(context, "Error al leer los alimentos", Toast.LENGTH_SHORT).show()
-                                        ).addOnSuccessListener(
-                                                foods -> {
                                                     ArrayList<Food> foodArrayList = new ArrayList<>();
                                                     for (FoodDiet foodDiet: fd) {
                                                         for (Food food: foods.result.values()) {
@@ -126,35 +144,34 @@ public class TableGenerator {
                                                         }
                                                     }
                                                     table.addView(generateRow(context, f.getName(), foodArrayList, columns));
+
                                                 }
-                                        );
-                                    } catch (FBCException e) {
-                                        Toast.makeText(context, "Error al leer los alimentos", Toast.LENGTH_SHORT).show();
+
+                                            }
+                                        }
+                                        /*
+                                            ++ Plus last row
+                                        */
+
+                                        table.addView(generateLastRow(context, columns));
+
+                                        /*
+                                            -- Plus last row
+                                        */
+
+                                        /*
+                                            Add table to the container
+                                        */
+                                        if (contenedor != null && context instanceof Activity) {
+                                            ((Activity) context).runOnUiThread(() -> {
+                                                contenedor.addView(table);
+                                            });
+                                        }
                                     }
-
-                                }
-
-                            }
+                            );
+                        } catch (FBCException e) {
+                            Toast.makeText(context, "Error al leer los alimentos", Toast.LENGTH_SHORT).show();
                         }
-                         /*
-                        ++ Plus last row
-                        */
-
-                        table.addView(generateLastRow(context, columns));
-
-                        /*
-                        -- Plus last row
-                        */
-
-                        /*
-                        Add table to the container
-                        */
-                        if (contenedor != null && context instanceof Activity) {
-                            ((Activity) context).runOnUiThread(() -> {
-                                contenedor.addView(table);
-                            });
-                        }
-
                     }
             );
         }else{
@@ -505,6 +522,12 @@ public class TableGenerator {
         });
 
         return row;
+    }
+
+    public void resetAndGenerateTable() throws FBCException {
+        if (contenedor != null) contenedor.removeAllViews();
+        if (table != null) table.removeAllViews();
+        generarTabla();
     }
 
 }
