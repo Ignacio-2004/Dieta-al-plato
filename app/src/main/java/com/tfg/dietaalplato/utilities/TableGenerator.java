@@ -65,9 +65,6 @@ public class TableGenerator {
 
     public void generarTabla(Context context, LinearLayout contenedor, View.OnClickListener onClickAddHeader) throws FBCException {
         saveData = SaveData.getInstance();
-        if (columns.isEmpty()){
-
-        }
         /*
             ++ Att of the table
          */

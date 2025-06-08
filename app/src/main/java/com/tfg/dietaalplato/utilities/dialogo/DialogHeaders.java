@@ -15,36 +15,29 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.DialogFragment;
 
 import com.tfg.dietaalplato.R;
-import com.tfg.dietaalplato.firebase.tables.Food;
 import com.tfg.dietaalplato.utilities.HeaderColumns;
+import com.tfg.dietaalplato.utilities.TableGenerator;
 
 import java.util.ArrayList;
-import java.util.Formattable;
-import java.util.HashMap;
-import java.util.Map;
 
-public class DialogScrollView extends DialogFragment {
+public class DialogHeaders extends DialogFragment {
     private View mainView;
-    private static String whatIsIt;
-    private static ArrayList<HeaderColumns> currentHeaderColumns;
-    private static ArrayList<Food> currentFoods;
+    private ArrayList<HeaderColumns> currentHeaderColumns;
     private LinearLayout currentLayout;
     private LinearLayout toAddLayout;
+    private TableGenerator tableGenerator;
 
-    public static DialogScrollView getHeaderInstance(ArrayList<HeaderColumns> currentHeaderColumns) {
-        whatIsIt = "Headers";
-        DialogScrollView.currentHeaderColumns = currentHeaderColumns;
-        return new DialogScrollView();
+    public static DialogHeaders getInstance() {
+        return new DialogHeaders();
     }
 
-    public static DialogScrollView getFoodInstance(ArrayList<Food> currentFoods) {
-        whatIsIt = "Foods";
-        DialogScrollView.currentFoods = currentFoods;
-        return new DialogScrollView();
+    private DialogHeaders(){
+        tableGenerator = TableGenerator.getInstance();
+        currentHeaderColumns = tableGenerator.getColumns();
     }
 
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        mainView = getActivity().getLayoutInflater().inflate(R.layout.activity_dialog_scroll_view, null);
+        mainView = getActivity().getLayoutInflater().inflate(R.layout.activity_dialog_headers, null);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setView(mainView)
@@ -58,64 +51,74 @@ public class DialogScrollView extends DialogFragment {
         csv.setBackgroundColor(Color.TRANSPARENT);
         csv.setLayoutParams(new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.MATCH_PARENT)
+                LinearLayout.LayoutParams.WRAP_CONTENT)
         );
 
         ScrollView sv = new ScrollView(mainView.getContext());
         sv.setBackgroundColor(Color.TRANSPARENT);
         sv.setLayoutParams(new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.MATCH_PARENT)
+                LinearLayout.LayoutParams.WRAP_CONTENT)
         );
 
-        switch (whatIsIt){
-            case "Headers":
+        LinearLayout ln = new LinearLayout(mainView.getContext());
+        ln.setLayoutParams( new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT)
+        );
+        ln.setBackgroundColor(Color.TRANSPARENT);
+        ln.setOrientation(LinearLayout.VERTICAL);
 
-                for (HeaderColumns header : HeaderColumns.values()) {
-                    if (currentHeaderColumns.contains(header)){
-                        csv.addView(generateList(header));
-                        csv.addView(setMargin());
-                    }else{
-                        sv.addView(generateList(header));
-                        sv.addView(setMargin());
-                    }
-                }
+        LinearLayout cln = new LinearLayout(mainView.getContext());
+        cln.setLayoutParams( new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT)
+        );
+        cln.setBackgroundColor(Color.TRANSPARENT);
+        cln.setOrientation(LinearLayout.VERTICAL);
 
-                break;
-            case "Foods":
-                break;
-                default:
-                break;
+
+        ArrayList<HeaderColumns> columns = new ArrayList<>(currentHeaderColumns);
+        for (HeaderColumns headerColumns: HeaderColumns.values()) {
+            if (!columns.contains(headerColumns)){
+                columns.add(headerColumns);
+            }
         }
 
+        for (HeaderColumns header : columns) {
+            if (currentHeaderColumns.contains(header)){
+                cln.addView(generateList(header));
+            }else{
+               ln.addView(generateList(header));
+            }
+        }
+
+        csv.addView(cln);
+        sv.addView(ln);
         currentLayout.addView(csv);
         toAddLayout.addView(sv);
 
         return builder.create();
     }
 
-    private LinearLayout setMargin(){
-        LinearLayout margin = new LinearLayout(mainView.getContext());
-        margin.setPadding(10,10,10,10);
-        margin.setLayoutParams(new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT)
-        );
-        return margin;
-    }
-
     private LinearLayout generateList(HeaderColumns header){
         LinearLayout ln = new LinearLayout(mainView.getContext());
         ln.setBackgroundResource(R.drawable.bg_food_background);
-        ln.setLayoutParams(new LinearLayout.LayoutParams(
+        ln.setOrientation(LinearLayout.HORIZONTAL);
+        ln.setPadding(10, 10, 10, 10);
+        ln.setGravity(Gravity.CENTER);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT)
+                LinearLayout.LayoutParams.WRAP_CONTENT
         );
+        params.setMargins(20, 5, 20, 5); // izquierda, arriba, derecha, abajo
+        ln.setLayoutParams(params);
+
 
         TextView tv = new TextView(mainView.getContext());
         tv.setText(header.name());
         tv.setBackgroundColor(Color.TRANSPARENT);
-        tv.setTextSize(30);
+        tv.setTextSize(18);
         tv.setGravity(Gravity.CENTER);
         tv.setTextColor(Color.WHITE);
         Typeface customFont = ResourcesCompat.getFont(mainView.getContext(), R.font.lily_script_one);

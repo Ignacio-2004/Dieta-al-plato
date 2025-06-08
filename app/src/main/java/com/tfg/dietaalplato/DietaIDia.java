@@ -14,13 +14,10 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.tfg.dietaalplato.firebase.exceptions.FBCException;
 import com.tfg.dietaalplato.utilities.DietaTableGenerator;
-import com.tfg.dietaalplato.utilities.HeaderColumns;
 import com.tfg.dietaalplato.utilities.SaveData;
 import com.tfg.dietaalplato.utilities.dialogo.DialogAddJustification;
 import com.tfg.dietaalplato.utilities.TableGenerator;
-import com.tfg.dietaalplato.utilities.dialogo.DialogScrollView;
-
-import java.util.ArrayList;
+import com.tfg.dietaalplato.utilities.dialogo.DialogHeaders;
 
 public class DietaIDia extends AppCompatActivity {
 
@@ -46,8 +43,7 @@ public class DietaIDia extends AppCompatActivity {
 
         try {
             tableGenerator.generarTabla(this, layoutSV, onClickAddHeader -> {
-                ArrayList<HeaderColumns> columns = tableGenerator.getColumns();
-                DialogScrollView dialog = DialogScrollView.getHeaderInstance(columns);
+                DialogHeaders dialog = DialogHeaders.getInstance();
                 dialog.show(getSupportFragmentManager(), "DialogScrollView");
             });
         } catch (FBCException e) {

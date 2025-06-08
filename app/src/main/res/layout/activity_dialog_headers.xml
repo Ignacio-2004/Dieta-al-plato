@@ -40,11 +40,12 @@
         <LinearLayout
             android:id="@+id/actualLayout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
             android:gravity="center_vertical"
             android:layout_weight="1"
-            android:background="@drawable/bg_food_item"/>
+            android:background="@drawable/bg_food_item"
+            android:textSize="18sp"/>
 
         <TextView
             android:layout_width="match_parent"
@@ -60,11 +61,12 @@
         <LinearLayout
             android:id="@+id/addLayout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
             android:gravity="center_vertical"
             android:layout_weight="1"
-            android:background="@drawable/bg_food_item"/>
+            android:background="@drawable/bg_food_item"
+            android:textSize="18sp"/>
 
 
     </LinearLayout>
