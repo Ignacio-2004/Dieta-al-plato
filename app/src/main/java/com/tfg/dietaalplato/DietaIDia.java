@@ -18,6 +18,7 @@ import com.tfg.dietaalplato.utilities.SaveData;
 import com.tfg.dietaalplato.utilities.dialogo.DialogAddJustification;
 import com.tfg.dietaalplato.utilities.TableGenerator;
 import com.tfg.dietaalplato.utilities.dialogo.DialogHeaders;
+import com.tfg.dietaalplato.utilities.dialogo.NewDietDialog;
 
 public class DietaIDia extends AppCompatActivity {
 
@@ -46,6 +47,10 @@ public class DietaIDia extends AppCompatActivity {
             tableGenerator.setContext(this);
             tableGenerator.setOnClickAddHeader(v -> {
                 DialogHeaders dialog = DialogHeaders.getInstance();
+                dialog.show(getSupportFragmentManager(), "DialogScrollView");
+            });
+            tableGenerator.setOnClickCreateRecepie(v -> {
+                NewDietDialog dialog = NewDietDialog.getInstance();
                 dialog.show(getSupportFragmentManager(), "DialogScrollView");
             });
             tableGenerator.generarTabla();

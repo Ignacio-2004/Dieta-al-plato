@@ -108,7 +108,7 @@ public class FoodDiet extends BaseObject {
 
 //++IP - 23/04/2025 -
 
-    public static ValidationResult toMapData(ArrayList<View> data, String idDieta,String idAlimento){
+    public static ValidationResult toMapData(ArrayList<String> data, String idDieta,String idAlimento){
         ValidationResult result = new ValidationResult();
 
         String[] fieldName = {"idDieta","idAlimento", "comida", "numeroPlato", "dia", "gramos", "nombreReceta"};
@@ -119,18 +119,18 @@ public class FoodDiet extends BaseObject {
             ArrayList<String> keys = new ArrayList<>();
             keys.add(idDieta);
             keys.add(idAlimento);
-            keys.add(((EditText) data.get(0)).getText().toString().trim());
-            keys.add(((EditText) data.get(1)).getText().toString().trim());
-            keys.add(((EditText) data.get(2)).getText().toString().trim());
-            keys.add(((EditText) data.get(3)).getText().toString().trim());
-            keys.add(((EditText) data.get(4)).getText().toString().trim());
+            keys.add(data.get(0).trim());
+            keys.add(data.get(1).trim());
+            keys.add(data.get(2).trim());
+            keys.add(data.get(3).trim());
+            keys.add(data.get(4).trim());
 
             for (int i = 0; i < keys.size()-2; i++) {
 
                 //Comprobamos que no haya campos vacios
 
                 if (keys.get(i+2).isEmpty()) {
-                    throw new Exception("El campo " + data.get(i).getTag().toString() + " no puede estar vacio");
+                    throw new Exception("El campo " + data.get(i) + " no puede estar vacio");
                     //Con tag devuelvo el nombre del campo vacio
                 }
             }

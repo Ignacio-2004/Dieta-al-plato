@@ -19,7 +19,8 @@
             android:layout_width="100dp"
             android:backgroundTint="#00FFFFFF"
             app:srcCompat="@drawable/gobacksinfondo"
-            android:layout_marginBottom="10dp"/>
+            android:layout_marginBottom="10dp"
+            />
 
         <TextView
             android:id="@+id/titulo"
@@ -27,7 +28,7 @@
             android:layout_height="match_parent"
             android:fontFamily="@font/lily_script_one"
             android:gravity="center"
-            android:text="Añadir"
+            android:text="Crear un areceta"
             android:textColor="#027C68"
             android:textSize="35sp"
             android:textStyle="bold" />
@@ -52,30 +53,32 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
+            android:gravity="left"
             android:fontFamily="@font/lily_script_one"
-            android:text="Actual"
+            android:text="Nombre de la receta"
             android:textSize="25sp"
             android:textStyle="bold"
             android:textColor="#027C68"
             android:layout_marginTop="8dp" />
 
-        <LinearLayout
-            android:id="@+id/actualLayout"
+        <EditText
+            android:id="@+id/editTextNombre"
+            android:hint="Ej: Arroz con pollo"
+            android:inputType="text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center_vertical"
-            android:layout_weight="1"
-            android:background="@drawable/bg_food_item"
-            android:textSize="18sp"/>
+            android:autofillHints=""
+            android:background="@android:drawable/edit_text"
+            android:padding="10dp"
+            android:textSize="20sp"
+            android:layout_marginBottom="16dp" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
+            android:gravity="left"
             android:fontFamily="@font/lily_script_one"
-            android:text="Opciones"
+            android:text="Seleccione el primer alimento que conforme esta receta"
             android:textSize="25sp"
             android:textStyle="bold"
             android:textColor="#027C68"
@@ -91,8 +94,41 @@
             android:background="@drawable/bg_food_item"
             android:textSize="18sp"/>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Gramos del alimento selecionado: "
+                android:textSize="25sp"
+
+                android:textStyle="bold"
+                android:textColor="#027C68" />
+
+            <EditText
+                android:id="@+id/grs"
+                android:hint="grs"
+                android:inputType="text"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:autofillHints=""
+                android:background="@android:drawable/edit_text"
+                android:textSize="16sp"
+                />
+        </LinearLayout>
 
     </LinearLayout>
 
+    <Button
+        android:id="@+id/buttonGuardar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:backgroundTint="#027C68"
+        android:text="Guardar Cambios" />
 
 </LinearLayout>

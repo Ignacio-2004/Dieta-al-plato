@@ -37,6 +37,7 @@ public class TableGenerator {
     private Context context;
     private LinearLayout contenedor;
     private View.OnClickListener onClickAddHeader;
+    private View.OnClickListener onClickCreateRecepie;
 
     private static TableGenerator instance;
 
@@ -80,6 +81,10 @@ public class TableGenerator {
 
     public void setOnClickAddHeader(View.OnClickListener onClickAddHeader){
         this.onClickAddHeader = onClickAddHeader;
+    }
+
+    public void setOnClickCreateRecepie(View.OnClickListener onClickCreateRecepie){
+        this.onClickCreateRecepie = onClickCreateRecepie;
     }
 
     public void generarTabla() throws FBCException {
@@ -463,7 +468,7 @@ public class TableGenerator {
     }
 
 
-    private static TableRow generateLastRow(Context context, ArrayList<HeaderColumns> header){
+    private TableRow generateLastRow(Context context, ArrayList<HeaderColumns> header){
         TableRow row = new TableRow(context);
 
         //temp
@@ -471,7 +476,7 @@ public class TableGenerator {
             Toast.makeText(context, "Añadir receta", Toast.LENGTH_SHORT).show();
         };
         //temp
-        Button btn = addBtnPlus(context, onClickAddHeader);
+        Button btn = addBtnPlus(context, onClickCreateRecepie);
         LinearLayout scrollView = generateFoodCell(context, new ArrayList<>());
 
         scrollView.setLayoutParams(margin());

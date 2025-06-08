@@ -32,6 +32,7 @@ public class DialogHeaders extends DialogFragment {
     private LinearLayout currentLayout;
     private LinearLayout toAddLayout;
     private TableGenerator tableGenerator;
+    private ImageButton bttReturn;
 
 
     public static DialogHeaders getInstance() {
@@ -59,7 +60,8 @@ public class DialogHeaders extends DialogFragment {
 
         currentLayout = mainView.findViewById(R.id.actualLayout);
         toAddLayout = mainView.findViewById(R.id.addLayout);
-
+        bttReturn = mainView.findViewById(R.id.bttReturn);
+        bttReturn.setOnClickListener(this::onReturn);
 
         ScrollView csv = new ScrollView(mainView.getContext());
         csv.setBackgroundColor(Color.TRANSPARENT);
@@ -170,7 +172,7 @@ public class DialogHeaders extends DialogFragment {
         TextView tv = new TextView(mainView.getContext());
         tv.setText(header.name());
         tv.setBackgroundColor(Color.TRANSPARENT);
-        tv.setTextSize(18);
+        tv.setTextSize(20);
         tv.setGravity(Gravity.CENTER);
         tv.setTextColor(Color.WHITE);
         tv.setOnClickListener(listener);
