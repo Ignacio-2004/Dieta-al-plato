@@ -18,6 +18,7 @@ import com.tfg.dietaalplato.utilities.HeaderColumns;
 import com.tfg.dietaalplato.utilities.SaveData;
 import com.tfg.dietaalplato.utilities.dialogo.DialogAddJustification;
 import com.tfg.dietaalplato.utilities.TableGenerator;
+import com.tfg.dietaalplato.utilities.dialogo.DialogScrollView;
 
 import java.util.ArrayList;
 
@@ -26,6 +27,7 @@ public class DietaIDia extends AppCompatActivity {
     SaveData saveData = SaveData.getInstance();
     private LinearLayout layoutSV;
     DietaTableGenerator generator;
+    private TableGenerator tableGenerator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,13 +40,15 @@ public class DietaIDia extends AppCompatActivity {
             return insets;
         });
 
-
+        tableGenerator = TableGenerator.getInstance();
         layoutSV = findViewById(R.id.layoutTabla);
 
 
         try {
-            TableGenerator.generarTabla(this, layoutSV, onClickAddHeader -> {
-                Toast.makeText(this, "Añadir columna", Toast.LENGTH_SHORT).show();
+            tableGenerator.generarTabla(this, layoutSV, onClickAddHeader -> {
+                ArrayList<HeaderColumns> columns = tableGenerator.getColumns();
+                DialogScrollView dialog = DialogScrollView.getHeaderInstance(columns);
+                dialog.show(getSupportFragmentManager(), "DialogScrollView");
             });
         } catch (FBCException e) {
             Toast.makeText(this, "No es posible generar la tabla", Toast.LENGTH_SHORT).show();

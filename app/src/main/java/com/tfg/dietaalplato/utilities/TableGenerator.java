@@ -29,22 +29,44 @@ import java.util.List;
 
 public class TableGenerator {
 
-    private static SaveData saveData;
-    public static ArrayList<HeaderColumns> columns = new ArrayList<>();
+    private SaveData saveData;
+    private ArrayList<HeaderColumns> columns;
 
-    private TableGenerator() {
-        throw new UnsupportedOperationException("Clase estática, no instanciable.");
+    private static TableGenerator instance;
+
+    private TableGenerator (){
+        columns = new ArrayList<>();
+        columns.add(HeaderColumns.Nombre);
+        columns.add(HeaderColumns.Alimentos);
+        columns.add(HeaderColumns.Kcal);
+        columns.add(HeaderColumns.Proteina);
+        columns.add(HeaderColumns.HC);
+        columns.add(HeaderColumns.Grasa);
     }
 
-    public static void generarTabla(Context context, LinearLayout contenedor, View.OnClickListener onClickAddHeader) throws FBCException {
+    public static TableGenerator getInstance() {
+        if (instance == null) {
+            instance = new TableGenerator();
+        }
+        return instance;
+    }
+
+    public void setColumns(ArrayList<HeaderColumns> columns) {
+        this.columns = columns;
+    }
+
+    public ArrayList<HeaderColumns> getColumns() {
+        return columns;
+    }
+
+    public void addHeader(HeaderColumns header){
+        columns.add(header);
+    }
+
+    public void generarTabla(Context context, LinearLayout contenedor, View.OnClickListener onClickAddHeader) throws FBCException {
         saveData = SaveData.getInstance();
         if (columns.isEmpty()){
-            columns.add(HeaderColumns.Nombre);
-            columns.add(HeaderColumns.Alimentos);
-            columns.add(HeaderColumns.Kcal);
-            columns.add(HeaderColumns.Proteina);
-            columns.add(HeaderColumns.HC);
-            columns.add(HeaderColumns.Grasa);
+
         }
         /*
             ++ Att of the table

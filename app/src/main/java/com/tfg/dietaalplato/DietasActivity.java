@@ -93,6 +93,7 @@ public class DietasActivity extends AppCompatActivity {
                         Blocker.removeBlocker(this.findViewById(android.R.id.content));
                         Intent intent;
                         if (!Objects.equals(diet.getTip(), "1")){
+                            saveData.setDay("1");
                             intent = new Intent(this, DiasActivity.class);
                         }else{
                             intent = new Intent(this, ComidasActivity.class);

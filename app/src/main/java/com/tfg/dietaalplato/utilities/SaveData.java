@@ -39,7 +39,7 @@ public class SaveData {
     private FoodDiet currentFood;
     private int currentDay;
     private String momentOfDay;
-    private String Day;
+    private String day;
     private final String TAG = "SaveData";
 
     private SaveData() {
@@ -52,6 +52,8 @@ public class SaveData {
         currentClient = new Client();
         currentDiet = new Diet();
         currentFood = new FoodDiet();
+        day = "";
+        momentOfDay = "";
     }
 
     public static SaveData getInstance() {
@@ -62,11 +64,11 @@ public class SaveData {
     }
 
     public String getDay() {
-        return Day;
+        return day;
     }
 
     public void setDay(String day) {
-        Day = day;
+        this.day = day;
     }
 
     public String getMomentOfDay() {
