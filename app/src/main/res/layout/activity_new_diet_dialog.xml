@@ -28,7 +28,7 @@
             android:layout_height="match_parent"
             android:fontFamily="@font/lily_script_one"
             android:gravity="center"
-            android:text="Crear un areceta"
+            android:text="Crear una receta"
             android:textColor="#027C68"
             android:textSize="35sp"
             android:textStyle="bold" />

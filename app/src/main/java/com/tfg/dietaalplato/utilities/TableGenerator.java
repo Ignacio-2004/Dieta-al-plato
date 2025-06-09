@@ -109,7 +109,12 @@ public class TableGenerator {
         for (HeaderColumns header: columns) {
             headerRow.addView(generateHeader(context, header));
         }
-        headerRow.addView(addBtnPlus(context, onClickAddHeader));
+        Button addCol = addBtnPlus(context, onClickAddHeader);
+        addCol.setLayoutParams(new TableRow.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+        ));
+        headerRow.addView(addCol);
         table.addView(headerRow);
         /*
             -- Header of the table
@@ -125,7 +130,7 @@ public class TableGenerator {
             ).addOnSuccessListener(
                     foodDiets -> {
                         try {
-                            FireBaseReader.readAllFoodFromUser(saveData.getCurrentClient().getId()).addOnFailureListener(
+                            FireBaseReader.readAllFoodFromUser(saveData.getUser().getId()).addOnFailureListener(
                                     e -> Toast.makeText(context, "Error al leer los alimentos", Toast.LENGTH_SHORT).show()
                             ).addOnSuccessListener(
                                     foods -> {
@@ -137,18 +142,24 @@ public class TableGenerator {
 
                                                 FoodDiet f = fd.get(0);
 
-                                                if (f.getDia().equals(saveData.getDay()) && f.getNumeroPlato().equals(saveData.getMomentOfDay())) {
+                                                if (f.getDia().equals(saveData.getDay()) && f.getComida().equals(saveData.getMomentOfDay())) {
                                                     //Con este filtro cogemos solo los que pertenecen a este dia y ese momento del dia
 
                                                     ArrayList<Food> foodArrayList = new ArrayList<>();
+                                                    ArrayList<Double> grs = new ArrayList<>();
                                                     for (FoodDiet foodDiet: fd) {
                                                         for (Food food: foods.result.values()) {
-                                                            if (foodDiet.getIdAlimento().equals(food.getId())) {
-                                                                foodArrayList.add(food);
+                                                            try{
+                                                                if (foodDiet.getIdAlimento().equals(food.getId())) {
+                                                                    foodArrayList.add(food);
+                                                                    grs.add(safeParse(foodDiet.getG()));
+                                                                }
+                                                            }catch (Exception e){
+                                                                Toast.makeText(context, "Error al leer algunos alimentos", Toast.LENGTH_SHORT).show();
                                                             }
                                                         }
                                                     }
-                                                    table.addView(generateRow(context, f.getName(), foodArrayList, columns));
+                                                    table.addView(generateRow(context, f.getName(), foodArrayList,grs, columns));
 
                                                 }
 
@@ -207,68 +218,84 @@ public class TableGenerator {
         return th;
     }
 
-    private static String addAttFood(List<Food>foods, HeaderColumns att,Context context){
-        int i = 0;
+    private static String addAttFood(List<Food>foods, HeaderColumns att,Context context,ArrayList<Double> grs){
+        double i = 0;
+        String a;
+        Double b;
 
        try{
-           for (Food f: foods) {
+           for (int j = 0; i < foods.size(); j++) {
+               Food f = foods.get(j);
                switch (att){
                    case Kcal:
-                       i += Integer.parseInt(f.getEnergia());
+                       i += safeParse(f.getEnergia())*(grs.get(j)/100);
                        break;
                    case Proteina:
-                       i += Integer.parseInt(f.getProteina());
+                       i+= safeParse(f.getProteina())*(grs.get(j)/100);
                        break;
                    case Grasa:
-                       i += Integer.parseInt(f.getGrasa());
+                       i+= safeParse(f.getGrasa())*(grs.get(j)/100);
                        break;
                    case AGs:
-                       i += Integer.parseInt(f.getAgs());
+                       i+= safeParse(f.getAgs())*(grs.get(j)/100);
                        break;
                    case AGmi:
-                       i += Integer.parseInt(f.getAgmi());
+                       i+= safeParse(f.getAgmi())*(grs.get(j)/100);
                        break;
                    case AGpi:
-                       i += Integer.parseInt(f.getAgpi());
+                       i+= safeParse(f.getAgpi())*(grs.get(j)/100);
                        break;
                    case Colesterol:
-                       i += Integer.parseInt(f.getColesterol());
+                       i+= safeParse(f.getColesterol())*(grs.get(j)/100);
                        break;
                    case HC:
-                       i += Integer.parseInt(f.getHc());
+                       i+= safeParse(f.getHc())*(grs.get(j)/100);
                        break;
                    case Fibra:
-                       i += Integer.parseInt(f.getFibra());
+                       i+= safeParse(f.getFibra())*(grs.get(j)/100);
                        break;
                    case VitC:
-                       i += Integer.parseInt(f.getVitC());
+                       i += safeParse(f.getVitC())*(grs.get(j)/100);
                        break;
                    case VitB6:
-                       i += Integer.parseInt(f.getVitB6());
+                       i += safeParse(f.getVitB6())*(grs.get(j)/100);
                        break;
                    case VitE:
-                       i += Integer.parseInt(f.getVitE());
+                       i += safeParse(f.getVitE())*(grs.get(j)/100);
                        break;
                    case Hierro:
-                       i += Integer.parseInt(f.getHierro());
+                       i += safeParse(f.getHierro())*(grs.get(j)/100);
                        break;
                    case Sodio:
-                       i += Integer.parseInt(f.getSodio());
+                       i += safeParse(f.getSodio())*(grs.get(j)/100);
                        break;
                    case Calcio:
-                       i += Integer.parseInt(f.getCalcio());
+                       i += safeParse(f.getCalcio())*(grs.get(j)/100);
                        break;
                    case Potasio:
-                       i += Integer.parseInt(f.getPotasio());
+                       i += safeParse(f.getPotasio())*(grs.get(j)/100);
                        break;
                }
            }
        }catch (Exception e){
            Toast.makeText(context, "Error: con uno de los alimantos que imposibilita su lectura", Toast.LENGTH_SHORT).show();
+           i += 0.0;
        }
 
         return String.valueOf(i);
     }
+
+    private static double safeParse(String value) {
+        if (value == null) return 0.0;
+        value = value.trim().replace(",", ".");
+        if (value.isEmpty() || value.equals("-")) return 0.0;
+        try {
+            return Double.parseDouble(value);
+        } catch (NumberFormatException e) {
+            return 0.0;
+        }
+    }
+
 
     private static TableRow.LayoutParams margin(){
         TableRow.LayoutParams params = new TableRow.LayoutParams(
@@ -305,23 +332,15 @@ public class TableGenerator {
         return addCol;
     }
 
-    private static TableRow generateRow (Context context, String nameRecipe, List<Food> foods,ArrayList<HeaderColumns> headers){
+    private TableRow generateRow (Context context, String nameRecipe, List<Food> foods,ArrayList<Double> gr,ArrayList<HeaderColumns> headers){
         TableRow row = new TableRow(context);
         LinearLayout name = generateCommonCell(context, nameRecipe);
         LinearLayout scrollView = generateFoodCell(context, foods);
-
-        //temp
-        View.OnClickListener onClickAddHeader = v -> {
-            Toast.makeText(context, "Añadir columna", Toast.LENGTH_SHORT).show();
-        };
-        //temp
-        Button btn = addBtnPlus(context, onClickAddHeader);
 
         scrollView.setLayoutParams(margin());
 
         name.setLayoutParams(margin());
         scrollView.setLayoutParams(margin());
-        btn.setLayoutParams(margin());
 
 
         row.addView(name);
@@ -332,7 +351,7 @@ public class TableGenerator {
             if (!header.equals(HeaderColumns.Nombre) && !header.equals(HeaderColumns.Alimentos)) {
                 try {
                     HeaderColumns columna = HeaderColumns.valueOf(header.name());
-                    LinearLayout cell = generateCommonCell(context, addAttFood(foods, columna, context));
+                    LinearLayout cell = generateCommonCell(context, addAttFood(foods, columna, context,gr ));
                     row.addView(cell);
                     cells.add(cell);
                 } catch (IllegalArgumentException e) {
@@ -340,8 +359,6 @@ public class TableGenerator {
                 }
             }
         }
-
-        row.addView(btn);
 
         // Ajustar alturas tras renderizado
         scrollView.post(() -> {
@@ -372,9 +389,13 @@ public class TableGenerator {
         cell.setBackgroundResource(R.drawable.bg_food_item);
 
         TextView tv = new TextView(context);
-        tv.setText(text);
+        tv.setText(text.substring(0,1).toUpperCase()+text.substring(1,text.length()).toLowerCase());
         tv.setTextSize(20);
         tv.setPadding(15, 15, 15, 15);
+        Typeface customFont = ResourcesCompat.getFont(context, R.font.lily_script_one);
+        if (customFont != null) {
+            tv.setTypeface(customFont);
+        }
         tv.setTextColor(Color.parseColor("#027C68"));
         cell.addView(tv);
 
@@ -382,7 +403,7 @@ public class TableGenerator {
         return cell;
     }
 
-    private static LinearLayout generateFoodCell(Context context, List<Food> food) {
+    private LinearLayout generateFoodCell(Context context, List<Food> food) {
         // Contenedor externo (la celda que se mete en la tabla)
         LinearLayout container = new LinearLayout(context);
         container.setOrientation(LinearLayout.VERTICAL);
@@ -415,23 +436,35 @@ public class TableGenerator {
             LinearLayout fRow = new LinearLayout(context);
             fRow.setOrientation(LinearLayout.HORIZONTAL);
             fRow.setGravity(Gravity.CENTER_VERTICAL);
-            fRow.setLayoutParams(new LinearLayout.LayoutParams(
+            fRow.setGravity(Gravity.CENTER);
+
+            LinearLayout.LayoutParams insiteSVmargin = new LinearLayout.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT
-            ));
+            );
+            insiteSVmargin.setMargins(10, 5, 10, 0);
+
+            fRow.setLayoutParams(insiteSVmargin);
             fRow.setBackgroundResource(R.drawable.bg_food_background);
             fRow.setLayoutParams(insiteSVmargin());
 
             TextView name = new TextView(context);
-            name.setText(f.getName());
-            name.setTextSize(14);
-            name.setPadding(10, 10, 10, 10);
+            name.setText(f.getName().substring(0,1).toUpperCase()+f.getName().substring(1,f.getName().length()).toLowerCase());
+            name.setTextColor(Color.WHITE);
+            name.setTextSize(18);
+            Typeface customFont = ResourcesCompat.getFont(context, R.font.lily_script_one);
+            if (customFont != null) {
+                name.setTypeface(customFont);
+            }
+            name.setPadding(10, 5, 10, 0);
 
             ImageButton info = new ImageButton(context);
             info.setImageResource(android.R.drawable.ic_menu_info_details);
             info.setBackgroundColor(Color.TRANSPARENT);
             info.setOnClickListener(v -> {
-                Toast.makeText(context, "Ver info de " + f.getName(), Toast.LENGTH_SHORT).show();
+                if (food.isEmpty()){
+                    info.setOnClickListener(onClickCreateRecepie);
+                }
             });
 
             fRow.addView(name);

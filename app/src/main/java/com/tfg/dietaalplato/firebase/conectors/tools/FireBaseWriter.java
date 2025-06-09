@@ -160,7 +160,7 @@ public class FireBaseWriter {
                                     finalresult.setException(new ComplexFBCE(new ObjectResult<>(false, msgErrorRepeatFoodDiet,validationResult.data )));
                                 } else {
                                     Log.d(TAG, "FoodDiet existente, operacion sin permisos de sobreescritura");
-                                    save(result,classData, validationResult.message,result.data.get("idDieta")).addOnSuccessListener(
+                                    save(result,classData, validationResult.message,result.data.get("idDieta").toUpperCase()).addOnSuccessListener(
                                             saveResult ->{
                                                 finalresult.setResult(saveResult);
                                             }
@@ -500,10 +500,10 @@ public class FireBaseWriter {
                             }
                     );
                     break;
-                case "dietaAlimentos":
+                case "comidaDietas":
                     Log.d(TAG, "💾"+classData.key+" "+classData.data);
                     save(new FoodDiet(id.toUpperCase(), result.data.get("idDieta").toUpperCase(), result.data.get("idAlimento").toUpperCase(), result.data.get("comida"),
-                            result.data.get("numeroPlato"), result.data.get("dia"), result.data.get("nombreReceta"), result.data.get("idUsr"))).addOnSuccessListener(
+                            result.data.get("numeroPlato"), result.data.get("dia"), result.data.get("gramos"), result.data.get("nombreReceta"))).addOnSuccessListener(
                             foodDietResult -> {
                                 Log.d(TAG, "✅ FoodDiet guardado con éxito en Firestore");
                                 taskCompletionSource.setResult(new ObjectResult<>(foodDietResult.exit, foodDietResult.message, foodDietResult.result));
@@ -544,11 +544,13 @@ public class FireBaseWriter {
         foodData.put("comida", dietFood.getComida());
         foodData.put("numeroPlato", dietFood.getNumeroPlato());
         foodData.put("dia", dietFood.getDia());
-        foodData.put("nombreReceta", dietFood.getName());
+        foodData.put("name", dietFood.getName());
+        foodData.put("g", dietFood.getG());
+        foodData.put("id", dietFood.getId());
 
         TaskCompletionSource<ObjectResult<FoodDiet>> callback = new TaskCompletionSource<>();
         // Guardar en Firestore en la colección "diet_food"
-        fst.collection("dietaAlimentos").document(dietFood.getIdDieta() + "_" + dietFood.getIdAlimento())
+        fst.collection("comidaDietas").document(dietFood.getId())
                 .set(foodData)
                 .addOnSuccessListener(aVoid -> {
                     Log.d(TAG, "✅ DietFood guardado con éxito en Firestore");

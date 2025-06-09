@@ -30,6 +30,7 @@ import com.tfg.dietaalplato.firebase.utilities.OnResultCallBack;
 import com.tfg.dietaalplato.firebase.utilities.ValidationResult;
 import com.tfg.dietaalplato.utilities.Blocker;
 import com.tfg.dietaalplato.utilities.SaveData;
+import com.tfg.dietaalplato.utilities.TableGenerator;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -158,7 +159,7 @@ public class NewDietDialog extends DialogFragment {
         return ln;
     }
 
-    private void save(View view){
+    private void save(View view) {
         Blocker.createBlocker((ViewGroup) mainView.getRootView(),mainView.getContext());
 
         if (egComida.getText().toString() == null || egComida.getText().toString().equals("")){
@@ -176,12 +177,19 @@ public class NewDietDialog extends DialogFragment {
         Log.d("RESULT",result.toString());
 
         FireBaseWriter.saveData(FoodDiet.class,result).addOnFailureListener(
-                e -> Toast.makeText(mainView.getContext(),"Error al guardar", Toast.LENGTH_SHORT).show()
+                e -> Toast.makeText(mainView.getContext(),"Error al guardar, compruebe los datos", Toast.LENGTH_SHORT).show()
         ).addOnSuccessListener(
                 aVoid -> Toast.makeText(mainView.getContext(),"Guardado correctamente", Toast.LENGTH_SHORT).show()
         );
+
+        try{
+            TableGenerator tableGenerator = TableGenerator.getInstance();
+            tableGenerator.resetAndGenerateTable();
+        }catch (Exception e){
+            Toast.makeText(mainView.getContext(),"Error al generar la tabla", Toast.LENGTH_SHORT).show();
+        }
+
         Blocker.removeBlocker((ViewGroup) mainView.getRootView());
-        dismiss();
     }
 
 }

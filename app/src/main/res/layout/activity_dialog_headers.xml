@@ -27,7 +27,7 @@
             android:layout_height="match_parent"
             android:fontFamily="@font/lily_script_one"
             android:gravity="center"
-            android:text="Añadir"
+            android:text="Añade una columna"
             android:textColor="#027C68"
             android:textSize="35sp"
             android:textStyle="bold" />

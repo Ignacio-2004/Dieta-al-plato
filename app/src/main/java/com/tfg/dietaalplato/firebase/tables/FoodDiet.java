@@ -29,9 +29,9 @@ public class FoodDiet extends BaseObject {
 
     // Constructor con parámetros
 
-    public FoodDiet(String id, String idDieta, String idAlimento, String comida, String numeroPlato, String dia, String g, String nombreReceta) {
+    public FoodDiet(String id, String idDieta, String idAlimento, String comida, String numeroPlato, String dia, String g, String name) {
 
-        super(id,nombreReceta);
+        super(id,name);
         this.idDieta = idDieta;
         this.idAlimento = idAlimento;
         this.comida = comida;
@@ -136,7 +136,11 @@ public class FoodDiet extends BaseObject {
             }
 
             for (int i = 0; i < keys.size(); i++) {
-                result.data.put(fieldName[i], keys.get(i).toLowerCase());
+                if (fieldName[i].contains("id")){
+                    result.data.put(fieldName[i], keys.get(i).toUpperCase());
+                }else{
+                    result.data.put(fieldName[i], keys.get(i).toLowerCase());
+                }
             }
 
             result.exit = true;

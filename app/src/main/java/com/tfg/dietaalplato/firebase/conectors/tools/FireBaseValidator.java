@@ -229,11 +229,11 @@ public class FireBaseValidator {
         TaskCompletionSource<ValidationResult> taskCompletionSource = new TaskCompletionSource<>();
 
         switch (collectionName){
-            case "dietaAlimentos":
+            case "comidaDietas":
 
-                readFoodDietByDiet(idDiet).addOnSuccessListener(
+                readFoodDietByDiet(idDiet.toUpperCase()).addOnSuccessListener(
                         foodDiets -> {
-                            if (!foodDiets.exit) {
+                            if (foodDiets.exit) {
                                 Map<String, ArrayList<FoodDiet>> foodDietsCollection = foodDiets.result;
 
                                 for (ArrayList<FoodDiet> foodDiet : foodDietsCollection.values()) {
@@ -245,9 +245,9 @@ public class FireBaseValidator {
                                         }
                                     }
                                 }
-                                taskCompletionSource.setResult(new ValidationResult(true, String.valueOf(foodDietsCollection.size()), result.data));
-                                return;
                             }
+                            taskCompletionSource.setResult(new ValidationResult(true,"0", result.data));
+                            return;
                         }
                 ).addOnFailureListener(
                         e -> {
