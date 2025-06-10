@@ -17,7 +17,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.core.content.res.ResourcesCompat;
+import androidx.fragment.app.FragmentActivity;
 
+import com.tfg.dietaalplato.DialogInfoFoodPerGr;
 import com.tfg.dietaalplato.R;
 import com.tfg.dietaalplato.firebase.conectors.tools.FireBaseReader;
 import com.tfg.dietaalplato.firebase.exceptions.FBCException;
@@ -38,6 +40,7 @@ public class TableGenerator {
     private LinearLayout contenedor;
     private View.OnClickListener onClickAddHeader;
     private View.OnClickListener onClickCreateRecepie;
+    private FragmentActivity supportFragmentActivity;
 
     private static TableGenerator instance;
 
@@ -85,6 +88,10 @@ public class TableGenerator {
 
     public void setOnClickCreateRecepie(View.OnClickListener onClickCreateRecepie){
         this.onClickCreateRecepie = onClickCreateRecepie;
+    }
+
+    public void setSupportFragmentActivity(FragmentActivity supportFragmentActivity) {
+        this.supportFragmentActivity = supportFragmentActivity;
     }
 
     public void generarTabla() throws FBCException {
@@ -159,7 +166,7 @@ public class TableGenerator {
                                                             }
                                                         }
                                                     }
-                                                    table.addView(generateRow(context, f.getName(), foodArrayList,grs, columns));
+                                                    table.addView(generateRow(context, f.getName(), foodArrayList,grs,f, columns));
 
                                                 }
 
@@ -220,11 +227,9 @@ public class TableGenerator {
 
     private static String addAttFood(List<Food>foods, HeaderColumns att,Context context,ArrayList<Double> grs){
         double i = 0;
-        String a;
-        Double b;
 
        try{
-           for (int j = 0; i < foods.size(); j++) {
+           for (int j = 0; j < foods.size(); j++) {
                Food f = foods.get(j);
                switch (att){
                    case Kcal:
@@ -278,7 +283,7 @@ public class TableGenerator {
                }
            }
        }catch (Exception e){
-           Toast.makeText(context, "Error: con uno de los alimantos que imposibilita su lectura", Toast.LENGTH_SHORT).show();
+           Toast.makeText(context, "Error al leer algunos alimentos", Toast.LENGTH_SHORT).show();
            i += 0.0;
        }
 
@@ -332,10 +337,10 @@ public class TableGenerator {
         return addCol;
     }
 
-    private TableRow generateRow (Context context, String nameRecipe, List<Food> foods,ArrayList<Double> gr,ArrayList<HeaderColumns> headers){
+    private TableRow generateRow (Context context, String nameRecipe, List<Food> foods,ArrayList<Double> gr,FoodDiet fd,ArrayList<HeaderColumns> headers){
         TableRow row = new TableRow(context);
         LinearLayout name = generateCommonCell(context, nameRecipe);
-        LinearLayout scrollView = generateFoodCell(context, foods);
+        LinearLayout scrollView = generateFoodCell(context, foods,fd);
 
         scrollView.setLayoutParams(margin());
 
@@ -403,7 +408,7 @@ public class TableGenerator {
         return cell;
     }
 
-    private LinearLayout generateFoodCell(Context context, List<Food> food) {
+    private LinearLayout generateFoodCell(Context context, List<Food> food, FoodDiet fd) {
         // Contenedor externo (la celda que se mete en la tabla)
         LinearLayout container = new LinearLayout(context);
         container.setOrientation(LinearLayout.VERTICAL);
@@ -447,6 +452,16 @@ public class TableGenerator {
             fRow.setLayoutParams(insiteSVmargin);
             fRow.setBackgroundResource(R.drawable.bg_food_background);
             fRow.setLayoutParams(insiteSVmargin());
+            fRow.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    DialogInfoFoodPerGr dialog = DialogInfoFoodPerGr.getInstance();
+                    dialog.setFood(f);
+                    dialog.setFoodDiet(fd);
+                    Activity activity = (Activity) context;
+                    dialog.show(supportFragmentActivity.getSupportFragmentManager(), "DialogScrollView");
+                }
+            });
 
             TextView name = new TextView(context);
             name.setText(f.getName().substring(0,1).toUpperCase()+f.getName().substring(1,f.getName().length()).toLowerCase());
@@ -510,7 +525,7 @@ public class TableGenerator {
         };
         //temp
         Button btn = addBtnPlus(context, onClickCreateRecepie);
-        LinearLayout scrollView = generateFoodCell(context, new ArrayList<>());
+        LinearLayout scrollView = generateFoodCell(context, new ArrayList<>(), new FoodDiet());
 
         scrollView.setLayoutParams(margin());
 

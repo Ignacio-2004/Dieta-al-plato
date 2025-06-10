@@ -1,10 +1,430 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".DialogInfoFoodPerGr">
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="#DDE9EFDF"
+    android:padding="16dp">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <!-- TÍTULO PRINCIPAL -->
+    <TextView
+        android:id="@+id/titulo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/lily_script_one"
+        android:gravity="center"
+        android:paddingBottom="16dp"
+        android:text="Modifica la cantidad"
+        android:textColor="#027C68"
+        android:textSize="22sp"
+        android:textStyle="bold" />
+
+    <!-- CONTENIDO SCROLLABLE -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <!-- Nombre del alimento -->
+                <TextView
+                    android:layout_width="300dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/nombre_del_alimento"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="#027C68"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginTop="8dp" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="Gramos"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="#027C68"
+                    android:layout_marginTop="8dp" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <EditText
+                    android:id="@+id/inputAlimento"
+                    android:hint="@string/ej_manzana"
+                    android:layout_width="300dp"
+                    android:layout_height="wrap_content"
+                    android:autofillHints=""
+                    android:background="@android:drawable/edit_text"
+                    android:inputType="textCapWords"
+                    android:padding="10dp"
+                    android:textSize="16sp"
+                    android:layout_marginBottom="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:enabled="false"
+                    />
+
+                <EditText
+                    android:id="@+id/inputgr"
+                    android:hint="gr"
+                    android:layout_width="250dp"
+                    android:layout_height="wrap_content"
+                    android:autofillHints=""
+                    android:background="@android:drawable/edit_text"
+                    android:inputType="textCapWords"
+                    android:padding="10dp"
+                    android:textSize="16sp"
+                    android:layout_marginBottom="16dp" />
+
+                <Button
+                    android:id="@+id/btnDecrementProt100"
+                    android:layout_width="wrap_content"
+                    android:layout_height="52dp"
+                    android:text="–"
+                    android:backgroundTint="#40027C68"
+                    android:minWidth="48dp" />
+
+                <Button
+                    android:id="@+id/btnIncrementProt100"
+                    android:layout_width="wrap_content"
+                    android:layout_height="52dp"
+                    android:text="+"
+                    android:backgroundTint="#40027C68"
+                    android:minWidth="48dp" />
+            </LinearLayout>
+
+            <!-- Sección MACRONUTRIENTES -->
+            <TextView
+                android:text="@string/macronutrientes"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="#027C68"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="8dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <!-- Lista de macronutrientes -->
+
+            <TextView android:text="@string/pc" style="@style/FormLabel" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/inputPC"
+                    style="@style/FormInput"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:autofillHints=""
+                    android:enabled="false"
+                    android:hint="@string/_0" />
+
+            </LinearLayout>
+
+            <!-- Energía -->
+            <TextView android:text="@string/energ_a_e_100" style="@style/FormLabel" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="8dp">
+
+                <EditText
+                    android:id="@+id/inputE100"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:inputType="numberDecimal"
+                    android:hint="@string/_0"
+                    android:padding="10dp"
+                    android:textSize="16sp"
+                    android:background="@android:drawable/edit_text"
+                    android:enabled="false"
+                    />
+            </LinearLayout>
+
+            <!-- Proteínas -->
+            <TextView android:text="@string/prote_nas_prot_100" style="@style/FormLabel" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="8dp">
+
+                <EditText
+                    android:id="@+id/inputProt100"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:inputType="numberDecimal"
+                    android:hint="@string/_0"
+                    android:padding="10dp"
+                    android:textSize="16sp"
+                    android:background="@android:drawable/edit_text"
+                    android:enabled="false"
+                    />
+            </LinearLayout>
+
+            <!-- Grasas -->
+            <TextView android:text="@string/grasas_grasa_100" style="@style/FormLabel" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="8dp">
+
+                <EditText
+                    android:id="@+id/inputGrasa100"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:inputType="numberDecimal"
+                    android:hint="@string/_0"
+                    android:padding="10dp"
+                    android:textSize="16sp"
+                    android:background="@android:drawable/edit_text"
+                    android:enabled="false"
+                    />
+
+            </LinearLayout>
+            <!--ags-->
+            <TextView android:text="@string/ags_100" style="@style/FormLabel" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="8dp">
+
+                <EditText
+                    android:id="@+id/inputAGS100"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:inputType="numberDecimal"
+                    android:hint="@string/_0"
+                    android:padding="10dp"
+                    android:textSize="16sp"
+                    android:background="@android:drawable/edit_text"
+                    android:enabled="false"
+                    />
+
+            </LinearLayout>
+
+            <!--agmi-->
+            <TextView android:text="@string/agmi_100" style="@style/FormLabel" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="8dp">
+
+                <EditText
+                    android:id="@+id/inputAGMI100"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:inputType="numberDecimal"
+                    android:hint="@string/_0"
+                    android:padding="10dp"
+                    android:textSize="16sp"
+                    android:background="@android:drawable/edit_text"
+                    android:enabled="false"
+                    />
+
+            </LinearLayout>
+
+
+            <!--agpi-->
+            <TextView android:text="@string/agpi_100" style="@style/FormLabel" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="8dp">
+
+                <EditText
+                    android:id="@+id/inputAGPI100"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:inputType="numberDecimal"
+                    android:hint="@string/_0"
+                    android:padding="10dp"
+                    android:textSize="16sp"
+                    android:background="@android:drawable/edit_text"
+                    android:enabled="false"
+                    />
+
+            </LinearLayout>
+
+
+            <!--colesterol-->
+            <TextView android:text="@string/colesterol_col_100" style="@style/FormLabel" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="8dp">
+
+                <EditText
+                    android:id="@+id/inputCol100"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:inputType="numberDecimal"
+                    android:hint="@string/_0"
+                    android:padding="10dp"
+                    android:textSize="16sp"
+                    android:background="@android:drawable/edit_text"
+                    android:enabled="false"
+                    />
+
+            </LinearLayout>
+
+
+            <!--hidratos de carbono-->
+            <TextView android:text="@string/hidratos_de_carbono_hc_100" style="@style/FormLabel" />
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal">
+                <EditText android:enabled="false"
+                    android:id="@+id/inputHC100" style="@style/FormInput" android:layout_width="0dp" android:layout_weight="1" android:autofillHints="" android:hint="@string/_0" />
+            </LinearLayout>
+
+            <!--fibra-->
+            <TextView android:text="@string/fibra_100" style="@style/FormLabel" />
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal">
+                <EditText android:enabled="false"
+                    android:id="@+id/inputFibra100" style="@style/FormInput" android:layout_width="0dp" android:layout_weight="1" android:autofillHints="" android:hint="@string/_0" />
+            </LinearLayout>
+
+            <!-- Sección MICRONUTRIENTES -->
+            <TextView
+                android:text="@string/micronutrientes"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="#027C68"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="8dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <!--vitamina c-->
+            <TextView android:text="@string/vitamina_c_vit_c_100" style="@style/FormLabel" />
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal">
+                <EditText android:enabled="false"
+                    android:id="@+id/inputVitC100" style="@style/FormInput" android:layout_width="0dp" android:layout_weight="1" android:autofillHints="" android:hint="@string/_0" />
+            </LinearLayout>
+
+            <!--vitamina b6-->
+            <TextView android:text="@string/vitamina_b6_vit_b6_100" style="@style/FormLabel" />
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal">
+                <EditText android:enabled="false"
+                    android:id="@+id/inputVitB6100" style="@style/FormInput" android:layout_width="0dp" android:layout_weight="1" android:autofillHints="" android:hint="@string/_0" />
+            </LinearLayout>
+
+            <!--vitamina e -->
+            <TextView android:text="@string/vitamina_e_vit_e_100" style="@style/FormLabel" />
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal">
+                <EditText android:enabled="false"
+                    android:id="@+id/inputVitE100" style="@style/FormInput" android:layout_width="0dp" android:layout_weight="1" android:autofillHints="" android:hint="@string/_0" />
+            </LinearLayout>
+
+            <!--hierro -->
+            <TextView android:text="@string/hierro_fe_100" style="@style/FormLabel" />
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal">
+                <EditText android:enabled="false"
+                    android:id="@+id/inputFe100" style="@style/FormInput" android:layout_width="0dp" android:layout_weight="1" android:autofillHints="" android:hint="@string/_0" />
+            </LinearLayout>
+
+            <!--agpi-->
+            <TextView android:text="@string/sodio_na_100" style="@style/FormLabel" />
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal">
+                <EditText android:enabled="false"
+                    android:id="@+id/inputNa100" style="@style/FormInput" android:layout_width="0dp" android:layout_weight="1" android:autofillHints="" android:hint="@string/_0" />
+            </LinearLayout>
+
+            <!--calcio-->
+            <TextView android:text="@string/calcio_ca_100" style="@style/FormLabel" />
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal">
+                <EditText android:enabled="false"
+                    android:id="@+id/inputCa100" style="@style/FormInput" android:layout_width="0dp" android:layout_weight="1" android:autofillHints="" android:hint="@string/_0" />
+            </LinearLayout>
+
+            <!--potasio-->
+            <TextView android:text="@string/potasio_k_100" style="@style/FormLabel" />
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal">
+                <EditText android:enabled="false"
+                    android:id="@+id/inputK100" style="@style/FormInput" android:layout_width="0dp" android:layout_weight="1" android:autofillHints="" android:hint="@string/_0" />
+            </LinearLayout>
+
+
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- BOTONES -->
+    <LinearLayout
+        style="?android:attr/buttonBarStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="end"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp"
+        android:weightSum="2"
+        android:paddingTop="8dp">
+
+        <Button
+            android:id="@+id/btnCancelar"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/cancelar"
+            android:textAllCaps="false"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#027C68"
+            android:layout_marginEnd="8dp" />
+
+        <Button
+            android:id="@+id/btnGuardar"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/guardar"
+            android:textAllCaps="false"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#027C68" />
+    </LinearLayout>
+
+    <!-- MENSAJE DE ERROR -->
+    <TextView
+        android:id="@+id/txtMensajeErrorAlimento"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textColor="#B00020"
+        android:textSize="14sp"
+        android:visibility="gone"
+        android:gravity="center"
+        android:paddingTop="4dp"
+        android:paddingBottom="8dp" />
+
+</LinearLayout>

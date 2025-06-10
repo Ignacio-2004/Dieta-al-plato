@@ -293,10 +293,15 @@ public class SaveData {
         Log.d(TAG, "removeDiet: " + diets);
     }
 
-    public void removeFoodDiet (String name){
+    public void removeFoodDiets (String name){
         Log.d(TAG, "removeFoodDiet: " + name);
         foodDiets.remove(name);
         Log.d(TAG, "removeFoodDiet: " + foodDiets);
+    }
+    public void removeFoodDiet (String idDiet, String name){
+        Log.d(TAG, "removeFoodDiet: " + name);
+
+        getFoodDietsOfDiet(idDiet).get(name).clear();
     }
 
     public void clear(){

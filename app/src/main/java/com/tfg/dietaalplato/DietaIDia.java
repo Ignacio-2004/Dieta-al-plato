@@ -53,6 +53,7 @@ public class DietaIDia extends AppCompatActivity {
                 NewDietDialog dialog = NewDietDialog.getInstance();
                 dialog.show(getSupportFragmentManager(), "DialogScrollView");
             });
+            tableGenerator.setSupportFragmentActivity(this);
             tableGenerator.resetAndGenerateTable();
         } catch (FBCException e) {
             Toast.makeText(this, "No es posible generar la tabla", Toast.LENGTH_SHORT).show();

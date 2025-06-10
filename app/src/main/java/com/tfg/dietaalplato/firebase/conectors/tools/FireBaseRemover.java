@@ -52,7 +52,7 @@ public class FireBaseRemover {
                 errorMsg = "Error al eliminar la dieta";
                 break;
             case "FDI":
-                collection = "dietaAlimentos";
+                collection = "comidaDietas";
                 successMsg = "Alimento eliminado correctamente";
                 errorMsg = "Error al eliminar el alimento";
                 break;
@@ -90,13 +90,14 @@ public class FireBaseRemover {
                                         }
                                     }
                                     break;
-                                case "dietaAlimentos":
+                                case "comidaDietas":
 
-                                    CacheCollection<Map<String, Diet>> foodDiet = saveData.getDiets();
-                                    for (Map<String, Diet> dietMap: foodDiet.getAllAsArrayList()){
-                                        for (Diet diet: dietMap.values()){
-                                            if(diet.getId().equals(id)){
-                                                //saveData.removeDiet(diet.getName());
+                                    for (Map<String, ArrayList<FoodDiet>> foodDiet : saveData.getFoodDiets().getAllAsArrayList()) {
+                                        for (ArrayList<FoodDiet> foodDiets : foodDiet.values()) {
+                                            for (FoodDiet foodDiet1 : foodDiets) {
+                                                if (foodDiet1.getId().equals(id)) {
+                                                    saveData.removeFoodDiet(foodDiet1.getIdDieta(),foodDiet1.getName());
+                                                }
                                             }
                                         }
                                     }
