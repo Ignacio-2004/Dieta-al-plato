@@ -2,7 +2,11 @@ package com.tfg.dietaalplato.utilities;
 
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.tfg.dietaalplato.firebase.tables.Client;
+import com.tfg.dietaalplato.firebase.tables.DailyNutrition;
 import com.tfg.dietaalplato.firebase.tables.Diet;
 import com.tfg.dietaalplato.firebase.tables.Food;
 import com.tfg.dietaalplato.firebase.tables.FoodDiet;
@@ -11,7 +15,12 @@ import com.tfg.dietaalplato.firebase.utilities.TablesNames;
 import com.tfg.dietaalplato.utilities.tipe_collection.CacheCollection;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 
 /**
@@ -360,5 +369,29 @@ public class SaveData {
 
     public void setCurrentDay(int currentDay) {
         this.currentDay = currentDay;
+    }
+
+    private List<FoodDiet> currentDayFoods;
+
+    public void setCurrentDayFoods(List<FoodDiet> foods) {
+        this.currentDayFoods = foods;
+    }
+
+    public List<FoodDiet> getCurrentDayFoods() {
+        return currentDayFoods;
+    }
+
+    private Map<String, DailyNutrition> nutritionData = new HashMap<>();
+
+    public void setNutritionForDay(String day, DailyNutrition nutrition) {
+        nutritionData.put(day, nutrition);
+    }
+
+    public DailyNutrition getNutritionForDay(String day) {
+        return nutritionData.get(day);
+    }
+
+    public void clearNutritionData() {
+        nutritionData.clear();
     }
 }

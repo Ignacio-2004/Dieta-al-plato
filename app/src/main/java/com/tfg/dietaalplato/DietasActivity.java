@@ -1,6 +1,8 @@
 package com.tfg.dietaalplato;
 
 
+import static android.content.ContentValues.TAG;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,10 +15,15 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.tfg.dietaalplato.firebase.conectors.tools.FireBaseReader;
 import com.tfg.dietaalplato.firebase.conectors.tools.FireBaseWriter;
 import com.tfg.dietaalplato.firebase.exceptions.ComplexFBCE;
+import com.tfg.dietaalplato.firebase.exceptions.FBCException;
 import com.tfg.dietaalplato.firebase.tables.Client;
+import com.tfg.dietaalplato.firebase.tables.DailyNutrition;
 import com.tfg.dietaalplato.firebase.tables.Diet;
+import com.tfg.dietaalplato.firebase.tables.Food;
+import com.tfg.dietaalplato.firebase.tables.FoodDiet;
 import com.tfg.dietaalplato.firebase.utilities.OnResultCallBack;
 import com.tfg.dietaalplato.firebase.utilities.ValidationResult;
 import com.tfg.dietaalplato.utilities.Blocker;
@@ -24,6 +31,7 @@ import com.tfg.dietaalplato.utilities.SaveData;
 import com.tfg.dietaalplato.utilities.dialogo.ClientInfo_Dialog;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -82,28 +90,26 @@ public class DietasActivity extends AppCompatActivity {
         data.add(String.valueOf(dietaSeleccionada));
         data.add("null");
         ValidationResult result = Diet.toMapData(data, saveData.getCurrentClient().getId());
-        Log.d("Cliente", "Cliente: "+saveData.getCurrentClient().toString());
-        Log.d("Cliente", result.toString());
+
         FireBaseWriter.saveData(Diet.class, result).addOnSuccessListener(
                 validationResult -> {
-                    Log.d("Dieta", validationResult.toString());
-                    try{
+                    try {
                         Diet diet = (Diet) validationResult.result;
-
-                        Blocker.removeBlocker(this.findViewById(android.R.id.content));
-                        Intent intent;
-                        if (!Objects.equals(diet.getTip(), "1")){
-                            intent = new Intent(this, DiasActivity.class);
-                        }else{
-                            saveData.setDay("1");
-                            intent = new Intent(this, ComidasActivity.class);
-                        }
-
                         saveData.setCurrentDiet(diet);
 
-                        startActivity(intent);
-
-                    }catch (Exception e){
+                        if (diet.getTip().equals("1")) {
+                            // Cargar alimentos y nutrición para dieta de 1 día
+                            loadDayNutrition(diet.getId(), "1", () -> {
+                                Blocker.removeBlocker(this.findViewById(android.R.id.content));
+                                Intent intent = new Intent(this, ComidasActivity.class);
+                                startActivity(intent);
+                            });
+                        } else {
+                            Blocker.removeBlocker(this.findViewById(android.R.id.content));
+                            Intent intent = new Intent(this, DiasActivity.class);
+                            startActivity(intent);
+                        }
+                    } catch (Exception e) {
                         Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
                         Blocker.removeBlocker(this.findViewById(android.R.id.content));
                     }
@@ -138,6 +144,39 @@ public class DietasActivity extends AppCompatActivity {
                     }
                 }
         );
+    }
+
+    private void loadDayNutrition(String dietId, String day, Runnable onComplete) {
+        try {
+            FireBaseReader.readFoodsForDay(dietId, Integer.parseInt(day))
+                    .addOnSuccessListener(foodResult -> {
+                        if (foodResult.isSuccess() && !foodResult.result.isEmpty()) {
+                            calculateDailyNutrition(foodResult.result, day);
+                        }
+                        onComplete.run();
+                    })
+                    .addOnFailureListener(e -> onComplete.run());
+        } catch (FBCException e) {
+            onComplete.run();
+        }
+    }
+
+    private void calculateDailyNutrition(List<FoodDiet> foodDiets, String day) {
+        DailyNutrition dailyNutrition = new DailyNutrition();
+
+        for (FoodDiet foodDiet : foodDiets) {
+            try {
+                // Asumiendo que tienes los alimentos en caché o los puedes obtener
+                Food food = saveData.getFoods().get(foodDiet.getIdAlimento());
+                if (food != null) {
+                    dailyNutrition.addFood(food);
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "Error al obtener alimento: " + e.getMessage());
+            }
+        }
+
+        saveData.setNutritionForDay(day, dailyNutrition);
     }
 
 

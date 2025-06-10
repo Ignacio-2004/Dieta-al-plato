@@ -27,6 +27,7 @@ import com.tfg.dietaalplato.firebase.conectors.tools.FireBaseRemover;
 import com.tfg.dietaalplato.firebase.conectors.tools.FireBaseWriter;
 import com.tfg.dietaalplato.firebase.exceptions.ComplexFBCE;
 import com.tfg.dietaalplato.firebase.tables.Client;
+import com.tfg.dietaalplato.firebase.tables.DailyNutrition;
 import com.tfg.dietaalplato.firebase.utilities.ValidationResult;
 import com.tfg.dietaalplato.utilities.Blocker;
 import com.tfg.dietaalplato.utilities.SaveData;
@@ -56,7 +57,6 @@ public class MacrosInfo_Dialog extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         mainView = getActivity().getLayoutInflater().inflate(R.layout.dialog_info_macros, null);
 
-
         proteinasInput = mainView.findViewById(R.id.proteinas_input);
         carbohidratosInput = mainView.findViewById(R.id.carbohidratos_input);
         grasasInput = mainView.findViewById(R.id.grasas_input);
@@ -74,11 +74,24 @@ public class MacrosInfo_Dialog extends DialogFragment {
                 .setCancelable(true);
 
 
+        String currentDay = saveData.getCurrentDiet().getTip().equals("1") ?
+                "1" : String.valueOf(saveData.getCurrentDay());
+
+        DailyNutrition nutrition = saveData.getNutritionForDay(currentDay);
         Client client = saveData.getCurrentClient();
-        proteinasInput.setText(client.getMinKal());
-        carbohidratosInput.setText(client.getMaxKal());
-        grasasInput.setText(client.getMinKal());
-        caloriasInput.setText(client.getMaxKal());
+
+        if (nutrition != null) {
+            proteinasInput.setText(String.format("Proteínas: %.1fg", nutrition.getTotalProteinas()));
+            carbohidratosInput.setText(String.format("Carbohidratos: %.1fg", nutrition.getTotalCarbohidratos()));
+            grasasInput.setText(String.format("Grasas: %.1fg", nutrition.getTotalGrasas()));
+            caloriasInput.setText(String.format("Calorías: %.1fkcal", nutrition.getTotalCalorias()));
+        } else {
+            proteinasInput.setText("No hay datos de proteínas");
+            carbohidratosInput.setText("No hay datos de carbohidratos");
+            grasasInput.setText("No hay datos de grasas");
+            caloriasInput.setText("No hay datos de calorías");
+        }
+
         minKal.setText(client.getMinKal());
         maxKal.setText(client.getMaxKal());
 
@@ -88,7 +101,6 @@ public class MacrosInfo_Dialog extends DialogFragment {
                     dismiss();
                 }
         );
-
 
         return builder.create();
     }
