@@ -231,20 +231,20 @@ public class SaveData {
         String comida = foodDiet.getComida();   // clave interna
 
         // Obtener o crear el mapa interno asociado a esa dieta
-        Map<String, ArrayList<FoodDiet>> comidaMap = foodDiets.get(idDieta);
-        if (comidaMap == null) {
-            comidaMap = new HashMap<>();
+        Map<String, ArrayList<FoodDiet>> map = foodDiets.get(idDieta);
+        if (map == null) {
+            map = new HashMap<>();
         }
 
         // Obtener o crear la lista de FoodDiet asociada a esa comida
-        ArrayList<FoodDiet> lista = comidaMap.getOrDefault(comida, new ArrayList<>());
+        ArrayList<FoodDiet> lista = map.getOrDefault(foodDiet.getName(), new ArrayList<>());
         lista.add(foodDiet);
 
         // Guardar la lista actualizada dentro del mapa interno
-        comidaMap.put(comida, lista);
+        map.put(comida, lista);
 
         // Actualizar en el CacheCollection
-        foodDiets.update(idDieta, comidaMap);
+        foodDiets.update(idDieta, map);
         Log.d(TAG, "addFoodDiet: " + foodDiets);
     }
 
@@ -301,7 +301,7 @@ public class SaveData {
     public void removeFoodDiet (String idDiet, String name){
         Log.d(TAG, "removeFoodDiet: " + name);
 
-        getFoodDietsOfDiet(idDiet).get(name).clear();
+        getFoodDietsOfDiet(idDiet).remove(name);
     }
 
     public void clear(){

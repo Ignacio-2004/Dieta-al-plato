@@ -238,7 +238,7 @@ public class FireBaseValidator {
 
                                 for (ArrayList<FoodDiet> foodDiet : foodDietsCollection.values()) {
                                     for (FoodDiet foodDiet1 : foodDiet) {
-                                        if (foodDiet1.getIdAlimento().equals(idFood)) {
+                                        if (foodDiet1.getName().equals(result.data.get("name"))) {
                                             Log.e("Firebase", foodDiet1.getId());
                                             taskCompletionSource.setResult(new ValidationResult(false, "La relacion ya existe", FoodDiet.toDesMapObject(foodDiet1)));
                                             return;

@@ -159,7 +159,7 @@ public class FireBaseWriter {
                                     Log.w(TAG, "FoodDiet existente, operacion sin permisos de sobreescritura");
                                     finalresult.setException(new ComplexFBCE(new ObjectResult<>(false, msgErrorRepeatFoodDiet,validationResult.data )));
                                 } else {
-                                    Log.d(TAG, "FoodDiet existente, operacion sin permisos de sobreescritura");
+                                    Log.d(TAG, "FoodDiet no existente, inicio de guardado");
                                     save(result,classData, validationResult.message,result.data.get("idDieta").toUpperCase()).addOnSuccessListener(
                                             saveResult ->{
                                                 finalresult.setResult(saveResult);
@@ -509,6 +509,7 @@ public class FireBaseWriter {
                                 taskCompletionSource.setResult(new ObjectResult<>(foodDietResult.exit, foodDietResult.message, foodDietResult.result));
                                 Log.d(TAG,"✅ FoodDiet guardado con éxito en Local");
                                 saveData.addFoodDiet(foodDietResult.result);
+                                saveData.getFoodDiets().setLoaded(true);
                             }
                     ).addOnFailureListener(
                             e -> {

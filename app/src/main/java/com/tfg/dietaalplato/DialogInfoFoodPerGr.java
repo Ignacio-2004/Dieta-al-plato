@@ -135,7 +135,7 @@ public class DialogInfoFoodPerGr extends DialogFragment {
              }
         });
 
-        /*btnSave.setOnClickListener( new View.OnClickListener() {
+        btnSave.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (originalGr != safeParse(inputgr.getText().toString())) {
@@ -187,7 +187,7 @@ public class DialogInfoFoodPerGr extends DialogFragment {
                     mostrarTextError();
                 }
             }
-        });*/
+        });
 
         btnDecrement.setOnClickListener( new View.OnClickListener() {
             @Override

@@ -141,8 +141,6 @@ public class TableGenerator {
                                     e -> Toast.makeText(context, "Error al leer los alimentos", Toast.LENGTH_SHORT).show()
                             ).addOnSuccessListener(
                                     foods -> {
-                                        Toast.makeText(context, "Alimentos leidos", Toast.LENGTH_SHORT).show();
-
                                         if (foodDiets.result != null) {
                                             for (ArrayList<FoodDiet> fd: foodDiets.result.values()) {
                                                 //La arraylist es cada receta unificada por el nombre

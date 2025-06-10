@@ -177,19 +177,23 @@ public class NewDietDialog extends DialogFragment {
         Log.d("RESULT",result.toString());
 
         FireBaseWriter.saveData(FoodDiet.class,result).addOnFailureListener(
-                e -> Toast.makeText(mainView.getContext(),"Error al guardar, compruebe los datos", Toast.LENGTH_SHORT).show()
+                e -> {
+                    Toast.makeText(mainView.getContext(), "Error al guardar, compruebe los datos", Toast.LENGTH_SHORT).show();
+                    Blocker.removeBlocker((ViewGroup) mainView.getRootView());
+                }
         ).addOnSuccessListener(
-                aVoid -> Toast.makeText(mainView.getContext(),"Guardado correctamente", Toast.LENGTH_SHORT).show()
+                aVoid -> {
+                    Toast.makeText(mainView.getContext(), "Guardado correctamente", Toast.LENGTH_SHORT).show();
+                    try{
+                        TableGenerator tableGenerator = TableGenerator.getInstance();
+                        tableGenerator.resetAndGenerateTable();
+                    }catch (Exception e){
+                        Toast.makeText(mainView.getContext(),"Error al generar la tabla", Toast.LENGTH_SHORT).show();
+                    }
+                    Blocker.removeBlocker((ViewGroup) mainView.getRootView());
+                }
         );
 
-        try{
-            TableGenerator tableGenerator = TableGenerator.getInstance();
-            tableGenerator.resetAndGenerateTable();
-        }catch (Exception e){
-            Toast.makeText(mainView.getContext(),"Error al generar la tabla", Toast.LENGTH_SHORT).show();
-        }
-
-        Blocker.removeBlocker((ViewGroup) mainView.getRootView());
     }
 
 }
