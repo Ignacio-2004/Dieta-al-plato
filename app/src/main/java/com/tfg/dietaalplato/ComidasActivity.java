@@ -1,5 +1,7 @@
 package com.tfg.dietaalplato;
 
+import static android.content.ContentValues.TAG;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,7 +22,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.tfg.dietaalplato.firebase.conectors.FireBaseConnector;
+import com.tfg.dietaalplato.firebase.conectors.tools.FireBaseReader;
 import com.tfg.dietaalplato.firebase.exceptions.FBCException;
+import com.tfg.dietaalplato.firebase.tables.DailyNutrition;
 import com.tfg.dietaalplato.firebase.tables.Food;
 import com.tfg.dietaalplato.firebase.tables.FoodDiet;
 import com.tfg.dietaalplato.firebase.tables.Macros;
@@ -104,7 +108,42 @@ public class ComidasActivity extends AppCompatActivity {
         botonRecena.setOnClickListener(comidaClickListener);
     }
 
-    public void just(View view){
+    private void loadDayNutrition(String dietId, String day) {
+        try {
+            FireBaseReader.readFoodsForDay(dietId, Integer.parseInt(day))
+                    .addOnSuccessListener(foodResult -> {
+                        if (foodResult.isSuccess() && !foodResult.result.isEmpty()) {
+                            calculateDailyNutrition(foodResult.result, day);
+                        }
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.e(TAG, "Error al cargar nutrición: " + e.getMessage());
+                    });
+        } catch (FBCException e) {
+            Log.e(TAG, "Error al cargar nutrición: " + e.getMessage());
+        }
+    }
+
+    private void calculateDailyNutrition(List<FoodDiet> foodDiets, String day) {
+        DailyNutrition dailyNutrition = new DailyNutrition();
+
+        for (FoodDiet foodDiet : foodDiets) {
+            try {
+                Food food = saveData.getFoods().get(foodDiet.getIdAlimento());
+                if (food != null) {
+                    dailyNutrition.addFood(food); // Este método ya suma todo
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "Error al obtener alimento: " + e.getMessage());
+            }
+        }
+
+        // Guardamos todo en saveData
+        saveData.setNutritionForDay(day, dailyNutrition);
+    }
+
+
+    public void just(View view) {
         DialogAddJustification dialog = new DialogAddJustification();
         dialog.show(getSupportFragmentManager(), "DialogAddJustification");
     }

@@ -16,9 +16,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class FoodDiet extends BaseObject {
 
+    private String idUsr;
     private String idDieta;
     private String idAlimento;
-    private String comida; // 1: Desayuno, 2: Almuerzo, 3: Comida, 4: Merienda, 5: Cena, 6: ReCena
+    private String tipoComida; // 1: Desayuno, 2: Almuerzo, 3: Comida, 4: Merienda, 5: Cena, 6: ReCena
     private String numeroPlato;
     private String dia;
     private String g;
@@ -34,7 +35,7 @@ public class FoodDiet extends BaseObject {
         super(id,name);
         this.idDieta = idDieta;
         this.idAlimento = idAlimento;
-        this.comida = comida;
+        this.tipoComida = comida;
         this.numeroPlato = numeroPlato;
         this.dia = dia;
         this.g = g;
@@ -61,11 +62,11 @@ public class FoodDiet extends BaseObject {
     }
 
     public String getComida() {
-        return comida;
+        return tipoComida;
     }
 
     public void setComida(String comida) {
-        this.comida = comida;
+        this.tipoComida = comida;
     }
 
     public String getNumeroPlato() {
@@ -98,7 +99,7 @@ public class FoodDiet extends BaseObject {
                 "id='" + getId() + '\'' +
                 "idDieta='" + idDieta + '\'' +
                 ", idAlimento='" + idAlimento + '\'' +
-                ", comida=" + comida +
+                ", comida=" + tipoComida +
                 ", numeroPlato=" + numeroPlato +
                 ", dia=" + dia +
                 ", nombreReceta='" + getName() + '\'' +
@@ -184,6 +185,33 @@ public class FoodDiet extends BaseObject {
 
         return booleanAtomic.get();
 
+    }
+
+    public String getIdUsr() {
+        return idUsr;
+    }
+
+    public void setIdUsr(String idUsr) {
+        this.idUsr = idUsr;
+    }
+
+    public String getTipoComida() {
+        return tipoComida;
+    }
+
+    public void setTipoComida(String tipoComida) {
+        this.tipoComida = tipoComida;
+    }
+
+    public Map<String, Object> toMap() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("id", getId());
+        map.put("idDieta", idDieta);
+        map.put("idAlimento", idAlimento);
+        map.put("idUsr", idUsr);
+        map.put("dia", dia);
+        map.put("tipoComida", tipoComida);
+        return map;
     }
 
 //--IP - 23/04/2025 -

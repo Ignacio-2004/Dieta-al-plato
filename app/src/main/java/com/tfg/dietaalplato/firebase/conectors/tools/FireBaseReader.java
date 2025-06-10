@@ -10,6 +10,7 @@ import com.tfg.dietaalplato.firebase.conectors.FireBaseConnector;
 import com.tfg.dietaalplato.firebase.exceptions.ComplexFBCE;
 import com.tfg.dietaalplato.firebase.exceptions.FBCException;
 import com.tfg.dietaalplato.firebase.tables.Client;
+import com.tfg.dietaalplato.firebase.tables.DailyNutrition;
 import com.tfg.dietaalplato.firebase.tables.Diet;
 import com.tfg.dietaalplato.firebase.tables.Food;
 import com.tfg.dietaalplato.firebase.tables.FoodDiet;
@@ -25,6 +26,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class FireBaseReader {
     private static final String TAG = "FireBase/Reader";
@@ -842,5 +844,62 @@ public class FireBaseReader {
         return taskCompletionSource.getTask();
     }
 
+    /**
+     * Método que obtiene los alimentos de una dieta para un día específico
+     * @param idDieta ID de la dieta
+     * @param dia Día específico (1-7)
+     * @return Lista de FoodDiet con los alimentos del día
+     * @throws FBCException excepción propia que marca si la conexión no es buena
+     */
+    public static Task<ObjectResult<List<FoodDiet>>> readFoodsForDay(String idDieta, int dia) throws FBCException {
+        FirebaseFirestore fst = FireBaseConnector.getInstance().getFirestore();
+        TaskCompletionSource<ObjectResult<List<FoodDiet>>> taskCompletionSource = new TaskCompletionSource<>();
+        SaveData saveData = SaveData.getInstance();
 
+        // Primero verificamos si ya tenemos los datos en caché
+        if (saveData.getFoodDiets().isLoaded() && saveData.getFoodDiets().contains(idDieta)) {
+            List<FoodDiet> foodsForDay = new ArrayList<>();
+            Map<String, ArrayList<FoodDiet>> allFoodDiets = saveData.getFoodDietsOfDiet(idDieta);
+
+            for (ArrayList<FoodDiet> foodList : allFoodDiets.values()) {
+                for (FoodDiet foodDiet : foodList) {
+                    if (foodDiet.getDia().equals(String.valueOf(dia))) {
+                        foodsForDay.add(foodDiet);
+                    }
+                }
+            }
+
+            if (!foodsForDay.isEmpty()) {
+                taskCompletionSource.setResult(new ObjectResult<>(true, "success", foodsForDay));
+                return taskCompletionSource.getTask();
+            }
+        }
+
+        // Si no está en caché, lo buscamos en Firestore
+        fst.collection("comidaDietas")
+                .whereEqualTo("idDieta", idDieta)
+                .whereEqualTo("dia", String.valueOf(dia))
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    if (!queryDocumentSnapshots.isEmpty()) {
+                        List<FoodDiet> foodsForDay = new ArrayList<>();
+
+                        for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments()) {
+                            FoodDiet foodDiet = document.toObject(FoodDiet.class);
+                            if (foodDiet != null) {
+                                foodsForDay.add(foodDiet);
+                            }
+                        }
+
+                        taskCompletionSource.setResult(new ObjectResult<>(true, "success", foodsForDay));
+                    } else {
+                        taskCompletionSource.setResult(new ObjectResult<>(false, "No se encontraron alimentos para este día", new ArrayList<>()));
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    taskCompletionSource.setException(new ComplexFBCE(new ObjectResult<>(false, "Error al buscar alimentos: " + e.getMessage(), null)));
+                });
+
+        return taskCompletionSource.getTask();
+    }
 }

@@ -14,6 +14,35 @@ public class ObjectResult<T> {
         this.message = message;
         this.result = result;
     }
+
+    public boolean isSuccess() {
+        return exit;
+    }
+
+    // Getters y Setters
+    public boolean isExit() {
+        return exit;
+    }
+
+    public void setExit(boolean exit) {
+        this.exit = exit;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public T getResult() {
+        return result;
+    }
+
+    public void setResult(T result) {
+        this.result = result;
+    }
 }
 
 //--Ip - 25/04/2025 -

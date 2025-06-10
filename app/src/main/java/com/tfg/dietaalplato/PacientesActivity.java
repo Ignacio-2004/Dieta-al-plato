@@ -87,8 +87,7 @@ public class PacientesActivity extends AppCompatActivity {
 
                                             Intent intent = new Intent(this, DietasActivity.class);
                                             startActivity(intent);
-                                        }
-                                );
+                                });
                                 item.addView(nombre);
                                 layoutClientes.addView(item);
                                 Blocker.removeBlocker(this.findViewById(android.R.id.content));
