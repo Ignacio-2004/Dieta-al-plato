@@ -25,6 +25,7 @@ import com.tfg.dietaalplato.firebase.conectors.tools.FireBaseReader;
 import com.tfg.dietaalplato.firebase.exceptions.FBCException;
 import com.tfg.dietaalplato.firebase.tables.Food;
 import com.tfg.dietaalplato.firebase.tables.FoodDiet;
+import com.tfg.dietaalplato.utilities.dialogo.DialogAddFoodToFoodDIet;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -487,17 +488,19 @@ public class TableGenerator {
         }
 
         // Botón "+" para añadir alimentos
-        //temp
-        View.OnClickListener onClickAddHeader = v -> {
-            Toast.makeText(context, "Añadir alimento", Toast.LENGTH_SHORT).show();
-        };
-        //temp
+
         Button botonAdd = addBtnPlus(context, onClickAddHeader);
         botonAdd.setLayoutParams(insiteSVmargin());
         botonAdd.setBackgroundResource(R.drawable.bg_food_background);
         botonAdd.setTextColor(Color.WHITE);
         botonAdd.setOnClickListener(v -> {
-            Toast.makeText(context, "Añadir alimento", Toast.LENGTH_SHORT).show();
+            if (fd.getName() == null || fd.getName().isEmpty()){
+                onClickCreateRecepie.onClick(v);
+            }else{
+                DialogAddFoodToFoodDIet dialog = DialogAddFoodToFoodDIet.getInstance();
+                dialog.setFoods((ArrayList<Food>) food);
+                dialog.show(supportFragmentActivity.getSupportFragmentManager(), "DialogScrollView");
+            }
         });
 
         alimentosLayout.addView(botonAdd);
@@ -517,11 +520,6 @@ public class TableGenerator {
     private TableRow generateLastRow(Context context, ArrayList<HeaderColumns> header){
         TableRow row = new TableRow(context);
 
-        //temp
-        View.OnClickListener onClickAddHeader = v -> {
-            Toast.makeText(context, "Añadir receta", Toast.LENGTH_SHORT).show();
-        };
-        //temp
         Button btn = addBtnPlus(context, onClickCreateRecepie);
         LinearLayout scrollView = generateFoodCell(context, new ArrayList<>(), new FoodDiet());
 
