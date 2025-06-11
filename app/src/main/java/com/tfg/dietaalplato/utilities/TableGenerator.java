@@ -165,7 +165,7 @@ public class TableGenerator {
                                                             }
                                                         }
                                                     }
-                                                    table.addView(generateRow(context, f.getName(), foodArrayList,grs,f, columns));
+                                                    table.addView(generateRow(context, f.getName(), foodArrayList,grs,f,foodDiets.result.get(f.getName()), columns));
 
                                                 }
 
@@ -336,10 +336,10 @@ public class TableGenerator {
         return addCol;
     }
 
-    private TableRow generateRow (Context context, String nameRecipe, List<Food> foods,ArrayList<Double> gr,FoodDiet fd,ArrayList<HeaderColumns> headers){
+    private TableRow generateRow (Context context, String nameRecipe, List<Food> foods,ArrayList<Double> gr,FoodDiet fd,ArrayList<FoodDiet> foodsDiet,ArrayList<HeaderColumns> headers){
         TableRow row = new TableRow(context);
         LinearLayout name = generateCommonCell(context, nameRecipe);
-        LinearLayout scrollView = generateFoodCell(context, foods,fd);
+        LinearLayout scrollView = generateFoodCell(context, foods,fd,foodsDiet);
 
         scrollView.setLayoutParams(margin());
 
@@ -407,7 +407,7 @@ public class TableGenerator {
         return cell;
     }
 
-    private LinearLayout generateFoodCell(Context context, List<Food> food, FoodDiet fd) {
+    private LinearLayout generateFoodCell(Context context, List<Food> food, FoodDiet fd, ArrayList<FoodDiet> foodsDiet) {
         // Contenedor externo (la celda que se mete en la tabla)
         LinearLayout container = new LinearLayout(context);
         container.setOrientation(LinearLayout.VERTICAL);
@@ -499,6 +499,7 @@ public class TableGenerator {
             }else{
                 DialogAddFoodToFoodDIet dialog = DialogAddFoodToFoodDIet.getInstance();
                 dialog.setFoods((ArrayList<Food>) food);
+                dialog.setCurrentsfoodDiets(foodsDiet);
                 dialog.show(supportFragmentActivity.getSupportFragmentManager(), "DialogScrollView");
             }
         });
@@ -521,7 +522,7 @@ public class TableGenerator {
         TableRow row = new TableRow(context);
 
         Button btn = addBtnPlus(context, onClickCreateRecepie);
-        LinearLayout scrollView = generateFoodCell(context, new ArrayList<>(), new FoodDiet());
+        LinearLayout scrollView = generateFoodCell(context, new ArrayList<>(), new FoodDiet(), new ArrayList<>());
 
         scrollView.setLayoutParams(margin());
 

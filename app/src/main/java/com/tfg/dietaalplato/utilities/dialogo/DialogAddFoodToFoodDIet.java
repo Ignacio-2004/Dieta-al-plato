@@ -9,27 +9,22 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.DialogFragment;
 
 import com.tfg.dietaalplato.R;
 import com.tfg.dietaalplato.firebase.conectors.tools.FireBaseReader;
 import com.tfg.dietaalplato.firebase.exceptions.FBCException;
 import com.tfg.dietaalplato.firebase.tables.Food;
+import com.tfg.dietaalplato.firebase.tables.FoodDiet;
 import com.tfg.dietaalplato.firebase.utilities.OnResultCallBack;
-import com.tfg.dietaalplato.utilities.Blocker;
-import com.tfg.dietaalplato.utilities.HeaderColumns;
 import com.tfg.dietaalplato.utilities.SaveData;
 import com.tfg.dietaalplato.utilities.TableGenerator;
 
@@ -43,11 +38,17 @@ public class DialogAddFoodToFoodDIet extends DialogFragment {
 
     private ArrayList<Food> currentFoods; //R
     private ArrayList<Food> foods; //R
+    private ArrayList<FoodDiet> currentsfoodDiets; //R
+    private Food selectedFood;
+    private LinearLayout selectedLayout;
 
     private LinearLayout currentLayout; //R
     private LinearLayout toAddLayout; //R
     private ImageButton bttReturn; //R
     private Button bttSave; //R
+    private Button bttIncrement; //R
+    private Button bttDecrement; //R
+    private EditText inputgr; //R
 
 
 
@@ -65,6 +66,7 @@ public class DialogAddFoodToFoodDIet extends DialogFragment {
     public void setFoods(ArrayList<Food> foods){
         this.currentFoods = foods;
     }
+    public void setCurrentsfoodDiets(ArrayList<FoodDiet> currentsfoodDiets){this.currentsfoodDiets = currentsfoodDiets;}
 
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         mainView = getActivity().getLayoutInflater().inflate(R.layout.dialog_add_food_to_food_diet, null);
@@ -79,6 +81,36 @@ public class DialogAddFoodToFoodDIet extends DialogFragment {
                 toAddLayout = mainView.findViewById(R.id.addLayout);
                 bttReturn = mainView.findViewById(R.id.bttReturn);
                 bttSave = mainView.findViewById(R.id.buttonGuardar);
+                bttIncrement = mainView.findViewById(R.id.btnIncrementProt100);
+                bttDecrement = mainView.findViewById(R.id.btnDecrementProt100);
+                inputgr = mainView.findViewById(R.id.inputgr);
+
+                bttDecrement.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (inputgr.getText() != null || !inputgr.getText().toString().equals("")){
+                            int gr = Integer.parseInt(inputgr.getText().toString())-1;
+                            inputgr.setText(String.valueOf(gr));
+                        }
+                    }
+                });
+
+                bttIncrement.setOnClickListener( new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (inputgr.getText() != null || !inputgr.getText().toString().equals("")){
+                            int gr = Integer.parseInt(inputgr.getText().toString())+1;
+                            inputgr.setText(String.valueOf(gr));
+                        }
+                    }
+                });
+
+                bttReturn.setOnClickListener(new View.OnClickListener() {
+                     @Override
+                     public void onClick(View v) {
+                         dismiss();
+                     }
+                });
 
                 ScrollView csv = new ScrollView(mainView.getContext());
                 csv.setBackgroundColor(Color.TRANSPARENT);
@@ -147,6 +179,7 @@ public class DialogAddFoodToFoodDIet extends DialogFragment {
         ln.setLayoutParams(params);
 
 
+
         TextView tv = new TextView(mainView.getContext());
         tv.setText(food.getName());
         tv.setBackgroundColor(Color.TRANSPARENT);
@@ -158,6 +191,35 @@ public class DialogAddFoodToFoodDIet extends DialogFragment {
         if (customFont != null){
             tv.setTypeface(customFont);
         }
+
+        View.OnClickListener listener2 = v -> {
+            if (selectedFood != food){
+                try{
+                    ln.setBackgroundResource(R.drawable.bg_food_selected_background);
+                    if (selectedFood != null && selectedLayout != null){
+                        selectedLayout.setBackgroundResource(R.drawable.bg_food_background);
+                        selectedLayout.removeView(tv);
+                    }
+                    selectedFood = food;
+                    selectedLayout = ln;
+
+                    if (currentFoods.contains(food)){
+                        for (FoodDiet foodDiet : currentsfoodDiets) {
+                            if (foodDiet.getIdAlimento().equals(food.getId())){
+                                inputgr.setText(String.valueOf(foodDiet.getG()));
+                            }
+                        }
+                    }else{
+                        inputgr.setText("0");
+                    }
+
+                }catch (Exception e){
+                    Toast.makeText(mainView.getContext(),"Error al seleccionar el alimento", Toast.LENGTH_SHORT).show();
+                }
+            }
+        };
+        ln.setOnClickListener(listener2);
+        tv.setOnClickListener(listener2);
         ln.addView(tv);
         return ln;
     }
