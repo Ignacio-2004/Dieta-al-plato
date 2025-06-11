@@ -36,7 +36,6 @@ import java.util.ArrayList;
 import java.util.Map;
 
 public class NewDietDialog extends DialogFragment {
-    private static NewDietDialog NewDietDialog;
     private View mainView;
     private SaveData saveData;
     private Food selectedFood;
@@ -48,11 +47,7 @@ public class NewDietDialog extends DialogFragment {
     private EditText nameRecepie;
 
     public static NewDietDialog getInstance() {
-
-        if (NewDietDialog == null) {
-            NewDietDialog = new NewDietDialog();
-        }
-        return NewDietDialog;
+        return new NewDietDialog();
     }
 
     private NewDietDialog(){

@@ -228,7 +228,7 @@ public class SaveData {
     public void addFoodDiet(FoodDiet foodDiet) {
         Log.d(TAG, "addFoodDiet: " + foodDiet);
         String idDieta = foodDiet.getIdDieta(); // clave externa
-        String comida = foodDiet.getComida();   // clave interna
+        String comida = foodDiet.getName();   // clave interna
 
         // Obtener o crear el mapa interno asociado a esa dieta
         Map<String, ArrayList<FoodDiet>> map = foodDiets.get(idDieta);
