@@ -14,27 +14,6 @@
             android:stretchColumns="*"
             android:padding="16dp">
 
-            <TableRow>
-                <TextView android:text="Alimento" style="@style/HeaderCell"/>
-                <TextView android:text="PC" style="@style/HeaderCell"/>
-                <TextView android:text="E/100" style="@style/HeaderCell"/>
-                <TextView android:text="Prot/100" style="@style/HeaderCell"/>
-                <TextView android:text="Grasa/100" style="@style/HeaderCell"/>
-                <TextView android:text="AGS/100" style="@style/HeaderCell"/>
-                <TextView android:text="AGMI/100" style="@style/HeaderCell"/>
-                <TextView android:text="AGPI/100" style="@style/HeaderCell"/>
-                <TextView android:text="Col/100" style="@style/HeaderCell"/>
-                <TextView android:text="HC/100" style="@style/HeaderCell"/>
-                <TextView android:text="Fibra/100" style="@style/HeaderCell"/>
-                <TextView android:text="Vit C/100" style="@style/HeaderCell"/>
-                <TextView android:text="Vit B6/100" style="@style/HeaderCell"/>
-                <TextView android:text="Vit E/100" style="@style/HeaderCell"/>
-                <TextView android:text="Fe/100" style="@style/HeaderCell"/>
-                <TextView android:text="Na/100" style="@style/HeaderCell"/>
-                <TextView android:text="Ca/100" style="@style/HeaderCell"/>
-                <TextView android:text="K/100" style="@style/HeaderCell"/>
-            </TableRow>
-
         </TableLayout>
     </HorizontalScrollView>
 </ScrollView>
