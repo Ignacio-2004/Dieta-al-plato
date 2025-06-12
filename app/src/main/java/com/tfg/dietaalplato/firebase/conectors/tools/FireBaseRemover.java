@@ -97,6 +97,7 @@ public class FireBaseRemover {
                                             for (FoodDiet foodDiet1 : foodDiets) {
                                                 if (foodDiet1.getId().equals(id)) {
                                                     saveData.removeFoodDiet(foodDiet1);
+                                                    return;
                                                 }
                                             }
                                         }

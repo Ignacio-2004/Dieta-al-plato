@@ -242,7 +242,7 @@ public class DialogAddFoodToFoodDIet extends DialogFragment {
                     @Override
                     public void onClick(View v) {
                         if (inputgr.getText() != null || !inputgr.getText().toString().equals("")){
-                            int gr = Integer.parseInt(inputgr.getText().toString())-1;
+                            double gr = Double.parseDouble(inputgr.getText().toString())-1;
                             inputgr.setText(String.valueOf(gr));
                         }
                     }
@@ -252,7 +252,7 @@ public class DialogAddFoodToFoodDIet extends DialogFragment {
                     @Override
                     public void onClick(View v) {
                         if (inputgr.getText() != null || !inputgr.getText().toString().equals("")){
-                            int gr = Integer.parseInt(inputgr.getText().toString())+1;
+                            double gr = Double.parseDouble(inputgr.getText().toString())+1;
                             inputgr.setText(String.valueOf(gr));
                         }
                     }
