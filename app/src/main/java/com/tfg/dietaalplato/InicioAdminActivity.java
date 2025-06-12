@@ -63,7 +63,7 @@ public class InicioAdminActivity extends AppCompatActivity {
                             ));
 
                             item.setOnClickListener(v ->{
-                                        Log.d("Usuario", "Nombre del usuario: " + usuario.getName());
+                                        Log.d("Usuario", "Nombre del usuario seleccionado: " + usuario.getName());
                                         saveData.setCurrentStudent(usuario);
 
                                         Intent intent = new Intent(this, InicioUsuarioActivity.class);

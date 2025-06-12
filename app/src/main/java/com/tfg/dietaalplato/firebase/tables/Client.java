@@ -101,63 +101,69 @@ public class Client extends BaseObject {
 
     //++IP - 23/04/2025 -
 
-    public static ValidationResult toMapData(ArrayList<View> data,ArrayList<String> alergias, ArrayList<String> patologias, String idUsr){
+    public static ValidationResult toMapData(ArrayList<View> data, ArrayList<String> alergias, ArrayList<String> patologias, String idUsr) {
         ValidationResult result = new ValidationResult();
 
-        String[] fieldName = {"name", "ape","minKcal","maxKcal", "idUsr", "alergias", "patologias"};
+        String[] fieldName = {"name", "ape", "minKcal", "maxKcal", "idUsr", "alergias", "patologias"};
+        String[] userFriendlyNames = {
+                "el nombre del cliente",
+                "el apellido del cliente",
+                "las calorías mínimas",
+                "las calorías máximas"
+        };
 
-        try{
+        try {
             result.data = new HashMap<>();
 
             ArrayList<String> keys = new ArrayList<>();
-            keys.add(((EditText) data.get(0)).getText().toString().trim());
-            keys.add(((EditText) data.get(1)).getText().toString().trim());
-            keys.add(((EditText) data.get(2)).getText().toString().trim());
-            keys.add(((EditText) data.get(3)).getText().toString().trim());
-            keys.add(idUsr);
 
-            for (int i = 0; i < keys.size()-1; i++) {
-
-                //Comprobamos que no haya campos vacios
-
-                if (keys.get(i).isEmpty()) {
-                    throw new Exception("El campo " + data.get(i).getTag().toString() + " no puede estar vacio");
-                    //Con tag devuelvo el nombre del campo vacio
+            // Recolectamos datos
+            for (int i = 0; i < 4; i++) {
+                String value = ((EditText) data.get(i)).getText().toString().trim();
+                if (value.isEmpty()) {
+                    throw new Exception("Debes ingresar " + userFriendlyNames[i] + ".");
                 }
+                keys.add(value);
             }
 
+            // Validamos ID de usuario
+            if (idUsr == null || idUsr.trim().isEmpty()) {
+                throw new Exception("Falta el identificador de usuario.");
+            }
+            keys.add(idUsr);
+
+            // Llenamos el mapa con los datos
             for (int i = 0; i < keys.size(); i++) {
                 result.data.put(fieldName[i], keys.get(i).toLowerCase());
             }
 
+            // Procesamos alergias
             String compoundCharacteristic = "";
-
             for (String allergy : alergias) {
-                compoundCharacteristic = compoundCharacteristic + allergy + ",";
+                compoundCharacteristic += allergy + ",";
             }
             result.data.put(fieldName[5], compoundCharacteristic);
 
+            // Procesamos patologías
             compoundCharacteristic = "";
-
             for (String pathology : patologias) {
-                compoundCharacteristic = compoundCharacteristic + pathology + ",";
+                compoundCharacteristic += pathology + ",";
             }
             result.data.put(fieldName[6], compoundCharacteristic);
 
             result.exit = true;
-            result.message = "Datos validos";
+            result.message = "Datos válidos";
 
-        }catch (Exception e){
-
+        } catch (Exception e) {
             result.exit = false;
             result.message = e.getMessage();
-
         }
 
-        Log.d("Client",result.data.toString());
+        Log.d("Client", result.data.toString());
 
         return result;
     }
+
 
     public static Map<String,String> toDesMapObject(Client client){
 
