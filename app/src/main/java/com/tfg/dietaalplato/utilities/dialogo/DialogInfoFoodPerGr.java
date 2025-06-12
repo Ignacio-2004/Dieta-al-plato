@@ -1,35 +1,25 @@
-package com.tfg.dietaalplato;
+package com.tfg.dietaalplato.utilities.dialogo;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.DialogFragment;
 
+import com.tfg.dietaalplato.R;
 import com.tfg.dietaalplato.firebase.conectors.tools.FireBaseRemover;
 import com.tfg.dietaalplato.firebase.conectors.tools.FireBaseWriter;
-import com.tfg.dietaalplato.firebase.exceptions.FBCException;
 import com.tfg.dietaalplato.firebase.tables.Food;
 import com.tfg.dietaalplato.firebase.tables.FoodDiet;
 import com.tfg.dietaalplato.firebase.utilities.ValidationResult;
 import com.tfg.dietaalplato.utilities.Blocker;
-import com.tfg.dietaalplato.utilities.TableGenerator;
 
 import java.util.ArrayList;
 
@@ -147,6 +137,7 @@ public class DialogInfoFoodPerGr extends DialogFragment {
                     data.add(inputgr.getText().toString());
                     data.add(currentFoodDiet.getName());
 
+
                     ValidationResult validationResult = FoodDiet.toMapData(data, currentFoodDiet.getIdDieta(), currentFood.getId());
 
                     if (validationResult.exit) {
@@ -158,6 +149,7 @@ public class DialogInfoFoodPerGr extends DialogFragment {
                                     errTv.setText("Error al guardar");
                                     errTv.setVisibility(View.VISIBLE);
                                     mostrarTextError();
+                                    Blocker.removeBlocker(parent);
                                 }
                         ).addOnSuccessListener(
                                 aVoid -> {
@@ -167,6 +159,7 @@ public class DialogInfoFoodPerGr extends DialogFragment {
                                                 errTv.setText("Error al guardar");
                                                 errTv.setVisibility(View.VISIBLE);
                                                 mostrarTextError();
+                                                Blocker.removeBlocker(parent);
                                             }
                                     ).addOnSuccessListener(
                                             aVoid1 ->{
@@ -174,12 +167,11 @@ public class DialogInfoFoodPerGr extends DialogFragment {
                                                 errTv.setVisibility(View.VISIBLE);
                                                 hasChange = true;
                                                 mostrarTextError();
+                                                Blocker.removeBlocker(parent);
                                             }
                                     );
                                 }
                         );
-
-                        Blocker.removeBlocker(parent);
                     }
                 }else{
                     errTv.setText("No se ha realizado ningún cambio");

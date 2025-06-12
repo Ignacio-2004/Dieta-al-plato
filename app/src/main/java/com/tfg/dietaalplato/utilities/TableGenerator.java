@@ -19,7 +19,7 @@ import android.widget.Toast;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.FragmentActivity;
 
-import com.tfg.dietaalplato.DialogInfoFoodPerGr;
+import com.tfg.dietaalplato.utilities.dialogo.DialogInfoFoodPerGr;
 import com.tfg.dietaalplato.R;
 import com.tfg.dietaalplato.firebase.conectors.tools.FireBaseReader;
 import com.tfg.dietaalplato.firebase.exceptions.FBCException;
@@ -28,9 +28,7 @@ import com.tfg.dietaalplato.firebase.tables.FoodDiet;
 import com.tfg.dietaalplato.utilities.dialogo.DialogAddFoodToFoodDIet;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class TableGenerator {
 

@@ -1,10 +1,15 @@
 package com.tfg.dietaalplato.utilities.dialogo;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,15 +21,21 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentActivity;
 
 import com.tfg.dietaalplato.R;
 import com.tfg.dietaalplato.firebase.conectors.tools.FireBaseReader;
+import com.tfg.dietaalplato.firebase.conectors.tools.FireBaseRemover;
+import com.tfg.dietaalplato.firebase.conectors.tools.FireBaseWriter;
 import com.tfg.dietaalplato.firebase.exceptions.FBCException;
 import com.tfg.dietaalplato.firebase.tables.Food;
 import com.tfg.dietaalplato.firebase.tables.FoodDiet;
 import com.tfg.dietaalplato.firebase.utilities.OnResultCallBack;
+import com.tfg.dietaalplato.firebase.utilities.ValidationResult;
+import com.tfg.dietaalplato.utilities.Blocker;
 import com.tfg.dietaalplato.utilities.SaveData;
 import com.tfg.dietaalplato.utilities.TableGenerator;
 
@@ -48,7 +59,8 @@ public class DialogAddFoodToFoodDIet extends DialogFragment {
     private Button bttSave; //R
     private Button bttIncrement; //R
     private Button bttDecrement; //R
-    private EditText inputgr; //R
+    private EditText inputgr;//R
+    private TextView errTv; //R
 
 
 
@@ -84,6 +96,147 @@ public class DialogAddFoodToFoodDIet extends DialogFragment {
                 bttIncrement = mainView.findViewById(R.id.btnIncrementProt100);
                 bttDecrement = mainView.findViewById(R.id.btnDecrementProt100);
                 inputgr = mainView.findViewById(R.id.inputgr);
+                errTv = mainView.findViewById(R.id.txtMensajeErrorAlimento);
+
+                View.OnClickListener listener = v -> {
+                    if (selectedFood != null){
+                        if (currentFoods.contains(selectedFood)){
+
+                            for (FoodDiet foodDiet : currentsfoodDiets) {
+                                if (foodDiet.getIdAlimento().equals(selectedFood.getId())) {
+                                    ArrayList<String> data = new ArrayList<>();
+                                    data.add(foodDiet.getComida());
+                                    data.add(foodDiet.getNumeroPlato());
+                                    data.add(foodDiet.getDia());
+                                    data.add(inputgr.getText().toString());
+                                    data.add(foodDiet.getName());
+
+                                    ValidationResult validationResult = FoodDiet.toMapData(data, foodDiet.getIdDieta(), selectedFood.getId());
+
+                                    if (validationResult.exit) {
+                                        Blocker.createBlocker((ViewGroup) mainView.getRootView(), mainView.getContext());
+
+                                        FireBaseRemover.remove(foodDiet.getId()).addOnFailureListener(
+                                                e -> {
+                                                    errTv.setText("Error al guardar");
+                                                    errTv.setVisibility(View.VISIBLE);
+                                                    mostrarTextError();
+                                                    Blocker.removeBlocker((ViewGroup) mainView.getRootView());
+                                                }
+                                        ).addOnSuccessListener(
+                                                aVoid -> {
+
+                                                    FireBaseWriter.saveData(FoodDiet.class,validationResult).addOnFailureListener(
+                                                            e -> {
+                                                                errTv.setText("Error al guardar");
+                                                                errTv.setVisibility(View.VISIBLE);
+                                                                mostrarTextError();
+                                                                Blocker.removeBlocker((ViewGroup) mainView.getRootView());
+                                                            }
+                                                    ).addOnSuccessListener(
+                                                            aVoid1 ->{
+                                                                errTv.setText("Cambio guardado correctamente");
+                                                                errTv.setVisibility(View.VISIBLE);
+                                                                mostrarTextError();
+
+                                                                for (int i = 0; i < currentsfoodDiets.size(); i++) {
+                                                                    if (currentsfoodDiets.get(i).getId().equals(foodDiet.getId())){
+                                                                        currentsfoodDiets.remove(i);
+                                                                        break;
+                                                                    }
+                                                                }
+                                                                currentsfoodDiets.add((FoodDiet) aVoid1.result);
+
+                                                                Activity activity = getActivity();
+                                                                // Esperar un poco para que el mensaje se muestre
+                                                                new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                                                                    dismiss();
+
+                                                                    // Esperamos a que se cierre bien para abrir el nuevo diálogo
+                                                                    new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                                                                        if (activity != null && !currentFoods.isEmpty()) {
+                                                                            DialogAddFoodToFoodDIet nuevoDialog = new DialogAddFoodToFoodDIet();
+                                                                            nuevoDialog.setFoods(currentFoods);
+                                                                            nuevoDialog.setCurrentsfoodDiets(currentsfoodDiets);
+                                                                            nuevoDialog.show(((FragmentActivity) activity).getSupportFragmentManager(), "DialogAddFoodToFoodDIet");
+                                                                        }
+                                                                    }, 100);
+
+                                                                }, 600); // le das medio segundo para que se vea el mensaje
+
+                                                                Blocker.removeBlocker((ViewGroup) mainView.getRootView());
+                                                            }
+                                                    );
+                                                }
+                                        );
+                                    }
+                                }
+                            }
+                        }else{
+
+                            if (!currentsfoodDiets.isEmpty()) {
+                                ArrayList<String> data = new ArrayList<>();
+                                data.add(saveData.getMomentOfDay());
+                                data.add("0");
+                                data.add(saveData.getDay());
+                                data.add(inputgr.getText().toString());
+                                data.add(currentsfoodDiets.get(0).getName());
+
+                                ValidationResult validationResult = FoodDiet.toMapData(data, currentsfoodDiets.get(0).getIdDieta(), selectedFood.getId());
+
+                                if (validationResult.exit) {
+                                    Blocker.createBlocker((ViewGroup) mainView.getRootView(), mainView.getContext());
+
+                                    FireBaseWriter.saveData(FoodDiet.class,validationResult).addOnFailureListener(
+                                            e -> {
+                                                errTv.setText("Error al guardar");
+                                                errTv.setVisibility(View.VISIBLE);
+                                                mostrarTextError();
+                                                Blocker.removeBlocker((ViewGroup) mainView.getRootView());
+                                            }
+                                    ).addOnSuccessListener(
+                                            aVoid -> {
+                                                errTv.setText("Cambio guardado correctamente");
+                                                errTv.setVisibility(View.VISIBLE);
+                                                mostrarTextError();
+
+                                                if (!currentsfoodDiets.contains(aVoid.result)) {
+                                                    currentsfoodDiets.add((FoodDiet) aVoid.result);
+                                                }
+                                                if (!currentFoods.contains(selectedFood)) {
+                                                    currentFoods.add(selectedFood);
+                                                }
+
+                                                Activity activity = getActivity();
+                                                // Esperar un poco para que el mensaje se muestre
+                                                new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                                                    dismiss();
+
+                                                    // Esperamos a que se cierre bien para abrir el nuevo diálogo
+                                                    new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                                                        if (activity != null && !currentFoods.isEmpty()) {
+                                                            DialogAddFoodToFoodDIet nuevoDialog = new DialogAddFoodToFoodDIet();
+                                                            nuevoDialog.setFoods(currentFoods);
+                                                            nuevoDialog.setCurrentsfoodDiets(currentsfoodDiets);
+                                                            nuevoDialog.show(((FragmentActivity) activity).getSupportFragmentManager(), "DialogAddFoodToFoodDIet");
+                                                        }
+                                                    }, 100);
+
+                                                }, 600); // le das medio segundo para que se vea el mensaje
+
+                                                Blocker.removeBlocker((ViewGroup) mainView.getRootView());
+                                            }
+                                    );
+                                }
+                            } else {
+                                Log.w("GuardarAlimento", "currentsfoodDiets está vacío al intentar guardar un nuevo alimento.");
+                            }
+
+                        }
+                    }
+                };
+
+                bttSave.setOnClickListener(listener);
 
                 bttDecrement.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -150,7 +303,11 @@ public class DialogAddFoodToFoodDIet extends DialogFragment {
                 sv.addView(ln);
 
                 for (Food food : currentFoods) {
-                    cln.addView(addRermoveBotton(generateList(food, v -> {}),v -> {}));
+                    for (FoodDiet foodDiet : currentsfoodDiets) {
+                        if (foodDiet.getIdAlimento().equals(food.getId())) {
+                            cln.addView(addRermoveBotton(generateList(food, v -> {}), foodDiet));
+                        }
+                    }
                 }
                 csv.addView(cln);
 
@@ -224,7 +381,7 @@ public class DialogAddFoodToFoodDIet extends DialogFragment {
         return ln;
     }
 
-    private LinearLayout addRermoveBotton(LinearLayout ln,View.OnClickListener listener){
+    private LinearLayout addRermoveBotton(LinearLayout ln,FoodDiet foodDiet){
 
         ImageButton remove = new ImageButton(mainView.getContext());
 
@@ -232,7 +389,6 @@ public class DialogAddFoodToFoodDIet extends DialogFragment {
         remove.setBackgroundColor(Color.TRANSPARENT);
         remove.setScaleX(0.8f);
         remove.setScaleY(0.8f);
-        remove.setOnClickListener(listener);
 
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -240,6 +396,46 @@ public class DialogAddFoodToFoodDIet extends DialogFragment {
         );
         params.setMargins(0,0,0,0);
         remove.setLayoutParams(params);
+
+        View.OnClickListener listener2 = v -> {
+            Blocker.createBlocker((ViewGroup) mainView.getRootView() ,mainView.getContext());
+            FireBaseRemover.remove(foodDiet.getId()).addOnFailureListener(e -> {
+                Toast.makeText(mainView.getContext(),"Error al eliminar el alimento", Toast.LENGTH_SHORT).show();
+                Blocker.removeBlocker((ViewGroup) mainView.getRootView());
+            }).addOnSuccessListener(aVoid -> {
+                for (int i = 0; i < currentFoods.size(); i++) {
+                    if (currentFoods.get(i).getId().equals(foodDiet.getIdAlimento())){
+                        currentFoods.remove(i);
+                        for (int j = 0; j < currentsfoodDiets.size(); j++) {
+                            if (currentsfoodDiets.get(j).getId().equals(foodDiet.getId())) {
+                                currentsfoodDiets.remove(j);
+                                break;
+                            }
+                        }
+                        break;
+                    }
+                }
+
+                Activity activity = getActivity();
+                dismiss();
+
+                //Esperamos a que se cierrer bn para abrirlo sin problemas
+                new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                    new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                        if (activity != null && !currentFoods.isEmpty()) {
+                            DialogAddFoodToFoodDIet nuevoDialog = new DialogAddFoodToFoodDIet();
+                            nuevoDialog.setFoods(currentFoods);
+                            nuevoDialog.setCurrentsfoodDiets(currentsfoodDiets);
+                            nuevoDialog.show(((FragmentActivity) activity).getSupportFragmentManager(), "DialogAddFoodToFoodDIet");
+                        }
+                    }, 100);
+
+                }, 100);
+                Blocker.removeBlocker((ViewGroup) mainView.getRootView());
+            });
+        };
+
+        remove.setOnClickListener(listener2);
 
         ln.addView(remove);
 
@@ -259,5 +455,19 @@ public class DialogAddFoodToFoodDIet extends DialogFragment {
                     onResultCallBack.onResult(null);
                 }
         );
+    }
+
+    @Override
+    public void onDismiss(@NonNull DialogInterface dialog) {
+        super.onDismiss(dialog);
+        try {
+            TableGenerator.getInstance().resetAndGenerateTable();
+        } catch (FBCException e) {
+            Toast.makeText(mainView.getContext(), "No ha sido posible regenerar la tabla", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void mostrarTextError() {
+        errTv.postDelayed(() -> errTv.setVisibility(View.GONE), 2000);
     }
 }

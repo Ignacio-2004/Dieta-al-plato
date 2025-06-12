@@ -298,10 +298,20 @@ public class SaveData {
         foodDiets.remove(name);
         Log.d(TAG, "removeFoodDiet: " + foodDiets);
     }
-    public void removeFoodDiet (String idDiet, String name){
-        Log.d(TAG, "removeFoodDiet: " + name);
+    public void removeFoodDiet (FoodDiet fd){
+        Log.d(TAG, "removeFoodDiet: " + fd.getName());
 
-        getFoodDietsOfDiet(idDiet).remove(name);
+        if (getFoodDietsOfDiet(fd.getIdDieta()).get(fd.getName()).size() == 1){
+            getFoodDietsOfDiet(fd.getIdDieta()).remove(fd.getName());
+        }else{
+            for (int i = 0 ; i< getFoodDietsOfDiet(fd.getIdDieta()).get(fd.getName()).size(); i++){
+                FoodDiet foodDiet = getFoodDietsOfDiet(fd.getIdDieta()).get(fd.getName()).get(i);
+
+                if (foodDiet.getId().equals(fd.getId())){
+                    getFoodDietsOfDiet(fd.getIdDieta()).get(fd.getName()).remove(i);
+                }
+            }
+        }
     }
 
     public void clear(){

@@ -16,7 +16,7 @@
             android:name=".utilities.dialogo.DialogAddFoodToFoodDIet"
             android:exported="false" />
         <activity
-            android:name=".DialogInfoFoodPerGr"
+            android:name=".utilities.dialogo.DialogInfoFoodPerGr"
             android:exported="false" />
         <activity
             android:name=".utilities.dialogo.NewDietDialog"

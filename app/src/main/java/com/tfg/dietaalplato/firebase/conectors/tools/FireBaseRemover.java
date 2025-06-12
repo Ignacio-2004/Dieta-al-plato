@@ -96,7 +96,7 @@ public class FireBaseRemover {
                                         for (ArrayList<FoodDiet> foodDiets : foodDiet.values()) {
                                             for (FoodDiet foodDiet1 : foodDiets) {
                                                 if (foodDiet1.getId().equals(id)) {
-                                                    saveData.removeFoodDiet(foodDiet1.getIdDieta(),foodDiet1.getName());
+                                                    saveData.removeFoodDiet(foodDiet1);
                                                 }
                                             }
                                         }
