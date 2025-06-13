@@ -170,7 +170,7 @@ public class NewDietDialog extends DialogFragment {
         data.add(egComida.getText().toString());
         data.add(nameRecepie.getText().toString());
 
-        ValidationResult result = FoodDiet.toMapData(data,saveData.getCurrentDiet().getId(),selectedFood.getId());
+        ValidationResult result = FoodDiet.toMapData(data,saveData.getCurrentDiet().getId(),selectedFood.getId(),"");
         Log.d("RESULT",result.toString());
 
         FireBaseWriter.saveData(FoodDiet.class,result).addOnFailureListener(

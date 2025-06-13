@@ -415,7 +415,16 @@ public class FireBaseWriter {
             Log.d(TAG, "💾 Metodo save, listo para guardar");
             Log.d(TAG, "💾 ID ext: " + idExt);
             Log.d(TAG, "💾 ID raw: " + rawId);
-            id = ClassUtilities.generateId(classData, Integer.parseInt(rawId), idExt);
+            if (result.data.get("id") == null ) {
+                id = ClassUtilities.generateId(classData, Integer.parseInt(rawId), idExt);
+            }else{
+                if (result.data.get("id").isEmpty()){
+                    id = ClassUtilities.generateId(classData, Integer.parseInt(rawId), idExt);
+                }else{
+                    id = result.data.get("id");
+                }
+
+            }
             Log.d(TAG, "💾 ID generado: " + id);
 
             switch (classData.data) {
@@ -559,8 +568,7 @@ public class FireBaseWriter {
                 .set(foodData)
                 .addOnSuccessListener(aVoid -> {
 
-                    fst.collection("recetaAlimento").document(dietFood.getId())
-                            .set(receta)
+                    fst.collection("recetaAlimento").document(receta.get("idFooDiet")+receta.get("idFood").toString().substring(receta.get("idFood").toString().length()-6,receta.get("idFood").toString().length())).set(receta)
                             .addOnSuccessListener(aVoid1 -> {
                                 Log.d(TAG, "✅ RecetaAlimento guardado con éxito en Firestore");
                                 callback.setResult(new ObjectResult<>(true, "success", dietFood));

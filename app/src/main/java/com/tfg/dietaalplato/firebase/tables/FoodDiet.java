@@ -109,15 +109,16 @@ public class FoodDiet extends BaseObject {
 
 //++IP - 23/04/2025 -
 
-    public static ValidationResult toMapData(ArrayList<String> data, String idDieta,String idAlimento){
+    public static ValidationResult toMapData(ArrayList<String> data, String idDieta,String idAlimento,String id){
         ValidationResult result = new ValidationResult();
 
-        String[] fieldName = {"idDieta","idAlimento", "comida", "numeroPlato", "dia", "gramos", "nombreReceta"};
+        String[] fieldName = {"id","idDieta","idAlimento", "comida", "numeroPlato", "dia", "gramos", "nombreReceta"};
 
         try{
             result.data = new HashMap<>();
 
             ArrayList<String> keys = new ArrayList<>();
+            keys.add(id);
             keys.add(idDieta);
             keys.add(idAlimento);
             keys.add(data.get(0).trim());
@@ -126,7 +127,7 @@ public class FoodDiet extends BaseObject {
             keys.add(data.get(3).trim());
             keys.add(data.get(4).trim());
 
-            for (int i = 0; i < keys.size()-2; i++) {
+            for (int i = 1; i < keys.size()-2; i++) {
 
                 //Comprobamos que no haya campos vacios
 

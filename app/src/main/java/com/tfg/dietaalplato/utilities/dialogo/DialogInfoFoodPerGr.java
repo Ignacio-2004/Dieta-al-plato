@@ -138,7 +138,7 @@ public class DialogInfoFoodPerGr extends DialogFragment {
                     data.add(currentFoodDiet.getName());
 
 
-                    ValidationResult validationResult = FoodDiet.toMapData(data, currentFoodDiet.getIdDieta(), currentFood.getId());
+                    ValidationResult validationResult = FoodDiet.toMapData(data, currentFoodDiet.getIdDieta(), currentFood.getId(), currentFoodDiet.getId());
 
                     if (validationResult.exit) {
                         ViewGroup parent = (ViewGroup) mainView.getRootView();

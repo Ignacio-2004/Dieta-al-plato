@@ -28,6 +28,7 @@ import com.tfg.dietaalplato.firebase.tables.FoodDiet;
 import com.tfg.dietaalplato.utilities.dialogo.DialogAddFoodToFoodDIet;
 
 import java.util.ArrayList;
+import java.util.Formattable;
 import java.util.List;
 
 public class TableGenerator {
@@ -163,7 +164,7 @@ public class TableGenerator {
                                                             }
                                                         }
                                                     }
-                                                    table.addView(generateRow(context, f.getName(), foodArrayList,grs,f,foodDiets.result.get(f.getName()), columns));
+                                                    table.addView(generateRow(context, f.getName(), foodArrayList,grs,foodDiets.result.get(f.getName()), columns));
 
                                                 }
 
@@ -334,10 +335,10 @@ public class TableGenerator {
         return addCol;
     }
 
-    private TableRow generateRow (Context context, String nameRecipe, List<Food> foods,ArrayList<Double> gr,FoodDiet fd,ArrayList<FoodDiet> foodsDiet,ArrayList<HeaderColumns> headers){
+    private TableRow generateRow (Context context, String nameRecipe, List<Food> foods,ArrayList<Double> gr,ArrayList<FoodDiet> foodsDiet,ArrayList<HeaderColumns> headers){
         TableRow row = new TableRow(context);
         LinearLayout name = generateCommonCell(context, nameRecipe);
-        LinearLayout scrollView = generateFoodCell(context, foods,fd,foodsDiet);
+        LinearLayout scrollView = generateFoodCell(context, foods,foodsDiet);
 
         scrollView.setLayoutParams(margin());
 
@@ -405,7 +406,7 @@ public class TableGenerator {
         return cell;
     }
 
-    private LinearLayout generateFoodCell(Context context, List<Food> food, FoodDiet fd, ArrayList<FoodDiet> foodsDiet) {
+    private LinearLayout generateFoodCell(Context context, List<Food> food, ArrayList<FoodDiet> foodsDiet) {
         // Contenedor externo (la celda que se mete en la tabla)
         LinearLayout container = new LinearLayout(context);
         container.setOrientation(LinearLayout.VERTICAL);
@@ -454,7 +455,11 @@ public class TableGenerator {
                 public void onClick(View v) {
                     DialogInfoFoodPerGr dialog = DialogInfoFoodPerGr.getInstance();
                     dialog.setFood(f);
-                    dialog.setFoodDiet(fd);
+                    for (FoodDiet fd: foodsDiet) {
+                        if (fd.getIdAlimento().equals(f.getId())){
+                            dialog.setFoodDiet(fd);
+                        }
+                    }
                     Activity activity = (Activity) context;
                     dialog.show(supportFragmentActivity.getSupportFragmentManager(), "DialogScrollView");
                 }
@@ -492,7 +497,7 @@ public class TableGenerator {
         botonAdd.setBackgroundResource(R.drawable.bg_food_background);
         botonAdd.setTextColor(Color.WHITE);
         botonAdd.setOnClickListener(v -> {
-            if (fd.getName() == null || fd.getName().isEmpty()){
+            if (foodsDiet.get(0).getName() == null || foodsDiet.get(0).getName().isEmpty()){
                 onClickCreateRecepie.onClick(v);
             }else{
                 DialogAddFoodToFoodDIet dialog = DialogAddFoodToFoodDIet.getInstance();
@@ -520,7 +525,7 @@ public class TableGenerator {
         TableRow row = new TableRow(context);
 
         Button btn = addBtnPlus(context, onClickCreateRecepie);
-        LinearLayout scrollView = generateFoodCell(context, new ArrayList<>(), new FoodDiet(), new ArrayList<>());
+        LinearLayout scrollView = generateFoodCell(context, new ArrayList<>(), new ArrayList<>());
 
         scrollView.setLayoutParams(margin());
 

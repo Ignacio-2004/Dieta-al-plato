@@ -111,7 +111,7 @@ public class DialogAddFoodToFoodDIet extends DialogFragment {
                                     data.add(inputgr.getText().toString());
                                     data.add(foodDiet.getName());
 
-                                    ValidationResult validationResult = FoodDiet.toMapData(data, foodDiet.getIdDieta(), selectedFood.getId());
+                                    ValidationResult validationResult = FoodDiet.toMapData(data, foodDiet.getIdDieta(), selectedFood.getId(), foodDiet.getId());
 
                                     if (validationResult.exit) {
                                         Blocker.createBlocker((ViewGroup) mainView.getRootView(), mainView.getContext());
@@ -173,65 +173,65 @@ public class DialogAddFoodToFoodDIet extends DialogFragment {
                                 }
                             }
                         }else{
+                            for (FoodDiet foodDiet : currentsfoodDiets) {
+                                if (!currentsfoodDiets.isEmpty()) {
+                                    ArrayList<String> data = new ArrayList<>();
+                                    data.add(saveData.getMomentOfDay());
+                                    data.add("0");
+                                    data.add(saveData.getDay());
+                                    data.add(inputgr.getText().toString());
+                                    data.add(currentsfoodDiets.get(0).getName());
 
-                            if (!currentsfoodDiets.isEmpty()) {
-                                ArrayList<String> data = new ArrayList<>();
-                                data.add(saveData.getMomentOfDay());
-                                data.add("0");
-                                data.add(saveData.getDay());
-                                data.add(inputgr.getText().toString());
-                                data.add(currentsfoodDiets.get(0).getName());
+                                    ValidationResult validationResult = FoodDiet.toMapData(data, currentsfoodDiets.get(0).getIdDieta(), selectedFood.getId(),foodDiet.getId());
 
-                                ValidationResult validationResult = FoodDiet.toMapData(data, currentsfoodDiets.get(0).getIdDieta(), selectedFood.getId());
+                                    if (validationResult.exit) {
+                                        Blocker.createBlocker((ViewGroup) mainView.getRootView(), mainView.getContext());
 
-                                if (validationResult.exit) {
-                                    Blocker.createBlocker((ViewGroup) mainView.getRootView(), mainView.getContext());
-
-                                    FireBaseWriter.saveData(FoodDiet.class,validationResult).addOnFailureListener(
-                                            e -> {
-                                                errTv.setText("Error al guardar");
-                                                errTv.setVisibility(View.VISIBLE);
-                                                mostrarTextError();
-                                                Blocker.removeBlocker((ViewGroup) mainView.getRootView());
-                                            }
-                                    ).addOnSuccessListener(
-                                            aVoid -> {
-                                                errTv.setText("Cambio guardado correctamente");
-                                                errTv.setVisibility(View.VISIBLE);
-                                                mostrarTextError();
-
-                                                if (!currentsfoodDiets.contains(aVoid.result)) {
-                                                    currentsfoodDiets.add((FoodDiet) aVoid.result);
+                                        FireBaseWriter.saveData(FoodDiet.class,validationResult).addOnFailureListener(
+                                                e -> {
+                                                    errTv.setText("Error al guardar");
+                                                    errTv.setVisibility(View.VISIBLE);
+                                                    mostrarTextError();
+                                                    Blocker.removeBlocker((ViewGroup) mainView.getRootView());
                                                 }
-                                                if (!currentFoods.contains(selectedFood)) {
-                                                    currentFoods.add(selectedFood);
-                                                }
+                                        ).addOnSuccessListener(
+                                                aVoid -> {
+                                                    errTv.setText("Cambio guardado correctamente");
+                                                    errTv.setVisibility(View.VISIBLE);
+                                                    mostrarTextError();
 
-                                                Activity activity = getActivity();
-                                                // Esperar un poco para que el mensaje se muestre
-                                                new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                                                    dismiss();
+                                                    if (!currentsfoodDiets.contains(aVoid.result)) {
+                                                        currentsfoodDiets.add((FoodDiet) aVoid.result);
+                                                    }
+                                                    if (!currentFoods.contains(selectedFood)) {
+                                                        currentFoods.add(selectedFood);
+                                                    }
 
-                                                    // Esperamos a que se cierre bien para abrir el nuevo diálogo
+                                                    Activity activity = getActivity();
+                                                    // Esperar un poco para que el mensaje se muestre
                                                     new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                                                        if (activity != null && !currentFoods.isEmpty()) {
-                                                            DialogAddFoodToFoodDIet nuevoDialog = new DialogAddFoodToFoodDIet();
-                                                            nuevoDialog.setFoods(currentFoods);
-                                                            nuevoDialog.setCurrentsfoodDiets(currentsfoodDiets);
-                                                            nuevoDialog.show(((FragmentActivity) activity).getSupportFragmentManager(), "DialogAddFoodToFoodDIet");
-                                                        }
-                                                    }, 100);
+                                                        dismiss();
 
-                                                }, 600); // le das medio segundo para que se vea el mensaje
+                                                        // Esperamos a que se cierre bien para abrir el nuevo diálogo
+                                                        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                                                            if (activity != null && !currentFoods.isEmpty()) {
+                                                                DialogAddFoodToFoodDIet nuevoDialog = new DialogAddFoodToFoodDIet();
+                                                                nuevoDialog.setFoods(currentFoods);
+                                                                nuevoDialog.setCurrentsfoodDiets(currentsfoodDiets);
+                                                                nuevoDialog.show(((FragmentActivity) activity).getSupportFragmentManager(), "DialogAddFoodToFoodDIet");
+                                                            }
+                                                        }, 100);
 
-                                                Blocker.removeBlocker((ViewGroup) mainView.getRootView());
-                                            }
-                                    );
+                                                    }, 600); // le das medio segundo para que se vea el mensaje
+
+                                                    Blocker.removeBlocker((ViewGroup) mainView.getRootView());
+                                                }
+                                        );
+                                    }
+                                } else {
+                                    Log.w("GuardarAlimento", "currentsfoodDiets está vacío al intentar guardar un nuevo alimento.");
                                 }
-                            } else {
-                                Log.w("GuardarAlimento", "currentsfoodDiets está vacío al intentar guardar un nuevo alimento.");
                             }
-
                         }
                     }
                 };
