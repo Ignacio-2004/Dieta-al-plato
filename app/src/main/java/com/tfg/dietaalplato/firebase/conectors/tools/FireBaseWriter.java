@@ -541,21 +541,35 @@ public class FireBaseWriter {
         // Crear un objeto Map con los datos de la DietFood
         Map<String, Object> foodData = new HashMap<>();
         foodData.put("idDieta", dietFood.getIdDieta());
-        foodData.put("idAlimento", dietFood.getIdAlimento());
         foodData.put("comida", dietFood.getComida());
         foodData.put("numeroPlato", dietFood.getNumeroPlato());
         foodData.put("dia", dietFood.getDia());
         foodData.put("name", dietFood.getName());
-        foodData.put("g", dietFood.getG());
         foodData.put("id", dietFood.getId());
+
+        Map<String, Object> receta = new HashMap<>();
+        receta.put("idFooDiet", dietFood.getId());
+        receta.put("idFood", dietFood.getIdAlimento());
+        receta.put("g", dietFood.getG());
+
 
         TaskCompletionSource<ObjectResult<FoodDiet>> callback = new TaskCompletionSource<>();
         // Guardar en Firestore en la colección "diet_food"
         fst.collection("comidaDietas").document(dietFood.getId())
                 .set(foodData)
                 .addOnSuccessListener(aVoid -> {
+
+                    fst.collection("recetaAlimento").document(dietFood.getId())
+                            .set(receta)
+                            .addOnSuccessListener(aVoid1 -> {
+                                Log.d(TAG, "✅ RecetaAlimento guardado con éxito en Firestore");
+                                callback.setResult(new ObjectResult<>(true, "success", dietFood));
+                            })
+                            .addOnFailureListener(e -> {
+                                Log.e(TAG, "❌ Error al guardar RecetaAlimento: " + e.getMessage());
+                                callback.setException(new ComplexFBCE(new ObjectResult<>(false, "Error al guardar RecetaAlimento: " + e.getMessage(), null)));
+                            });
                     Log.d(TAG, "✅ DietFood guardado con éxito en Firestore");
-                    callback.setResult(new ObjectResult<>(true, "success", dietFood));
                 })
                 .addOnFailureListener(e -> {
                     Log.e(TAG, "❌ Error al guardar DietFood: " + e.getMessage());

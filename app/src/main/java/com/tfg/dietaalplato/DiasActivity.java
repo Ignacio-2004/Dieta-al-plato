@@ -7,13 +7,12 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.tfg.dietaalplato.firebase.conectors.tools.FireBaseReader;
 import com.tfg.dietaalplato.firebase.exceptions.FBCException;
-import com.tfg.dietaalplato.firebase.tables.DailyNutrition;
+import com.tfg.dietaalplato.utilities.DailyNutrition;
 import com.tfg.dietaalplato.firebase.tables.Food;
 import com.tfg.dietaalplato.firebase.tables.FoodDiet;
 import com.tfg.dietaalplato.utilities.Blocker;
@@ -158,7 +157,7 @@ public class DiasActivity extends AppCompatActivity {
     }
 
 
-    public void onClickBackNavigation(int i){
+    public void onClickBackNavigation(View view){
         Intent intent = new Intent(this, DietasActivity.class );
         startActivity(intent);
     }

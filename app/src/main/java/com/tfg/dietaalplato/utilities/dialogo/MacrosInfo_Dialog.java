@@ -5,17 +5,10 @@ package com.tfg.dietaalplato.utilities.dialogo;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.text.InputType;
-import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 
@@ -23,18 +16,9 @@ import androidx.fragment.app.DialogFragment;
 
 
 import com.tfg.dietaalplato.R;
-import com.tfg.dietaalplato.firebase.conectors.tools.FireBaseRemover;
-import com.tfg.dietaalplato.firebase.conectors.tools.FireBaseWriter;
-import com.tfg.dietaalplato.firebase.exceptions.ComplexFBCE;
 import com.tfg.dietaalplato.firebase.tables.Client;
-import com.tfg.dietaalplato.firebase.tables.DailyNutrition;
-import com.tfg.dietaalplato.firebase.utilities.ValidationResult;
-import com.tfg.dietaalplato.utilities.Blocker;
+import com.tfg.dietaalplato.utilities.DailyNutrition;
 import com.tfg.dietaalplato.utilities.SaveData;
-
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 public class MacrosInfo_Dialog extends DialogFragment {

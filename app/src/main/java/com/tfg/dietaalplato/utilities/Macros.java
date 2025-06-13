@@ -1,5 +1,7 @@
-package com.tfg.dietaalplato.firebase.tables;
+package com.tfg.dietaalplato.utilities;
 
+
+import com.tfg.dietaalplato.firebase.tables.Food;
 
 public class Macros {
     private double proteinas;

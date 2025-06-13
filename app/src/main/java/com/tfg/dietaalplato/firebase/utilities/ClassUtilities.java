@@ -6,6 +6,7 @@ import com.tfg.dietaalplato.firebase.tables.Client;
 import com.tfg.dietaalplato.firebase.tables.Diet;
 import com.tfg.dietaalplato.firebase.tables.Food;
 import com.tfg.dietaalplato.firebase.tables.FoodDiet;
+import com.tfg.dietaalplato.firebase.tables.RelacionRecetaAlimento;
 import com.tfg.dietaalplato.firebase.tables.User;
 
 public class  ClassUtilities {
@@ -18,6 +19,7 @@ public class  ClassUtilities {
         else if (classType.equals(User.class)) data = new ClassData(String.valueOf(IdNames.USU),String.valueOf(TablesNames.usuarios));
         else if (classType.equals(Food.class)) data = new ClassData(String.valueOf(IdNames.ALI),String.valueOf(TablesNames.alimentos));
         else if (classType.equals(FoodDiet.class)) data = new ClassData(String.valueOf(IdNames.FDI),String.valueOf(TablesNames.comidaDietas));
+        else if (classType.equals(RelacionRecetaAlimento.class)) data = new ClassData(String.valueOf(IdNames.RRA),String.valueOf(TablesNames.recetaAlimento));
         else data = new ClassData("Error","Dato no soportado");
 
         return data;

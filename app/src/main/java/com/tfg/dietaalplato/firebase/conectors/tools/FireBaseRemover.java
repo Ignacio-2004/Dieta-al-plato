@@ -11,6 +11,7 @@ import com.tfg.dietaalplato.firebase.tables.Client;
 import com.tfg.dietaalplato.firebase.tables.Diet;
 import com.tfg.dietaalplato.firebase.tables.Food;
 import com.tfg.dietaalplato.firebase.tables.FoodDiet;
+import com.tfg.dietaalplato.firebase.utilities.OnResultCallBack;
 import com.tfg.dietaalplato.firebase.utilities.ValidationResult;
 import com.tfg.dietaalplato.utilities.SaveData;
 import com.tfg.dietaalplato.utilities.tipe_collection.CacheCollection;
@@ -52,7 +53,7 @@ public class FireBaseRemover {
                 errorMsg = "Error al eliminar la dieta";
                 break;
             case "FDI":
-                collection = "comidaDietas";
+                collection = "recetaAlimento";
                 successMsg = "Alimento eliminado correctamente";
                 errorMsg = "Error al eliminar el alimento";
                 break;
@@ -90,18 +91,16 @@ public class FireBaseRemover {
                                         }
                                     }
                                     break;
-                                case "comidaDietas":
+                                case "recetaAlimento":
 
-                                    for (Map<String, ArrayList<FoodDiet>> foodDiet : saveData.getFoodDiets().getAllAsArrayList()) {
-                                        for (ArrayList<FoodDiet> foodDiets : foodDiet.values()) {
-                                            for (FoodDiet foodDiet1 : foodDiets) {
-                                                if (foodDiet1.getId().equals(id)) {
-                                                    saveData.removeFoodDiet(foodDiet1);
-                                                    return;
-                                                }
-                                            }
-                                        }
-                                    }
+                                   removeFoodDiet(fst, saveData, id, o ->{
+                                       if(o.exit){
+                                           taskCompletionSource.setResult(new ValidationResult(true, finalSuccessMsg, null));
+                                       }else{
+                                           taskCompletionSource.setResult(new ValidationResult(false, finalErrorMsg, null));
+                                       }
+                                   });
+
                                     break;
                                 case "comidas":
                                     for (Food food: saveData.getFoods().getAllAsArrayList()){
@@ -117,5 +116,27 @@ public class FireBaseRemover {
                 );
         Log.d(TAG, "🏁 Fin del proceso de eliminado");
         return taskCompletionSource.getTask();
+    }
+
+    private static void removeFoodDiet(FirebaseFirestore fst, SaveData saveData, String id, OnResultCallBack<ValidationResult> onResultCallBack){
+        fst.collection("recetaAlimento").whereEqualTo("idFooDiet", id).get().addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.isEmpty()) {
+                fst.collection("comidaDietas").document(id).delete();
+            }
+
+            for (Map<String, ArrayList<FoodDiet>> foodDiet : saveData.getFoodDiets().getAllAsArrayList()) {
+                for (ArrayList<FoodDiet> foodDiets : foodDiet.values()) {
+                    for (FoodDiet foodDiet1 : foodDiets) {
+                        if (foodDiet1.getId().equals(id)) {
+                            saveData.removeFoodDiet(foodDiet1);
+                            return;
+                        }
+                    }
+                }
+            }
+            onResultCallBack.onResult(new ValidationResult(true, "Alimento eliminado correctamente", null));
+        }).addOnFailureListener(
+                e -> onResultCallBack.onResult(new ValidationResult(false, "Error al eliminar el alimento", null))
+        );
     }
 }

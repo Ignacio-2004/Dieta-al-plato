@@ -2,11 +2,7 @@ package com.tfg.dietaalplato.utilities;
 
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 import com.tfg.dietaalplato.firebase.tables.Client;
-import com.tfg.dietaalplato.firebase.tables.DailyNutrition;
 import com.tfg.dietaalplato.firebase.tables.Diet;
 import com.tfg.dietaalplato.firebase.tables.Food;
 import com.tfg.dietaalplato.firebase.tables.FoodDiet;
@@ -15,12 +11,8 @@ import com.tfg.dietaalplato.firebase.utilities.TablesNames;
 import com.tfg.dietaalplato.utilities.tipe_collection.CacheCollection;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 
 /**
@@ -205,19 +197,36 @@ public class SaveData {
     }
 
     public void addClient (Client client){
+
+        if (clients == null){
+            clients = new CacheCollection<>();
+        }
+
         Log.d(TAG, "addClient: " + client);
         clients.add(client.getId(), client);
     }
 
     public void addFood (Food food){
         Log.d(TAG, "addFood: " + food);
+        if (foods == null){
+            foods = new CacheCollection<>();
+        }
+        Log.d(TAG, "addFood: " + food);
         foods.add(food.getId(), food);
     }
 
     public void addDiet (Diet diet){
+        if (diets == null){
+            diets = new CacheCollection<>();
+        }
         Map<String, Diet> diets = this.diets.get(diet.getIdCli());
         this.diets.remove(diet.getIdCli());
-        diets.putIfAbsent(diet.getName(), diet);
+
+        if (diets == null){
+            diets = new HashMap<>();
+        }
+
+        diets.put(diet.getName(), diet);
 
         this.diets.add(diet.getIdCli(),diets);
 
@@ -226,6 +235,9 @@ public class SaveData {
     }
 
     public void addFoodDiet(FoodDiet foodDiet) {
+        if (foodDiets == null) {
+            foodDiets = new CacheCollection<>();
+        }
         Log.d(TAG, "addFoodDiet: " + foodDiet);
         String idDieta = foodDiet.getIdDieta(); // clave externa
         String comida = foodDiet.getName();   // clave interna

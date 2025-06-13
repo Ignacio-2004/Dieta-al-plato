@@ -4,7 +4,6 @@ import static com.tfg.dietaalplato.firebase.conectors.tools.FireBaseReader.readA
 import static com.tfg.dietaalplato.firebase.conectors.tools.FireBaseReader.readAllFromCollection;
 import static com.tfg.dietaalplato.firebase.conectors.tools.FireBaseReader.readClientFromUser;
 import static com.tfg.dietaalplato.firebase.conectors.tools.FireBaseReader.readDietFromClient;
-import static com.tfg.dietaalplato.firebase.conectors.tools.FireBaseReader.readFoodDiet;
 import static com.tfg.dietaalplato.firebase.conectors.tools.FireBaseReader.readFoodDietByDiet;
 
 import android.util.Log;

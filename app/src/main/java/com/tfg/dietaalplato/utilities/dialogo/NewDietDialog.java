@@ -102,8 +102,10 @@ public class NewDietDialog extends DialogFragment {
         FireBaseReader.readAllFoodFromUser(saveData.getUser().getId()).addOnFailureListener(
                 e -> result.onResult(null)
         ).addOnSuccessListener( food -> {
-                    ArrayList<Food> foods = new ArrayList<>(food.result.values());
-                    result.onResult(foods);
+                    if (food.result != null && !food.result.isEmpty()){
+                        ArrayList<Food> foods = new ArrayList<>(food.result.values());
+                        result.onResult(foods);
+                    }
                 }
         );
         Blocker.removeBlocker((ViewGroup) mainView.getRootView());

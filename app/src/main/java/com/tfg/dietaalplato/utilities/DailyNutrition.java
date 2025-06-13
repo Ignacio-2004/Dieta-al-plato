@@ -1,4 +1,6 @@
-package com.tfg.dietaalplato.firebase.tables;
+package com.tfg.dietaalplato.utilities;
+
+import com.tfg.dietaalplato.firebase.tables.Food;
 
 import java.util.HashMap;
 import java.util.Map;
