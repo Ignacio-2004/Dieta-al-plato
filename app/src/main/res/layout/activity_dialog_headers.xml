@@ -1,54 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:background="#DDE9EFDF"
-    android:padding="16dp">
-
-    <!-- TÍTULO PRINCIPAL -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <ImageButton
-            android:id="@+id/bttReturn"
-            android:layout_height="45dp"
-            android:layout_width="100dp"
-            android:backgroundTint="#00FFFFFF"
-            app:srcCompat="@drawable/gobacksinfondo"
-            android:layout_marginBottom="10dp"/>
-
-        <TextView
-            android:id="@+id/titulo"
-            android:layout_width="700dp"
-            android:layout_height="match_parent"
-            android:fontFamily="@font/lily_script_one"
-            android:gravity="center"
-            android:text="Añade una columna"
-            android:textColor="#027C68"
-            android:textSize="35sp"
-            android:textStyle="bold" />
-
-        <ImageButton
-            android:layout_width="100dp"
-            android:layout_height="45dp"
-            android:backgroundTint="#00FFFFFF"
-            android:onClick="onClickReturn"
-            android:visibility="invisible"
-            app:srcCompat="@drawable/gobacksinfondo" />
-
-    </LinearLayout>
+    android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:gravity="center_vertical"
-        android:layout_marginBottom="8dp">
+        android:background="#DDE9EFDF"
+        android:padding="16dp">
 
+        <!-- TÍTULO PRINCIPAL -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/bttReturn"
+                android:layout_height="45dp"
+                android:layout_width="100dp"
+                android:backgroundTint="#00FFFFFF"
+                android:layout_marginBottom="10dp"
+                android:src="@drawable/gobacksinfondo" />
+
+            <TextView
+                android:id="@+id/titulo"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:fontFamily="@font/lily_script_one"
+                android:gravity="center"
+                android:text="Añade una columna"
+                android:textColor="#027C68"
+                android:textSize="35sp"
+                android:textStyle="bold" />
+
+            <ImageButton
+                android:layout_width="100dp"
+                android:layout_height="45dp"
+                android:backgroundTint="#00FFFFFF"
+                android:onClick="onClickReturn"
+                android:visibility="invisible"
+                android:src="@drawable/gobacksinfondo" />
+        </LinearLayout>
+
+        <!-- Sección Actual -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -66,10 +64,10 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:gravity="center_vertical"
-            android:layout_weight="1"
             android:background="@drawable/bg_food_item"
-            android:textSize="18sp"/>
+            android:textSize="18sp" />
 
+        <!-- Sección Opciones -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -87,12 +85,19 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:gravity="center_vertical"
-            android:layout_weight="1"
             android:background="@drawable/bg_food_item"
-            android:textSize="18sp"/>
+            android:textSize="18sp" />
 
+        <!-- Botón Guardar -->
+        <Button
+            android:id="@+id/buttonGuardar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Guardar"
+            android:layout_marginTop="16dp"
+            android:backgroundTint="#027C68"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp" />
 
     </LinearLayout>
-
-
-</LinearLayout>
+</ScrollView>
