@@ -2,6 +2,7 @@ package com.tfg.dietaalplato.utilities.dialogo;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -87,6 +88,8 @@ public class SignUp_Dialogo extends DialogFragment {
                                    FireBaseWriter.saveData(User.class,userData).addOnSuccessListener(
                                            aVoid -> {
                                                textError.setText("Usuario guardado correctamente.");
+                                               textError.setTextColor(Color.parseColor("#027C68")); // ponemos en verde si todo ha ido bien
+
                                                textError.setVisibility(View.VISIBLE);
                                                mostrarTextError();
                                            }

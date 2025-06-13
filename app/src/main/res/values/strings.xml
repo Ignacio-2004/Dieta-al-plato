@@ -49,4 +49,10 @@
     <string name="minkcal">minKcal</string>
     <string name="registrar">Iniciar Sesión</string>
     <string name="iniciar_sesi_n">Registrar</string>
+    <string name="cliente">Cliente</string>
+    <string name="nombre_del_clienteE">Nombre del cliente *</string>
+    <string name="apellido_del_clienteE">Apellido del cliente *</string>
+    <string name="rango_de_calorias">Rango de calorias *</string>
+    <string name="maxkcal">maxKcal</string>
+    <string name="guardar_cambios">Guardar Cambios</string>
 </resources>

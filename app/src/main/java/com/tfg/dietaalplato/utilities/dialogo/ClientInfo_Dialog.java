@@ -140,6 +140,7 @@ public class ClientInfo_Dialog extends DialogFragment {
                                                     saveData.setCurrentClient((Client) validationResult2.result);
                                                     Blocker.removeBlocker(parent);
                                                     textError.setText("Cliente guardado correctamente");
+                                                    textError.setTextColor(Color.parseColor("#027C68"));
                                                     textError.setVisibility(View.VISIBLE);
                                                     mostrarTextError();
                                                 }
@@ -171,6 +172,7 @@ public class ClientInfo_Dialog extends DialogFragment {
                                         saveData.setCurrentClient((Client) validationResult.result);
                                         Blocker.removeBlocker(parent);
                                         textError.setText("Cliente guardado correctamente");
+                                        textError.setTextColor(Color.parseColor("#027C68"));
                                         textError.setVisibility(View.VISIBLE);
                                         mostrarTextError();
                                     }
