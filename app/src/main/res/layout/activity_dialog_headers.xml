@@ -88,16 +88,5 @@
             android:background="@drawable/bg_food_item"
             android:textSize="18sp" />
 
-        <!-- Botón Guardar -->
-        <Button
-            android:id="@+id/buttonGuardar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Guardar"
-            android:layout_marginTop="16dp"
-            android:backgroundTint="#027C68"
-            android:textColor="#FFFFFF"
-            android:textSize="18sp" />
-
     </LinearLayout>
 </ScrollView>
