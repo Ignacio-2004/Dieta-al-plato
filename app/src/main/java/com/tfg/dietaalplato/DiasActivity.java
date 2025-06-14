@@ -113,48 +113,10 @@ public class DiasActivity extends AppCompatActivity {
 
     private void abrirComidasActivity(int diaSeleccionado) {
         saveData.setCurrentDay(diaSeleccionado);
-
-        Blocker.createBlocker(this.findViewById(android.R.id.content), this);
-
-        loadDayNutrition(saveData.getCurrentDiet().getId(), String.valueOf(diaSeleccionado), () -> {
-            Blocker.removeBlocker(this.findViewById(android.R.id.content));
-            Intent intent = new Intent(this, ComidasActivity.class);
-            startActivity(intent);
-        });
+        Intent intent = new Intent(this, ComidasActivity.class);
+        startActivity(intent);
     }
 
-    private void loadDayNutrition(String dietId, String day, Runnable onComplete) {
-        try {
-            FireBaseReader.readFoodsForDay(dietId, Integer.parseInt(day))
-                    .addOnSuccessListener(foodResult -> {
-                        if (foodResult.isSuccess() && !foodResult.result.isEmpty()) {
-                            calculateDailyNutrition(foodResult.result, day);
-                        }
-                        onComplete.run();
-                    })
-                    .addOnFailureListener(e -> onComplete.run());
-        } catch (FBCException e) {
-            onComplete.run();
-        }
-    }
-
-    private void calculateDailyNutrition(List<FoodDiet> foodDiets, String day) {
-        DailyNutrition dailyNutrition = new DailyNutrition();
-
-        for (FoodDiet foodDiet : foodDiets) {
-            try {
-                // Asumiendo que tienes los alimentos en caché o los puedes obtener
-                Food food = saveData.getFoods().get(foodDiet.getIdAlimento());
-                if (food != null) {
-                    dailyNutrition.addFood(food);
-                }
-            } catch (Exception e) {
-                Log.e(TAG, "Error al obtener alimento: " + e.getMessage());
-            }
-        }
-
-        saveData.setNutritionForDay(day, dailyNutrition);
-    }
 
 
     public void onClickBackNavigation(View view){

@@ -97,13 +97,10 @@ public class DietasActivity extends AppCompatActivity {
                         saveData.setCurrentDiet(diet);
 
                         if (diet.getTip().equals("1")) {
-                            // Cargar alimentos y nutrición para dieta de 1 día
-                            loadDayNutrition(diet.getId(), "1", () -> {
-                                Blocker.removeBlocker(this.findViewById(android.R.id.content));
-                                saveData.setCurrentDay(1);
-                                Intent intent = new Intent(this, ComidasActivity.class);
-                                startActivity(intent);
-                            });
+                            Blocker.removeBlocker(this.findViewById(android.R.id.content));
+                            saveData.setCurrentDay(1);
+                            Intent intent = new Intent(this, ComidasActivity.class);
+                            startActivity(intent);
                         } else {
                             Blocker.removeBlocker(this.findViewById(android.R.id.content));
                             Intent intent = new Intent(this, DiasActivity.class);
@@ -144,39 +141,6 @@ public class DietasActivity extends AppCompatActivity {
                     }
                 }
         );
-    }
-
-    private void loadDayNutrition(String dietId, String day, Runnable onComplete) {
-        try {
-            FireBaseReader.readFoodsForDay(dietId, Integer.parseInt(day))
-                    .addOnSuccessListener(foodResult -> {
-                        if (foodResult.isSuccess() && !foodResult.result.isEmpty()) {
-                            calculateDailyNutrition(foodResult.result, day);
-                        }
-                        onComplete.run();
-                    })
-                    .addOnFailureListener(e -> onComplete.run());
-        } catch (FBCException e) {
-            onComplete.run();
-        }
-    }
-
-    private void calculateDailyNutrition(List<FoodDiet> foodDiets, String day) {
-        DailyNutrition dailyNutrition = new DailyNutrition();
-
-        for (FoodDiet foodDiet : foodDiets) {
-            try {
-                // Asumiendo que tienes los alimentos en caché o los puedes obtener
-                Food food = saveData.getFoods().get(foodDiet.getIdAlimento());
-                if (food != null) {
-                    dailyNutrition.addFood(food);
-                }
-            } catch (Exception e) {
-                Log.e(TAG, "Error al obtener alimento: " + e.getMessage());
-            }
-        }
-
-        saveData.setNutritionForDay(day, dailyNutrition);
     }
 
 

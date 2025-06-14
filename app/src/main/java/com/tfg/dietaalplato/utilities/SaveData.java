@@ -43,6 +43,9 @@ public class SaveData {
     private String day;
     private final String TAG = "SaveData";
 
+    private Map<String, DailyNutrition> nutritionByDay = new HashMap<>();
+    private List<FoodDiet> currentMealFoods;
+
     private SaveData() {
         Log.d(TAG, "SaveData instanciando");
         user = new User("","","");
@@ -398,27 +401,34 @@ public class SaveData {
         this.currentDay = currentDay;
     }
 
-    private List<FoodDiet> currentDayFoods;
-
-    public void setCurrentDayFoods(List<FoodDiet> foods) {
-        this.currentDayFoods = foods;
-    }
-
-    public List<FoodDiet> getCurrentDayFoods() {
-        return currentDayFoods;
-    }
-
     private Map<String, DailyNutrition> nutritionData = new HashMap<>();
-
-    public void setNutritionForDay(String day, DailyNutrition nutrition) {
-        nutritionData.put(day, nutrition);
-    }
-
-    public DailyNutrition getNutritionForDay(String day) {
-        return nutritionData.get(day);
-    }
 
     public void clearNutritionData() {
         nutritionData.clear();
+    }
+
+    public void setNutritionForDay(String day, DailyNutrition nutrition) {
+        nutritionByDay.put(day, nutrition);
+    }
+
+    public DailyNutrition getNutritionForDay(String day) {
+        return nutritionByDay.get(day);
+    }
+
+    private Map<String, ArrayList<FoodDiet>> mealsFoods = new HashMap<>();
+
+    // Método para guardar todos los alimentos organizados por tipo de comida
+    public void setMealsFoods(Map<String, ArrayList<FoodDiet>> mealsFoods) {
+        this.mealsFoods = mealsFoods;
+    }
+
+    // Método para obtener todos los alimentos organizados por tipo de comida
+    public Map<String, ArrayList<FoodDiet>> getMealsFoods() {
+        return mealsFoods;
+    }
+
+    // Método para obtener alimentos de un tipo de comida específico
+    public ArrayList<FoodDiet> getMealFoods(String mealType) {
+        return mealsFoods.getOrDefault(mealType, new ArrayList<>());
     }
 }

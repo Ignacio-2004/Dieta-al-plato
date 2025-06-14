@@ -4,8 +4,10 @@ import android.util.Log;
 
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.tfg.dietaalplato.firebase.conectors.FireBaseConnector;
 import com.tfg.dietaalplato.firebase.exceptions.ComplexFBCE;
 import com.tfg.dietaalplato.firebase.exceptions.FBCException;
@@ -631,80 +633,91 @@ public class FireBaseReader {
      * @param callback parametro que convierte el metodo de asincronico en sincronico
      * @throws FBCException excepcion propia que marca si la conexion no es buena
      */
-    public static Task<ObjectResult<Map<String,ArrayList<FoodDiet>>>> readFoodDietByDay(String idDieta, String dia, OnResultCallBack<ObjectResult<ArrayList<FoodDiet>>> callback) throws FBCException {
+    public static Task<ObjectResult<Map<String, ArrayList<FoodDiet>>>> readFoodDietByDay(
+            String idDieta,
+            String dia,
+            OnResultCallBack<ObjectResult<Map<String, ArrayList<FoodDiet>>>> callback) throws FBCException {
+
         FirebaseFirestore fst = FireBaseConnector.getInstance().getFirestore();
-        SaveData saveData = SaveData.getInstance();
-        TaskCompletionSource<ObjectResult<Map<String,ArrayList<FoodDiet>>>> taskCompletionSource = new TaskCompletionSource<>();
+        TaskCompletionSource<ObjectResult<Map<String, ArrayList<FoodDiet>>>> taskCompletionSource = new TaskCompletionSource<>();
 
-        if (saveData.getFoodDiets().isLoaded() && saveData.getFoodDiets().contains(idDieta)) {
-            Log.d(TAG, "📖 FoodDiets encontradas en cache");
-
-            Collection<ArrayList<FoodDiet>> listaDeListas = saveData.getFoodDietsOfDiet(idDieta).values();
-            Map<String, ArrayList<FoodDiet>> resultados = new HashMap<>();
-
-            for (ArrayList<FoodDiet> lista : listaDeListas) {
-                for (FoodDiet foodDiet : lista) {
-                    if (dia.equals(foodDiet.getDia())) {
-                        String nombre = foodDiet.getName();
-                        resultados.putIfAbsent(nombre, new ArrayList<>());
-                        resultados.get(nombre).add(foodDiet);
-                        Log.d(TAG, "📖 FoodDiet añadida: " + foodDiet.getId());
-                    }
-                }
-            }
-
-            if (!resultados.isEmpty()) {
-                taskCompletionSource.setResult(new ObjectResult<>(true, "success", resultados));
-            } else {
-                taskCompletionSource.setException(new ComplexFBCE(
-                        new ObjectResult<>(false, "No se encontraron alimentos para el día especificado", null)
-                ));
-            }
-
-        } else {
+        // 1. Verificación de parámetros
+        if (idDieta == null || idDieta.isEmpty() || dia == null || dia.isEmpty()) {
+            Log.e(TAG, "Parámetros inválidos");
             taskCompletionSource.setException(new ComplexFBCE(
-                    new ObjectResult<>(false, "Colección no cargada o idDieta no encontrado", null)
-            ));
+                    new ObjectResult<>(false, "Parámetros de búsqueda inválidos", null)));
+            return taskCompletionSource.getTask();
         }
 
-
+        // 2. Consulta principal
         fst.collection("comidaDietas")
                 .whereEqualTo("idDieta", idDieta)
                 .whereEqualTo("dia", dia)
                 .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    if (!queryDocumentSnapshots.isEmpty()) {
-
-                        Map<String,ArrayList<FoodDiet>> foods = new HashMap<>();
-
-
-                        for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments()) {
-                            FoodDiet food = document.toObject(FoodDiet.class);
-                            if (food != null) {
-                                Log.d("Firebase", "📖 FoodDiet encontrada: " + food.getIdAlimento());
-                                foods.putIfAbsent(food.getName(), new ArrayList<>());
-                                foods.get(food.getName()).add(food);
-                            }
-                            else{
-                                Log.e("Firebase", "⚠️ Documento encontrado pero no se pudo convertir a FoodDiet");
-                            }
-                        }
-
-                        if (!foods.isEmpty()){
-                            taskCompletionSource.setResult(new ObjectResult<>(true, "success", foods));
-                        }else{
-                            taskCompletionSource.setException(new ComplexFBCE(new ObjectResult<>(false, "FoodDiet no encontrado", null)));
-                        }
-
-                    } else {
-                        Log.d("Firebase", "⚠️ No se encontró ningún foodDiet con idDieta: " + idDieta );
-                        taskCompletionSource.setException(new ComplexFBCE(new ObjectResult<>(false, "FoodDiet no encontrado", null)));
+                .addOnCompleteListener(mainTask -> {
+                    if (!mainTask.isSuccessful()) {
+                        Exception e = mainTask.getException();
+                        Log.e(TAG, "Error en consulta Firestore", e);
+                        taskCompletionSource.setException(new ComplexFBCE(
+                                new ObjectResult<>(false, "Error de base de datos: " + e.getMessage(), null)));
+                        return;
                     }
-                })
-                .addOnFailureListener(e -> {
-                    Log.e("Firebase", "❌ Error al buscar el FoodDiet: " + e.getMessage());
-                    taskCompletionSource.setException(new ComplexFBCE(new ObjectResult<>(false, "Error al buscar el FoodDiet: " + e.getMessage(), null)));
+
+                    QuerySnapshot snapshot = mainTask.getResult();
+                    if (snapshot == null || snapshot.isEmpty()) {
+                        Log.w(TAG, "Consulta exitosa pero sin resultados");
+                        taskCompletionSource.setException(new ComplexFBCE(
+                                new ObjectResult<>(false, "No se encontraron alimentos", null)));
+                        return;
+                    }
+
+                    // 3. Procesamiento de documentos
+                    Map<String, ArrayList<FoodDiet>> resultMap = new HashMap<>();
+                    List<Task<?>> gramosTasks = new ArrayList<>();
+
+                    for (DocumentSnapshot doc : snapshot) {
+                        try {
+                            FoodDiet foodDiet = doc.toObject(FoodDiet.class);
+                            if (foodDiet == null || foodDiet.getIdAlimento() == null) {
+                                Log.w(TAG, "Documento inválido omitido: " + doc.getId());
+                                continue;
+                            }
+
+                            // 4. Consulta de gramos
+                            Task<QuerySnapshot> singleGramosTask = fst.collection("recetaAlimento")
+                                    .whereEqualTo("idFoodDiet", doc.getId())
+                                    .get()
+                                    .addOnCompleteListener(gramosTask -> {  // <-- Aquí usamos nombre diferente
+                                        if (gramosTask.isSuccessful() && !gramosTask.getResult().isEmpty()) {
+                                            DocumentSnapshot gramosDoc = gramosTask.getResult().getDocuments().get(0);
+                                            String gramos = gramosDoc.getString("gramos");
+                                            if (gramos != null) {
+                                                foodDiet.setG(gramos);
+                                                Log.d(TAG, "Gramos asignados: " + gramos);
+                                            }
+                                        }
+                                    });
+
+                            gramosTasks.add(singleGramosTask);
+                            resultMap.computeIfAbsent(foodDiet.getName(), k -> new ArrayList<>()).add(foodDiet);
+
+                        } catch (Exception e) {
+                            Log.e(TAG, "Error procesando documento", e);
+                        }
+                    }
+
+                    // 5. Esperar a que todas las consultas de gramos terminen
+                    Tasks.whenAllComplete(gramosTasks)
+                            .addOnCompleteListener(finalTask -> {
+                                if (resultMap.isEmpty()) {
+                                    taskCompletionSource.setException(new ComplexFBCE(
+                                            new ObjectResult<>(false, "No se encontraron alimentos válidos", null)));
+                                } else {
+                                    taskCompletionSource.setResult(new ObjectResult<>(true, "success", resultMap));
+                                }
+                            });
                 });
+
         return taskCompletionSource.getTask();
     }
 
@@ -924,5 +937,49 @@ public class FireBaseReader {
                 });
 
         return taskCompletionSource.getTask();
+    }
+    public static Task<List<FoodDiet>> readAllFoodsForDay(String dietId, String day) {
+        FirebaseFirestore fst = FireBaseConnector.getInstance().getFirestore();
+
+        return fst.collection("foodDiets")
+                .whereEqualTo("idDieta", dietId)
+                .whereEqualTo("dia", day)
+                .get()
+                .continueWith(task -> {
+                    List<FoodDiet> result = new ArrayList<>();
+                    if (task.isSuccessful()) {
+                        for (DocumentSnapshot doc : task.getResult()) {
+                            FoodDiet fd = doc.toObject(FoodDiet.class);
+                            if (fd != null) {
+                                fd.setId(doc.getId());
+                                result.add(fd);
+                            }
+                        }
+                    }
+                    return result;
+                });
+    }
+
+    public static Task<List<FoodDiet>> readFoodsForMeal(String dietId, String day, String mealType) {
+        FirebaseFirestore fst = FireBaseConnector.getInstance().getFirestore();
+
+        return fst.collection("foodDiets")
+                .whereEqualTo("idDieta", dietId)
+                .whereEqualTo("dia", day)
+                .whereEqualTo("tipoComida", mealType)
+                .get()
+                .continueWith(task -> {
+                    List<FoodDiet> result = new ArrayList<>();
+                    if (task.isSuccessful()) {
+                        for (DocumentSnapshot doc : task.getResult()) {
+                            FoodDiet fd = doc.toObject(FoodDiet.class);
+                            if (fd != null) {
+                                fd.setId(doc.getId());
+                                result.add(fd);
+                            }
+                        }
+                    }
+                    return result;
+                });
     }
 }
