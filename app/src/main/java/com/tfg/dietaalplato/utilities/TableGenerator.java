@@ -228,70 +228,71 @@ public class TableGenerator {
         return th;
     }
 
-    private static String addAttFood(List<Food>foods, HeaderColumns att,Context context,ArrayList<Double> grs){
+    private static String addAttFood(List<Food> foods, HeaderColumns att, Context context, ArrayList<Double> grs) {
         double i = 0;
 
-       try{
-           for (int j = 0; j < foods.size(); j++) {
-               Food f = foods.get(j);
-               switch (att){
-                   case Kcal:
-                       i += safeParse(f.getEnergia())*(grs.get(j)/100);
-                       break;
-                   case Proteina:
-                       i+= safeParse(f.getProteina())*(grs.get(j)/100);
-                       break;
-                   case Grasa:
-                       i+= safeParse(f.getGrasa())*(grs.get(j)/100);
-                       break;
-                   case AGs:
-                       i+= safeParse(f.getAgs())*(grs.get(j)/100);
-                       break;
-                   case AGmi:
-                       i+= safeParse(f.getAgmi())*(grs.get(j)/100);
-                       break;
-                   case AGpi:
-                       i+= safeParse(f.getAgpi())*(grs.get(j)/100);
-                       break;
-                   case Colesterol:
-                       i+= safeParse(f.getColesterol())*(grs.get(j)/100);
-                       break;
-                   case HC:
-                       i+= safeParse(f.getHc())*(grs.get(j)/100);
-                       break;
-                   case Fibra:
-                       i+= safeParse(f.getFibra())*(grs.get(j)/100);
-                       break;
-                   case VitC:
-                       i += safeParse(f.getVitC())*(grs.get(j)/100);
-                       break;
-                   case VitB6:
-                       i += safeParse(f.getVitB6())*(grs.get(j)/100);
-                       break;
-                   case VitE:
-                       i += safeParse(f.getVitE())*(grs.get(j)/100);
-                       break;
-                   case Hierro:
-                       i += safeParse(f.getHierro())*(grs.get(j)/100);
-                       break;
-                   case Sodio:
-                       i += safeParse(f.getSodio())*(grs.get(j)/100);
-                       break;
-                   case Calcio:
-                       i += safeParse(f.getCalcio())*(grs.get(j)/100);
-                       break;
-                   case Potasio:
-                       i += safeParse(f.getPotasio())*(grs.get(j)/100);
-                       break;
-               }
-           }
-       }catch (Exception e){
-           Toast.makeText(context, "Error al leer algunos alimentos", Toast.LENGTH_SHORT).show();
-           i += 0.0;
-       }
+        try {
+            for (int j = 0; j < foods.size(); j++) {
+                Food f = foods.get(j);
+                switch (att) {
+                    case Kcal:
+                        i += Math.round((safeParse(f.getEnergia()) * (grs.get(j) / 100)) * 1000.0) / 1000.0;
+                        break;
+                    case Proteina:
+                        i += Math.round((safeParse(f.getProteina()) * (grs.get(j) / 100)) * 1000.0) / 1000.0;
+                        break;
+                    case Grasa:
+                        i += Math.round((safeParse(f.getGrasa()) * (grs.get(j) / 100)) * 1000.0) / 1000.0;
+                        break;
+                    case AGs:
+                        i += Math.round((safeParse(f.getAgs()) * (grs.get(j) / 100)) * 1000.0) / 1000.0;
+                        break;
+                    case AGmi:
+                        i += Math.round((safeParse(f.getAgmi()) * (grs.get(j) / 100)) * 1000.0) / 1000.0;
+                        break;
+                    case AGpi:
+                        i += Math.round((safeParse(f.getAgpi()) * (grs.get(j) / 100)) * 1000.0) / 1000.0;
+                        break;
+                    case Colesterol:
+                        i += Math.round((safeParse(f.getColesterol()) * (grs.get(j) / 100)) * 1000.0) / 1000.0;
+                        break;
+                    case HC:
+                        i += Math.round((safeParse(f.getHc()) * (grs.get(j) / 100)) * 1000.0) / 1000.0;
+                        break;
+                    case Fibra:
+                        i += Math.round((safeParse(f.getFibra()) * (grs.get(j) / 100)) * 1000.0) / 1000.0;
+                        break;
+                    case VitC:
+                        i += Math.round((safeParse(f.getVitC()) * (grs.get(j) / 100)) * 1000.0) / 1000.0;
+                        break;
+                    case VitB6:
+                        i += Math.round((safeParse(f.getVitB6()) * (grs.get(j) / 100)) * 1000.0) / 1000.0;
+                        break;
+                    case VitE:
+                        i += Math.round((safeParse(f.getVitE()) * (grs.get(j) / 100)) * 1000.0) / 1000.0;
+                        break;
+                    case Hierro:
+                        i += Math.round((safeParse(f.getHierro()) * (grs.get(j) / 100)) * 1000.0) / 1000.0;
+                        break;
+                    case Sodio:
+                        i += Math.round((safeParse(f.getSodio()) * (grs.get(j) / 100)) * 1000.0) / 1000.0;
+                        break;
+                    case Calcio:
+                        i += Math.round((safeParse(f.getCalcio()) * (grs.get(j) / 100)) * 1000.0) / 1000.0;
+                        break;
+                    case Potasio:
+                        i += Math.round((safeParse(f.getPotasio()) * (grs.get(j) / 100)) * 1000.0) / 1000.0;
+                        break;
+                }
+            }
+        } catch (Exception e) {
+            Toast.makeText(context, "Error al leer algunos alimentos", Toast.LENGTH_SHORT).show();
+            i += 0.0;
+        }
 
         return String.valueOf(i);
     }
+
 
     private static double safeParse(String value) {
         if (value == null) return 0.0;
