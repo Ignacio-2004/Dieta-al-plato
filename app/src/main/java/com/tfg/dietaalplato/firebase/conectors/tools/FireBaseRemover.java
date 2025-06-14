@@ -60,7 +60,7 @@ public class FireBaseRemover {
                 errorMsg = "Error al eliminar el alimento";
                 break;
             case "ALI":
-                collection = "comidas";
+                collection = "alimentos";
                 successMsg = "Alimento eliminado correctamente";
                 errorMsg = "Error al eliminar el alimento";
                 break;
@@ -105,7 +105,7 @@ public class FireBaseRemover {
                                    });
 
                                     break;
-                                case "comidas":
+                                case "alimentos":
                                     for (Food food: saveData.getFoods().getAllAsArrayList()){
                                         if(food.getId().equals(id)){
                                             saveData.removeFood(food.getName());

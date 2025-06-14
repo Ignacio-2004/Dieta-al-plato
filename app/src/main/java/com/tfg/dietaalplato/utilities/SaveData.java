@@ -212,7 +212,7 @@ public class SaveData {
             foods = new CacheCollection<>();
         }
         Log.d(TAG, "addFood: " + food);
-        foods.add(food.getId(), food);
+        foods.add(food.getName(), food);
     }
 
     public void addDiet (Diet diet){

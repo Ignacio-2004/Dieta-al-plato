@@ -139,10 +139,6 @@ public class EditarBancoAlimentos_Dialogo extends DialogFragment {
 
     private void guardarAlimento() throws FBCException {
 
-        // Primero lo eliminamos
-        FireBaseRemover.remove(alimentoAEditar.getId());
-
-
         // Ahora lo guardamos
 
         Blocker.createBlocker((ViewGroup) mainView.getRootView(), requireActivity());
@@ -170,35 +166,47 @@ public class EditarBancoAlimentos_Dialogo extends DialogFragment {
         String idUsuario = SaveData.getInstance().getUser().getId();
         ValidationResult alimentoData = Food.toMapData(campos, idUsuario);
 
-        if (!alimentoData.exit) {
-            textError.setText("❌ " + alimentoData.message);
-            textError.setVisibility(View.VISIBLE);
-            mostrarTextError();
-            Blocker.removeBlocker((ViewGroup) mainView.getRootView());
-            return;
-        }
-
-        FireBaseWriter.saveData(Food.class, alimentoData)
-                .addOnSuccessListener(res -> {
-                    textError.setText("✅ Alimento guardado correctamente");
-                    textError.setVisibility(View.VISIBLE);
-                    Blocker.removeBlocker((ViewGroup) mainView.getRootView());
-                    dismiss();
-                })
-                .addOnFailureListener(e -> {
-                    if (e instanceof ComplexFBCE) {
-                        textError.setText(((ComplexFBCE) e).reason.message);
-                    } else {
-                        textError.setText("Error al guardar el alimento");
+        if(alimentoData.exit){
+            // Primero lo eliminamos
+            FireBaseRemover.remove(alimentoAEditar.getId()).addOnFailureListener(
+                    r ->{
+                        textError.setText("❌ Error al guardar el alimento");
+                        textError.setVisibility(View.VISIBLE);
+                        Blocker.removeBlocker((ViewGroup) mainView.getRootView());
+                        mostrarTextError();
                     }
-                    textError.setVisibility(View.VISIBLE);
-                    Blocker.removeBlocker((ViewGroup) mainView.getRootView());
-                    mostrarTextError();
-                });
+            ).addOnSuccessListener(
+                    r -> {
+                        FireBaseWriter.saveData(Food.class, alimentoData)
+                                .addOnSuccessListener(res -> {
+                                    textError.setText("✅ Alimento guardado correctamente");
+                                    textError.setVisibility(View.VISIBLE);
+                                    Blocker.removeBlocker((ViewGroup) mainView.getRootView());
+                                    mostrarTextError();
+                                    dismiss();
+                                })
+                                .addOnFailureListener(e -> {
+                                    if (e instanceof ComplexFBCE) {
+                                        textError.setText(((ComplexFBCE) e).reason.message);
+                                    } else {
+                                        textError.setText("Error al guardar el alimento");
+                                    }
+                                    textError.setVisibility(View.VISIBLE);
+                                    Blocker.removeBlocker((ViewGroup) mainView.getRootView());
+                                    mostrarTextError();
+                                });
+                    }
+            );
+        }else{
+            textError.setText("❌ Error al guardar el alimento, compruebe que todo slos datos con * esten rellenos");
+            textError.setVisibility(View.VISIBLE);
+            Blocker.removeBlocker((ViewGroup) mainView.getRootView());
+            mostrarTextError();
+        }
     }
 
     public void mostrarTextError() {
-        textError.postDelayed(() -> textError.setVisibility(View.GONE), 3000);
+        textError.postDelayed(() -> textError.setVisibility(View.GONE), 5000);
     }
 
     private void modificarValor(EditText input, float delta) {
