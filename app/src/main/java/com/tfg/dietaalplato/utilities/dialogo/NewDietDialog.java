@@ -15,7 +15,6 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.DialogFragment;
@@ -45,6 +44,7 @@ public class NewDietDialog extends DialogFragment {
     private Button bttGuardar;
     private EditText egComida;
     private EditText nameRecepie;
+    private TextView errTxt;
 
     public static NewDietDialog getInstance() {
         return new NewDietDialog();
@@ -68,6 +68,7 @@ public class NewDietDialog extends DialogFragment {
             bttGuardar.setOnClickListener(this::save);
             egComida = mainView.findViewById(R.id.grs);
             nameRecepie = mainView.findViewById(R.id.editTextNombre);
+            errTxt = mainView.findViewById(R.id.txtMensajeErrorAlimento);
 
             readFood(foods -> {
                 ScrollView sv = new ScrollView(mainView.getContext());
@@ -92,7 +93,9 @@ public class NewDietDialog extends DialogFragment {
                 currentLayout.addView(sv);
             });
         } catch (FBCException e) {
-            Toast.makeText(mainView.getContext(),"No se han podido leer los alimentos", Toast.LENGTH_SHORT).show();
+            errTxt.setText("Error al generar la tabla");
+            errTxt.setVisibility(View.VISIBLE);
+            mostrarTextError();
         }
         return builder.create();
     }
@@ -143,7 +146,9 @@ public class NewDietDialog extends DialogFragment {
                             selectedFood = food;
                             selectedLayout = ln;
                         }catch (Exception e){
-                            Toast.makeText(mainView.getContext(),"Error al seleccionar el alimento", Toast.LENGTH_SHORT).show();
+                            errTxt.setText("Error al seleccionar el alimento");
+                            errTxt.setVisibility(View.VISIBLE);
+                            mostrarTextError();
                         }
                     }
                 }
@@ -157,40 +162,62 @@ public class NewDietDialog extends DialogFragment {
     }
 
     private void save(View view) {
-        Blocker.createBlocker((ViewGroup) mainView.getRootView(),mainView.getContext());
+        if (selectedFood!=null){
+            if(!nameRecepie.getText().toString().equals("")){
+                Blocker.createBlocker((ViewGroup) mainView.getRootView(),mainView.getContext());
 
-        if (egComida.getText().toString() == null || egComida.getText().toString().equals("")){
-            egComida.setText("0");
+                if (egComida.getText().toString() == null || egComida.getText().toString().equals("")){
+                    egComida.setText("0");
+                }
+
+                ArrayList<String> data = new ArrayList<>();
+                data.add(saveData.getMomentOfDay());
+                data.add("0"); //TODO  añadir el numeor del plato
+                data.add(String.valueOf(saveData.getCurrentDay()));
+                data.add(egComida.getText().toString());
+                data.add(nameRecepie.getText().toString());
+
+                ValidationResult result = FoodDiet.toMapData(data,saveData.getCurrentDiet().getId(),selectedFood.getId(),"");
+                Log.d("RESULT",result.toString());
+
+                FireBaseWriter.saveData(FoodDiet.class,result).addOnFailureListener(
+                        e -> {
+                            errTxt.setText("Error al guardar los datos");
+                            errTxt.setVisibility(View.VISIBLE);
+                            mostrarTextError();
+                            Blocker.removeBlocker((ViewGroup) mainView.getRootView());
+                        }
+                ).addOnSuccessListener(
+                        aVoid -> {
+                            errTxt.setText("Guardado perfectamente");
+                            errTxt.setVisibility(View.VISIBLE);
+                            mostrarTextError();
+                            try{
+                                TableGenerator tableGenerator = TableGenerator.getInstance();
+                                tableGenerator.resetAndGenerateTable();
+                            }catch (Exception e){
+                                errTxt.setText("Error al generar la tabla");
+                                errTxt.setVisibility(View.VISIBLE);
+                                mostrarTextError();
+                            }
+                            Blocker.removeBlocker((ViewGroup) mainView.getRootView());
+                        }
+                );
+            }else{
+                errTxt.setText("Debe introducir un nombre");
+                errTxt.setVisibility(View.VISIBLE);
+                mostrarTextError();
+            }
+        }else{
+            errTxt.setText("Debe seleccionar un alimento");
+            errTxt.setVisibility(View.VISIBLE);
+            mostrarTextError();
         }
 
-        ArrayList<String> data = new ArrayList<>();
-        data.add(saveData.getMomentOfDay());
-        data.add("0"); //TODO  añadir el numeor del plato
-        data.add(String.valueOf(saveData.getCurrentDay()));
-        data.add(egComida.getText().toString());
-        data.add(nameRecepie.getText().toString());
+    }
 
-        ValidationResult result = FoodDiet.toMapData(data,saveData.getCurrentDiet().getId(),selectedFood.getId(),"");
-        Log.d("RESULT",result.toString());
-
-        FireBaseWriter.saveData(FoodDiet.class,result).addOnFailureListener(
-                e -> {
-                    Toast.makeText(mainView.getContext(), "Error al guardar, compruebe los datos", Toast.LENGTH_SHORT).show();
-                    Blocker.removeBlocker((ViewGroup) mainView.getRootView());
-                }
-        ).addOnSuccessListener(
-                aVoid -> {
-                    Toast.makeText(mainView.getContext(), "Guardado correctamente", Toast.LENGTH_SHORT).show();
-                    try{
-                        TableGenerator tableGenerator = TableGenerator.getInstance();
-                        tableGenerator.resetAndGenerateTable();
-                    }catch (Exception e){
-                        Toast.makeText(mainView.getContext(),"Error al generar la tabla", Toast.LENGTH_SHORT).show();
-                    }
-                    Blocker.removeBlocker((ViewGroup) mainView.getRootView());
-                }
-        );
-
+    private void mostrarTextError() {
+        errTxt.postDelayed(() -> errTxt.setVisibility(View.GONE), 2000);
     }
 
 }
