@@ -34,11 +34,19 @@ public class ValidationResult {
 
     @Override
     public String toString() {
-        return "ValidationResult{" +
-                "exit=" + exit +
-                ", message='" + message + '\'' +
-                ", data=" + data.toString() +
-                '}';
+        if (data!=null){
+            return "ValidationResult{" +
+                    "exit=" + exit +
+                    ", message='" + message + '\'' +
+                    ", data=" + data.toString() +
+                    '}';
+        }else{
+            return "ValidationResult{" +
+                    "exit=" + exit +
+                    ", message='" + message + '\'' +
+                    ", data=" + null +
+                    '}';
+        }
     }
 }
 

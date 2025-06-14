@@ -11,6 +11,7 @@ import com.tfg.dietaalplato.firebase.tables.Client;
 import com.tfg.dietaalplato.firebase.tables.Diet;
 import com.tfg.dietaalplato.firebase.tables.Food;
 import com.tfg.dietaalplato.firebase.tables.FoodDiet;
+import com.tfg.dietaalplato.firebase.tables.RelacionRecetaAlimento;
 import com.tfg.dietaalplato.firebase.utilities.OnResultCallBack;
 import com.tfg.dietaalplato.firebase.utilities.ValidationResult;
 import com.tfg.dietaalplato.utilities.SaveData;
@@ -23,6 +24,7 @@ import java.util.Map;
 
 public class FireBaseRemover {
     private static final String TAG = "FireBase/Remover";
+    private static FoodDiet or;
 
     public static Task<ValidationResult> remove(String id) {
         Log.d(TAG, "🗑️ Eliminando elemento con id: " + id);
@@ -73,7 +75,6 @@ public class FireBaseRemover {
         fst.collection(collection).document(id).delete()
                 .addOnSuccessListener(aVoid ->
                         {
-                            taskCompletionSource.setResult(new ValidationResult(true, finalSuccessMsg, null));
                             switch (finalCollection) {
                                 case "clientes":
                                     for(Client client: saveData.getClients().getAllAsArrayList()){
@@ -81,6 +82,7 @@ public class FireBaseRemover {
                                             saveData.removeClient(client.getId());
                                         }
                                     }
+                                    taskCompletionSource.setResult(new ValidationResult(true, finalSuccessMsg, null));
                                     break;
                                 case "dietas":
                                     for (Map<String, Diet> diet : saveData.getDiets().getAllAsArrayList()){
@@ -90,14 +92,15 @@ public class FireBaseRemover {
                                             }
                                         }
                                     }
+                                    taskCompletionSource.setResult(new ValidationResult(true, finalSuccessMsg, null));
                                     break;
                                 case "recetaAlimento":
 
                                    removeFoodDiet(fst, saveData, id, o ->{
-                                       if(o.exit){
-                                           taskCompletionSource.setResult(new ValidationResult(true, finalSuccessMsg, null));
-                                       }else{
+                                       if(!o.exit){
                                            taskCompletionSource.setResult(new ValidationResult(false, finalErrorMsg, null));
+                                       }else{
+                                           taskCompletionSource.setResult(new ValidationResult(true, finalSuccessMsg, null));
                                        }
                                    });
 
@@ -108,6 +111,7 @@ public class FireBaseRemover {
                                             saveData.removeFood(food.getName());
                                         }
                                     }
+                                    taskCompletionSource.setResult(new ValidationResult(true, finalSuccessMsg, null));
                                     break;
                             }
                         }
@@ -121,22 +125,38 @@ public class FireBaseRemover {
     private static void removeFoodDiet(FirebaseFirestore fst, SaveData saveData, String id, OnResultCallBack<ValidationResult> onResultCallBack){
         fst.collection("recetaAlimento").whereEqualTo("idFooDiet", id).get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.isEmpty()) {
-                fst.collection("comidaDietas").document(id).delete();
+                fst.collection("comidaDietas").document(id).delete().addOnFailureListener(
+                        e -> {
+                            onResultCallBack.onResult(new ValidationResult(false, "Error al eliminar el alimento", null));
+                        }
+                ).addOnSuccessListener(
+                        aVoid -> {
+                            saveData.getFoodDiets().setLoaded(false);
+                            saveData.getFoodDiets().clear();
+                            onResultCallBack.onResult(new ValidationResult(true, "Alimento eliminado correctamente", null));
+                        }
+                );
+            }else{
+                fst.collection("recetaAlimento").document(or.getId()+or.getIdAlimento().toString().substring(or.getIdAlimento().toString().length()-6,or.getIdAlimento().toString().length())).delete().addOnFailureListener(
+                        e -> {
+                            onResultCallBack.onResult(new ValidationResult(false, "Error al eliminar el alimento", null));
+                        }
+                ).addOnSuccessListener(
+                        aVoid -> {
+                            saveData.getFoodDiets().setLoaded(false);
+                            saveData.getFoodDiets().clear();
+                            onResultCallBack.onResult(new ValidationResult(true, "Alimento eliminado correctamente", null));
+                        }
+                );
             }
 
-            for (Map<String, ArrayList<FoodDiet>> foodDiet : saveData.getFoodDiets().getAllAsArrayList()) {
-                for (ArrayList<FoodDiet> foodDiets : foodDiet.values()) {
-                    for (FoodDiet foodDiet1 : foodDiets) {
-                        if (foodDiet1.getId().equals(id)) {
-                            saveData.removeFoodDiet(foodDiet1);
-                            return;
-                        }
-                    }
-                }
-            }
-            onResultCallBack.onResult(new ValidationResult(true, "Alimento eliminado correctamente", null));
         }).addOnFailureListener(
                 e -> onResultCallBack.onResult(new ValidationResult(false, "Error al eliminar el alimento", null))
         );
+    }
+
+    public static Task<ValidationResult> remove(FoodDiet foodDiet) {
+        or = foodDiet;
+        return remove(foodDiet.getId());
     }
 }

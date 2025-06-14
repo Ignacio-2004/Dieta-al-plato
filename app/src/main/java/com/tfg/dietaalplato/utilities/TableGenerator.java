@@ -157,13 +157,15 @@ public class TableGenerator {
                                                     ArrayList<Double> grs = new ArrayList<>();
                                                     for (FoodDiet foodDiet: fd) {
                                                         for (Food food: foods.result.values()) {
-                                                            try{
-                                                                if (foodDiet.getIdAlimento().equals(food.getId())) {
-                                                                    foodArrayList.add(food);
-                                                                    grs.add(safeParse(foodDiet.getG()));
+                                                            if (!foodArrayList.contains(food)){
+                                                                try{
+                                                                    if (foodDiet.getIdAlimento().equals(food.getId())) {
+                                                                        foodArrayList.add(food);
+                                                                        grs.add(safeParse(foodDiet.getG()));
+                                                                    }
+                                                                }catch (Exception e){
+                                                                    Toast.makeText(context, "Error al leer algunos alimentos", Toast.LENGTH_SHORT).show();
                                                                 }
-                                                            }catch (Exception e){
-                                                                Toast.makeText(context, "Error al leer algunos alimentos", Toast.LENGTH_SHORT).show();
                                                             }
                                                         }
                                                     }

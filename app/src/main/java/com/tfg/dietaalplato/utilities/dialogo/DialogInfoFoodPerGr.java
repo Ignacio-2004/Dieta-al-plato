@@ -144,7 +144,7 @@ public class DialogInfoFoodPerGr extends DialogFragment {
                         ViewGroup parent = (ViewGroup) mainView.getRootView();
                         Blocker.createBlocker(parent,requireActivity());
 
-                        FireBaseRemover.remove(currentFoodDiet.getId()).addOnFailureListener(
+                        FireBaseRemover.remove(currentFoodDiet).addOnFailureListener(
                                 e -> {
                                     errTv.setText("Error al guardar");
                                     errTv.setVisibility(View.VISIBLE);
