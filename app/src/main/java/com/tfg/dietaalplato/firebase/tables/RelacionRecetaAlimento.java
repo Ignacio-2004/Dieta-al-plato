@@ -9,7 +9,7 @@ public class RelacionRecetaAlimento {
 
     private String idFooDiet;
     private String idFood;
-    private String gr;
+    private String g;
 
     public RelacionRecetaAlimento() {
         // Constructor vacío requerido por Firebase
@@ -18,7 +18,7 @@ public class RelacionRecetaAlimento {
     public RelacionRecetaAlimento(String idFooDiet, String idFood, String gr) {
         this.idFooDiet = idFooDiet;
         this.idFood = idFood;
-        this.gr = gr;
+        this.g = gr;
     }
 
     // Getters y setters
@@ -39,12 +39,12 @@ public class RelacionRecetaAlimento {
         this.idFood = idFood;
     }
 
-    public String getGr() {
-        return gr;
+    public String getG() {
+        return g;
     }
 
-    public void setGr(String gr) {
-        this.gr = gr;
+    public void setG(String g) {
+        this.g = g;
     }
 
     public static ValidationResult toMap(String gr, String idFood, String idFooDiet) {
@@ -84,7 +84,7 @@ public class RelacionRecetaAlimento {
         HashMap<String,String> data = new HashMap<>();
         data.put("idFooDiet", relacion.getIdFooDiet());
         data.put("idFood", relacion.getIdFood());
-        data.put("gr", relacion.getGr());
+        data.put("gr", relacion.getG());
 
         return data;
     }

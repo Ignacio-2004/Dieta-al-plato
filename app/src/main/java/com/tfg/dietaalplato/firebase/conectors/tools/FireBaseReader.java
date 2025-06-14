@@ -558,50 +558,57 @@ public class FireBaseReader {
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     if (!queryDocumentSnapshots.isEmpty()) {
-                        FoodDiet food = queryDocumentSnapshots.getDocuments().get(0).toObject(FoodDiet.class);
-                        fst.collection("recetaAlimento")
-                                .whereEqualTo("idFooDiet", food.getId())
-                                .get()
-                                .addOnSuccessListener(queryDocumentSnapshots1 -> {
-                                    if (!queryDocumentSnapshots1.isEmpty()) {
-                                        Map<String, ArrayList<FoodDiet>> agrupado = new HashMap<>();
+                        FoodDiet foodDiet = queryDocumentSnapshots.getDocuments().get(0).toObject(FoodDiet.class);
+                        if (foodDiet != null) {
+                            fst.collection("recetaAlimento")
+                                    .whereEqualTo("idFooDiet", foodDiet.getId())
+                                    .get()
+                                    .addOnSuccessListener(queryDocumentSnapshots1 -> {
+                                                if (!queryDocumentSnapshots1.isEmpty()) {
+                                                    Map<String, ArrayList<FoodDiet>> agrupado = new HashMap<>();
 
-                                        for (DocumentSnapshot documentR : queryDocumentSnapshots1.getDocuments()) {
-                                            RelacionRecetaAlimento  rra= documentR.toObject(RelacionRecetaAlimento.class);
-                                            if (rra != null) {
-                                                if (food != null) {
-                                                    food.setIdAlimento(rra.getIdFood());
-                                                    food.setG(rra.getGr());
-                                                    String nombre = food.getName(); // o .getComida(), según agrupación
-                                                    agrupado.putIfAbsent(nombre, new ArrayList<>());
-                                                    agrupado.get(nombre).add(food);
-                                                    Log.d("Firebase", "📖 FoodDiet añadida: " + food.getId());
-                                                } else {
-                                                    Log.e("Firebase", "⚠️ Documento no convertible a FoodDiet");
+                                                    for (DocumentSnapshot documentR : queryDocumentSnapshots1.getDocuments()) {
+                                                        RelacionRecetaAlimento  rra= documentR.toObject(RelacionRecetaAlimento.class);
+                                                        if (rra != null) {
+                                                            FoodDiet reFoodDiet = new FoodDiet();
+                                                            reFoodDiet.setId(foodDiet.getId());
+                                                            reFoodDiet.setIdAlimento(rra.getIdFood());
+                                                            reFoodDiet.setG(rra.getG());
+                                                            reFoodDiet.setName(foodDiet.getName());
+                                                            reFoodDiet.setDia(foodDiet.getDia());
+                                                            reFoodDiet.setComida(foodDiet.getComida());
+                                                            reFoodDiet.setIdDieta(foodDiet.getIdDieta());
+
+                                                            String nombre = foodDiet.getName(); // o .getComida(), según agrupación
+                                                            agrupado.putIfAbsent(nombre, new ArrayList<>());
+                                                            agrupado.get(nombre).add(reFoodDiet);
+                                                            Log.d("Firebase", "📖 FoodDiet añadida: " + foodDiet.getId());
+                                                        } else {
+                                                            Log.e("Firebase", "⚠️ Documento no convertible a FoodDiet");
+                                                        }
+                                                    }
+                                                    if (!agrupado.isEmpty()) {
+                                                        // Guardamos en la caché
+                                                        saveData.getFoodDiets().add(idDieta, agrupado);
+                                                        saveData.getFoodDiets().setLoaded(true);
+
+                                                        if ((saveData.getFoodDiets() != null && !saveData.getFoodDiets().isEmpty()) && saveData.getFoodDiets().isLoaded()) {
+                                                            Log.d(TAG, "📖 FoodDiets guardadas en cache");
+                                                        }
+
+                                                        taskCompletionSource.setResult(new ObjectResult<>(true, "success", agrupado));
+                                                    } else {
+                                                        taskCompletionSource.setException(new ComplexFBCE(new ObjectResult<>(false, "FoodDiet no encontrado", null)));
+                                                    }
+                                                }else{
+                                                    taskCompletionSource.setResult(new ObjectResult<>(false, "FoodDiet sin hijos", null));
+                                                    return;
                                                 }
-
-
                                             }
-                                        }
-                                        if (!agrupado.isEmpty()) {
-                                            // Guardamos en la caché
-                                            saveData.getFoodDiets().add(idDieta, agrupado);
-                                            saveData.getFoodDiets().setLoaded(true);
-
-                                            if ((saveData.getFoodDiets() != null && !saveData.getFoodDiets().isEmpty()) && saveData.getFoodDiets().isLoaded()) {
-                                                Log.d(TAG, "📖 FoodDiets guardadas en cache");
-                                            }
-
-                                            taskCompletionSource.setResult(new ObjectResult<>(true, "success", agrupado));
-                                        } else {
-                                            taskCompletionSource.setException(new ComplexFBCE(new ObjectResult<>(false, "FoodDiet no encontrado", null)));
-                                        }
-                                    }else{
-                                        taskCompletionSource.setResult(new ObjectResult<>(false, "FoodDiet sin hijos", null));
-                                        return;
-                                    }
-                                }
-                        );
+                                    );
+                        }else{
+                            taskCompletionSource.setException(new ComplexFBCE(new ObjectResult<>(false, "Error al convertir el documento a FoodDiet", null)));
+                        }
                     } else {
                         Log.d("Firebase", "⚠️ No se encontraron documentos con idDieta: " + idDieta);
                         taskCompletionSource.setResult(new ObjectResult<>(false, "FoodDiet no encontrado", null));

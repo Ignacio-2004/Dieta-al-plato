@@ -166,7 +166,7 @@ public class NewDietDialog extends DialogFragment {
         ArrayList<String> data = new ArrayList<>();
         data.add(saveData.getMomentOfDay());
         data.add("0"); //TODO  añadir el numeor del plato
-        data.add(saveData.getDay());
+        data.add(String.valueOf(saveData.getCurrentDay()));
         data.add(egComida.getText().toString());
         data.add(nameRecepie.getText().toString());
 

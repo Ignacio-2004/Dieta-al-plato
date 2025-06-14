@@ -100,6 +100,7 @@ public class DietasActivity extends AppCompatActivity {
                             // Cargar alimentos y nutrición para dieta de 1 día
                             loadDayNutrition(diet.getId(), "1", () -> {
                                 Blocker.removeBlocker(this.findViewById(android.R.id.content));
+                                saveData.setCurrentDay(1);
                                 Intent intent = new Intent(this, ComidasActivity.class);
                                 startActivity(intent);
                             });
@@ -128,7 +129,7 @@ public class DietasActivity extends AppCompatActivity {
                             if (!Objects.equals(diet.getTip(), "1")){
                                 intent = new Intent(this, DiasActivity.class);
                             }else{
-                                saveData.setDay("1");
+                                saveData.setCurrentDay(1);
                                 intent = new Intent(this, ComidasActivity.class);
                             }
 

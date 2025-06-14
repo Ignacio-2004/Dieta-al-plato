@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -147,7 +148,9 @@ public class TableGenerator {
 
                                                 FoodDiet f = fd.get(0);
 
-                                                if (f.getDia().equals(saveData.getDay()) && f.getComida().equals(saveData.getMomentOfDay())) {
+                                                Log.d("Prueba", "foodDiet: " + f.getDia() +" : "+ f.getComida());
+                                                Log.d("Prueba", "SaveData: " + saveData.getCurrentDay() +" : "+ saveData.getMomentOfDay());
+                                                if (f.getDia().trim().equalsIgnoreCase(String.valueOf(saveData.getCurrentDay()).trim()) && f.getComida().trim().equalsIgnoreCase(String.valueOf(saveData.getMomentOfDay()).trim())) {
                                                     //Con este filtro cogemos solo los que pertenecen a este dia y ese momento del dia
 
                                                     ArrayList<Food> foodArrayList = new ArrayList<>();
