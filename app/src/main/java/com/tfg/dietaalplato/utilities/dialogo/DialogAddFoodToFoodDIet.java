@@ -178,7 +178,7 @@ public class DialogAddFoodToFoodDIet extends DialogFragment {
                                     ArrayList<String> data = new ArrayList<>();
                                     data.add(saveData.getMomentOfDay());
                                     data.add("0");
-                                    data.add(saveData.getDay());
+                                    data.add(String.valueOf(saveData.getCurrentDay()));
                                     data.add(inputgr.getText().toString());
                                     data.add(currentsfoodDiets.get(0).getName());
 
@@ -227,9 +227,16 @@ public class DialogAddFoodToFoodDIet extends DialogFragment {
                                                     Blocker.removeBlocker((ViewGroup) mainView.getRootView());
                                                 }
                                         );
+                                    }else{
+                                        errTv.setText("Error al guardar");
+                                        errTv.setVisibility(View.VISIBLE);
+                                        mostrarTextError();
                                     }
                                 } else {
                                     Log.w("GuardarAlimento", "currentsfoodDiets está vacío al intentar guardar un nuevo alimento.");
+                                    errTv.setText("Error al guardar");
+                                    errTv.setVisibility(View.VISIBLE);
+                                    mostrarTextError();
                                 }
                             }
                         }
