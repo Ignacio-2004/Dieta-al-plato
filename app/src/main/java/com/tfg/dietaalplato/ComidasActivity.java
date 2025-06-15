@@ -2,9 +2,11 @@ package com.tfg.dietaalplato;
 
 import static android.content.ContentValues.TAG;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Pair;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -17,6 +19,7 @@ import com.google.firebase.firestore.ListenerRegistration;
 import com.tfg.dietaalplato.firebase.conectors.FireBaseConnector;
 import com.tfg.dietaalplato.firebase.conectors.tools.FireBaseReader;
 import com.tfg.dietaalplato.firebase.exceptions.FBCException;
+import com.tfg.dietaalplato.firebase.tables.Diet;
 import com.tfg.dietaalplato.firebase.utilities.ObjectResult;
 import com.tfg.dietaalplato.firebase.utilities.OnResultCallBack;
 import com.tfg.dietaalplato.utilities.DailyNutrition;
@@ -31,6 +34,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class ComidasActivity extends AppCompatActivity {
 
@@ -97,91 +101,6 @@ public class ComidasActivity extends AppCompatActivity {
         botonCena.setOnClickListener(comidaClickListener);
         botonRecena.setOnClickListener(comidaClickListener);
 
-        loadAllMealsFoods();
-    }
-
-    private void loadAllMealsFoods() {
-        try {
-            FireBaseReader.readFoodDietByDay(
-                    saveData.getCurrentDiet().getId(),
-                    currentDay,
-                    result -> {
-                        if (result.isSuccess() && result.result != null) {
-                            Map<String, ArrayList<FoodDiet>> mealsMap = new HashMap<>();
-                            DailyNutrition dailyNutrition = new DailyNutrition();
-
-                            // Inicializar listas para cada tipo de comida
-                            mealsMap.put("1", new ArrayList<>()); // Desayuno
-                            mealsMap.put("2", new ArrayList<>()); // Almuerzo
-                            mealsMap.put("3", new ArrayList<>()); // Comida
-                            mealsMap.put("4", new ArrayList<>()); // Merienda
-                            mealsMap.put("5", new ArrayList<>()); // Cena
-                            mealsMap.put("6", new ArrayList<>()); // Recena
-
-                            // Procesar los alimentos del resultado
-                            for (ArrayList<FoodDiet> foodList : result.result.values()) {
-                                for (FoodDiet fd : foodList) {
-                                    // Validaciones
-                                    if (fd.getIdAlimento() == null || fd.getG() == null) {
-                                        Log.e(TAG, "Datos incompletos, omitiendo alimento");
-                                        continue;
-                                    }
-
-                                    String tipoComida = fd.getTipoComida() != null ? fd.getTipoComida() : "1";
-
-                                    if (!mealsMap.containsKey(tipoComida)) {
-                                        tipoComida = "1";
-                                    }
-
-                                    Food food = saveData.getFoods().get(fd.getIdAlimento());
-                                    if (food == null) {
-                                        Log.w(TAG, "Alimento no encontrado en caché");
-                                        continue;
-                                    }
-
-                                    // Procesamiento
-                                    mealsMap.get(tipoComida).add(fd);
-                                    try {
-                                        dailyNutrition.addFood(food, Double.parseDouble(fd.getG()));
-                                    } catch (NumberFormatException e) {
-                                        Log.e(TAG, "Formato de gramos inválido: " + fd.getG());
-                                    }
-                                }
-                            }
-
-                            saveData.setMealsFoods(mealsMap);
-                            saveData.setNutritionForDay(currentDay, dailyNutrition);
-
-                            // Actualizar UI
-                            if (!isFinishing() && !isDestroyed()) {
-                                runOnUiThread(() -> {
-                                    Toast.makeText(ComidasActivity.this,
-                                            "Alimentos cargados correctamente",
-                                            Toast.LENGTH_SHORT).show();
-                                });
-                            }
-                        } else {
-                            Log.e(TAG, "Error al cargar alimentos: " + (result != null ? result.message : "Resultado nulo"));
-                            if (!isFinishing() && !isDestroyed()) {
-                                runOnUiThread(() -> {
-                                    Toast.makeText(ComidasActivity.this,
-                                            "Error al cargar alimentos: " + (result != null ? result.message : "Error desconocido"),
-                                            Toast.LENGTH_SHORT).show();
-                                });
-                            }
-                        }
-                    }
-            );
-        } catch (FBCException e) {
-            Log.e(TAG, "Error FBC: " + e.getMessage());
-            if (!isFinishing() && !isDestroyed()) {
-                runOnUiThread(() -> {
-                    Toast.makeText(this,
-                            "Error de conexión: " + e.getMessage(),
-                            Toast.LENGTH_SHORT).show();
-                });
-            }
-        }
     }
 
 
@@ -206,9 +125,25 @@ public class ComidasActivity extends AppCompatActivity {
     }
 
     public void mostrarMacros(View view) {
-        MacrosInfo_Dialog dialogo = MacrosInfo_Dialog.getInstance();
-        dialogo.show(getSupportFragmentManager(), "MacrosInfo_Dialog");
+        String idDieta = saveData.getCurrentDiet().getId();
+        String dia = String.valueOf(saveData.getCurrentDay());
+
+        try {
+            FireBaseReader.readFoodDietByDay2(idDieta, dia)
+                    .addOnSuccessListener(result -> {
+                        if (result.isSuccess()) {
+                            // Los datos ya están en SaveData, podemos mostrar el diálogo directamente
+                            MacrosInfo_Dialog dialog = MacrosInfo_Dialog.newInstance();
+                            dialog.show(getSupportFragmentManager(), "MacrosInfoDialog");
+                        } else {
+                            Toast.makeText(this, result.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .addOnFailureListener(e -> {
+                        Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    });
+        } catch (FBCException e) {
+            Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
     }
-
-
 }

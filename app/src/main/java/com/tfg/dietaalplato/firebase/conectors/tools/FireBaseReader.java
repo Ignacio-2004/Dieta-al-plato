@@ -1,6 +1,7 @@
 package com.tfg.dietaalplato.firebase.conectors.tools;
 
 import android.util.Log;
+import android.util.Pair;
 
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
@@ -26,8 +27,10 @@ import com.tfg.dietaalplato.utilities.tipe_collection.CacheCollection;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class FireBaseReader {
     private static final String TAG = "FireBase/Reader";
@@ -624,98 +627,228 @@ public class FireBaseReader {
         return taskCompletionSource.getTask();
     }
 
-
-
-    /**
-     * Metodo que lee todas las comidas de una dieta a partir de su id de dieta y de dia
-     * @param idDieta id de la dieta
-     * @param dia  dia de la dieta
-     * @param callback parametro que convierte el metodo de asincronico en sincronico
-     * @throws FBCException excepcion propia que marca si la conexion no es buena
-     */
-    public static Task<ObjectResult<Map<String, ArrayList<FoodDiet>>>> readFoodDietByDay(
+    public static Task<ObjectResult<ArrayList<FoodDiet>>> readFoodDietByDay(
             String idDieta,
             String dia,
-            OnResultCallBack<ObjectResult<Map<String, ArrayList<FoodDiet>>>> callback) throws FBCException {
+            OnResultCallBack<ObjectResult<ArrayList<FoodDiet>>> callback) throws FBCException {
 
         FirebaseFirestore fst = FireBaseConnector.getInstance().getFirestore();
-        TaskCompletionSource<ObjectResult<Map<String, ArrayList<FoodDiet>>>> taskCompletionSource = new TaskCompletionSource<>();
+        SaveData saveData = SaveData.getInstance();
+        TaskCompletionSource<ObjectResult<ArrayList<FoodDiet>>> taskCompletionSource = new TaskCompletionSource<>();
 
-        // 1. Verificación de parámetros
-        if (idDieta == null || idDieta.isEmpty() || dia == null || dia.isEmpty()) {
-            Log.e(TAG, "Parámetros inválidos");
-            taskCompletionSource.setException(new ComplexFBCE(
-                    new ObjectResult<>(false, "Parámetros de búsqueda inválidos", null)));
-            return taskCompletionSource.getTask();
-        }
+        fst.collection("comidaDietas")
+                .whereEqualTo("idDieta", idDieta.trim())
+                .whereEqualTo("dia", dia.trim())
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    if (!queryDocumentSnapshots.isEmpty()) {
+                        ArrayList<FoodDiet> foodDietsList = new ArrayList<>();
+                        List<Task<QuerySnapshot>> recetaAlimentoTasks = new ArrayList<>();
+                        Map<String, FoodDiet> foodDietMap = new HashMap<>();
 
-        // 2. Consulta principal
+                        // 1. Obtener comidas principales
+                        for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments()) {
+                            FoodDiet foodDiet = document.toObject(FoodDiet.class);
+                            if (foodDiet != null) {
+                                foodDietMap.put(foodDiet.getId(), foodDiet);
+                                Task<QuerySnapshot> recetaTask = fst.collection("recetaAlimento")
+                                        .whereEqualTo("idFooDiet", foodDiet.getId())
+                                        .get();
+                                recetaAlimentoTasks.add(recetaTask);
+                            }
+                        }
+
+                        // 2. Procesar recetas asociadas
+                        Tasks.whenAllSuccess(recetaAlimentoTasks).addOnSuccessListener(results -> {
+                            for (int i = 0; i < results.size(); i++) {
+                                QuerySnapshot recetaSnapshots = (QuerySnapshot) results.get(i);
+                                String foodDietId = (String) foodDietMap.keySet().toArray()[i];
+                                FoodDiet baseFoodDiet = foodDietMap.get(foodDietId);
+
+                                if (baseFoodDiet != null) {
+                                    for (DocumentSnapshot recetaDoc : recetaSnapshots.getDocuments()) {
+                                        RelacionRecetaAlimento rra = recetaDoc.toObject(RelacionRecetaAlimento.class);
+                                        if (rra != null) {
+                                            FoodDiet combinedFoodDiet = new FoodDiet();
+                                            combinedFoodDiet.setId(baseFoodDiet.getId());
+                                            combinedFoodDiet.setIdAlimento(rra.getIdFood());
+                                            combinedFoodDiet.setG(rra.getG());
+                                            combinedFoodDiet.setName(baseFoodDiet.getName());
+                                            combinedFoodDiet.setDia(baseFoodDiet.getDia());
+                                            combinedFoodDiet.setComida(baseFoodDiet.getComida());
+                                            combinedFoodDiet.setIdDieta(baseFoodDiet.getIdDieta());
+
+                                            foodDietsList.add(combinedFoodDiet);
+                                        }
+                                    }
+                                }
+                            }
+
+                            // 3. Almacenar en SaveData (lo importante)
+                            saveData.setCurrentDayFoodDiets(foodDietsList);
+
+                            // 4. Devolver resultado
+                            ObjectResult<ArrayList<FoodDiet>> result = new ObjectResult<>(
+                                    true,
+                                    "success",
+                                    foodDietsList
+                            );
+
+                            taskCompletionSource.setResult(result);
+                            if (callback != null) {
+                                callback.onResult(result);
+                            }
+                        }).addOnFailureListener(e -> {
+                            Log.e("Firebase", "Error recetas: " + e.getMessage());
+                            ObjectResult<ArrayList<FoodDiet>> errorResult = new ObjectResult<>(
+                                    false,
+                                    "Error recetas: " + e.getMessage(),
+                                    null
+                            );
+                            taskCompletionSource.setException(new ComplexFBCE(errorResult));
+                            if (callback != null) {
+                                callback.onResult(errorResult);
+                            }
+                        });
+
+                    } else {
+                        ObjectResult<ArrayList<FoodDiet>> result = new ObjectResult<>(
+                                false,
+                                "No comidas encontradas",
+                                null
+                        );
+                        taskCompletionSource.setResult(result);
+                        if (callback != null) {
+                            callback.onResult(result);
+                        }
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("Firebase", "Error comidas: " + e.getMessage());
+                    ObjectResult<ArrayList<FoodDiet>> errorResult = new ObjectResult<>(
+                            false,
+                            "Error comidas: " + e.getMessage(),
+                            null
+                    );
+                    taskCompletionSource.setException(new ComplexFBCE(errorResult));
+                    if (callback != null) {
+                        callback.onResult(errorResult);
+                    }
+                });
+
+        return taskCompletionSource.getTask();
+    }
+
+    /**
+     * Lee los alimentos de una dieta y día específicos, y devuelve tanto la lista de FoodDiet
+     * como los IDs de alimentos necesarios para los cálculos nutricionales
+     * @param idDieta ID de la dieta
+     * @param dia Día de la semana
+     * @return Task con Pair<ArrayList<FoodDiet>, Set<String>> (lista de alimentos y IDs necesarios)
+     * @throws FBCException
+     */
+    public static Task<ObjectResult<ArrayList<FoodDiet>>> readFoodDietByDay2(
+            String idDieta,
+            String dia) throws FBCException {
+
+        FirebaseFirestore fst = FireBaseConnector.getInstance().getFirestore();
+        SaveData saveData = SaveData.getInstance();
+        TaskCompletionSource<ObjectResult<ArrayList<FoodDiet>>> taskCompletionSource = new TaskCompletionSource<>();
+
         fst.collection("comidaDietas")
                 .whereEqualTo("idDieta", idDieta)
                 .whereEqualTo("dia", dia)
                 .get()
-                .addOnCompleteListener(mainTask -> {
-                    if (!mainTask.isSuccessful()) {
-                        Exception e = mainTask.getException();
-                        Log.e(TAG, "Error en consulta Firestore", e);
-                        taskCompletionSource.setException(new ComplexFBCE(
-                                new ObjectResult<>(false, "Error de base de datos: " + e.getMessage(), null)));
-                        return;
-                    }
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    if (!queryDocumentSnapshots.isEmpty()) {
+                        ArrayList<FoodDiet> foodDietsList = new ArrayList<>();
+                        List<Task<QuerySnapshot>> recetaAlimentoTasks = new ArrayList<>();
+                        Map<String, FoodDiet> foodDietMap = new HashMap<>();
+                        List<Task<DocumentSnapshot>> foodInfoTasks = new ArrayList<>();
 
-                    QuerySnapshot snapshot = mainTask.getResult();
-                    if (snapshot == null || snapshot.isEmpty()) {
-                        Log.w(TAG, "Consulta exitosa pero sin resultados");
-                        taskCompletionSource.setException(new ComplexFBCE(
-                                new ObjectResult<>(false, "No se encontraron alimentos", null)));
-                        return;
-                    }
+                        // 1. Procesar comidas principales
+                        for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments()) {
+                            FoodDiet foodDiet = document.toObject(FoodDiet.class);
+                            if (foodDiet != null) {
+                                foodDietMap.put(foodDiet.getId(), foodDiet);
+                                Task<QuerySnapshot> recetaTask = fst.collection("recetaAlimento")
+                                        .whereEqualTo("idFooDiet", foodDiet.getId())
+                                        .get();
+                                recetaAlimentoTasks.add(recetaTask);
+                            }
+                        }
 
-                    // 3. Procesamiento de documentos
-                    Map<String, ArrayList<FoodDiet>> resultMap = new HashMap<>();
-                    List<Task<?>> gramosTasks = new ArrayList<>();
+                        // 2. Procesar recetas asociadas
+                        Tasks.whenAllSuccess(recetaAlimentoTasks).addOnSuccessListener(results -> {
+                            for (int i = 0; i < results.size(); i++) {
+                                QuerySnapshot recetaSnapshots = (QuerySnapshot) results.get(i);
+                                String foodDietId = (String) foodDietMap.keySet().toArray()[i];
+                                FoodDiet baseFoodDiet = foodDietMap.get(foodDietId);
 
-                    for (DocumentSnapshot doc : snapshot) {
-                        try {
-                            FoodDiet foodDiet = doc.toObject(FoodDiet.class);
-                            if (foodDiet == null || foodDiet.getIdAlimento() == null) {
-                                Log.w(TAG, "Documento inválido omitido: " + doc.getId());
-                                continue;
+                                if (baseFoodDiet != null) {
+                                    for (DocumentSnapshot recetaDoc : recetaSnapshots.getDocuments()) {
+                                        RelacionRecetaAlimento rra = recetaDoc.toObject(RelacionRecetaAlimento.class);
+                                        if (rra != null) {
+                                            // Crear FoodDiet combinado
+                                            FoodDiet combinedFoodDiet = new FoodDiet();
+                                            combinedFoodDiet.setId(baseFoodDiet.getId());
+                                            combinedFoodDiet.setIdAlimento(rra.getIdFood());
+                                            combinedFoodDiet.setG(rra.getG());
+                                            combinedFoodDiet.setName(baseFoodDiet.getName());
+                                            combinedFoodDiet.setDia(baseFoodDiet.getDia());
+                                            combinedFoodDiet.setComida(baseFoodDiet.getComida());
+                                            combinedFoodDiet.setIdDieta(baseFoodDiet.getIdDieta());
+
+                                            foodDietsList.add(combinedFoodDiet);
+
+                                            // 3. Cargar información nutricional
+                                            Task<DocumentSnapshot> foodTask = fst.collection("alimentos")
+                                                    .document(rra.getIdFood())
+                                                    .get();
+                                            foodInfoTasks.add(foodTask);
+                                        }
+                                    }
+                                }
                             }
 
-                            // 4. Consulta de gramos
-                            Task<QuerySnapshot> singleGramosTask = fst.collection("recetaAlimento")
-                                    .whereEqualTo("idFoodDiet", doc.getId())
-                                    .get()
-                                    .addOnCompleteListener(gramosTask -> {  // <-- Aquí usamos nombre diferente
-                                        if (gramosTask.isSuccessful() && !gramosTask.getResult().isEmpty()) {
-                                            DocumentSnapshot gramosDoc = gramosTask.getResult().getDocuments().get(0);
-                                            String gramos = gramosDoc.getString("gramos");
-                                            if (gramos != null) {
-                                                foodDiet.setG(gramos);
-                                                Log.d(TAG, "Gramos asignados: " + gramos);
-                                            }
-                                        }
-                                    });
-
-                            gramosTasks.add(singleGramosTask);
-                            resultMap.computeIfAbsent(foodDiet.getName(), k -> new ArrayList<>()).add(foodDiet);
-
-                        } catch (Exception e) {
-                            Log.e(TAG, "Error procesando documento", e);
-                        }
-                    }
-
-                    // 5. Esperar a que todas las consultas de gramos terminen
-                    Tasks.whenAllComplete(gramosTasks)
-                            .addOnCompleteListener(finalTask -> {
-                                if (resultMap.isEmpty()) {
-                                    taskCompletionSource.setException(new ComplexFBCE(
-                                            new ObjectResult<>(false, "No se encontraron alimentos válidos", null)));
-                                } else {
-                                    taskCompletionSource.setResult(new ObjectResult<>(true, "success", resultMap));
+                            // 4. Cargar todos los datos nutricionales
+                            Tasks.whenAllSuccess(foodInfoTasks).addOnSuccessListener(foodDocs -> {
+                                for (Object doc : foodDocs) {
+                                    DocumentSnapshot foodDoc = (DocumentSnapshot) doc;
+                                    Food food = foodDoc.toObject(Food.class);
+                                    if (food != null) {
+                                        saveData.addFoodHashMap(food); // Usando addFoodHashMap
+                                    }
                                 }
+
+                                // 5. Almacenar y devolver resultados
+                                saveData.setCurrentDayFoodDiets(foodDietsList);
+                                taskCompletionSource.setResult(new ObjectResult<>(true, "success", foodDietsList));
+                            }).addOnFailureListener(e -> {
+                                Log.e("Firebase", "Error alimentos: " + e.getMessage());
+                                taskCompletionSource.setException(new ComplexFBCE(
+                                        new ObjectResult<>(false, "Error alimentos: " + e.getMessage(), null)
+                                ));
                             });
+
+                        }).addOnFailureListener(e -> {
+                            Log.e("Firebase", "Error recetas: " + e.getMessage());
+                            taskCompletionSource.setException(new ComplexFBCE(
+                                    new ObjectResult<>(false, "Error recetas: " + e.getMessage(), null)
+                            ));
+                        });
+
+                    } else {
+                        taskCompletionSource.setResult(
+                                new ObjectResult<>(false, "No se encontraron comidas", null)
+                        );
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("Firebase", "Error comidas: " + e.getMessage());
+                    taskCompletionSource.setException(new ComplexFBCE(
+                            new ObjectResult<>(false, "Error comidas: " + e.getMessage(), null)
+                    ));
                 });
 
         return taskCompletionSource.getTask();

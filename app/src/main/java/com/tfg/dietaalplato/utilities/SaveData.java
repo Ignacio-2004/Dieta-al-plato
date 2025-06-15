@@ -431,4 +431,26 @@ public class SaveData {
     public ArrayList<FoodDiet> getMealFoods(String mealType) {
         return mealsFoods.getOrDefault(mealType, new ArrayList<>());
     }
+
+
+    private ArrayList<FoodDiet> currentDayFoodDiets;
+    private Map<String, Food> foodHashMap = new HashMap<>();
+
+    public void setCurrentDayFoodDiets(ArrayList<FoodDiet> foodDiets) {
+        this.currentDayFoodDiets = foodDiets;
+    }
+
+    public ArrayList<FoodDiet> getCurrentDayFoodDiets() {
+        return currentDayFoodDiets != null ? currentDayFoodDiets : new ArrayList<>();
+    }
+
+    public void addFoodHashMap(Food food) {
+        if (food != null && food.getId() != null) {
+            foodHashMap.put(food.getId(), food);
+        }
+    }
+
+    public Food getFoodById(String foodId) {
+        return foodHashMap.get(foodId);
+    }
 }
