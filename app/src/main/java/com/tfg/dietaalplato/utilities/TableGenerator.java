@@ -179,7 +179,8 @@ public class TableGenerator {
                                             ++ Plus last row
                                         */
 
-                                        table.addView(generateLastRow(context, columns));
+                                        if (!saveData.isAdmin())
+                                            table.addView(generateLastRow(context, columns));
 
                                         /*
                                             -- Plus last row
@@ -502,16 +503,18 @@ public class TableGenerator {
         botonAdd.setLayoutParams(insiteSVmargin());
         botonAdd.setBackgroundResource(R.drawable.bg_food_background);
         botonAdd.setTextColor(Color.WHITE);
-        botonAdd.setOnClickListener(v -> {
-            if (foodsDiet.get(0).getName() == null || foodsDiet.get(0).getName().isEmpty()){
-                onClickCreateRecepie.onClick(v);
-            }else{
-                DialogAddFoodToFoodDIet dialog = DialogAddFoodToFoodDIet.getInstance();
-                dialog.setFoods((ArrayList<Food>) food);
-                dialog.setCurrentsfoodDiets(foodsDiet);
-                dialog.show(supportFragmentActivity.getSupportFragmentManager(), "DialogScrollView");
-            }
-        });
+
+        if (!saveData.isAdmin())
+            botonAdd.setOnClickListener(v -> {
+                if (foodsDiet.get(0).getName() == null || foodsDiet.get(0).getName().isEmpty()){
+                    onClickCreateRecepie.onClick(v);
+                }else{
+                    DialogAddFoodToFoodDIet dialog = DialogAddFoodToFoodDIet.getInstance();
+                    dialog.setFoods((ArrayList<Food>) food);
+                    dialog.setCurrentsfoodDiets(foodsDiet);
+                    dialog.show(supportFragmentActivity.getSupportFragmentManager(), "DialogScrollView");
+                }
+            });
 
         alimentosLayout.addView(botonAdd);
 
