@@ -36,6 +36,8 @@ public class EditarBancoAlimentos_Dialogo extends DialogFragment {
             inputCa100, inputK100;
     private View mainView;
 
+    private OnAlimentoEditadoListener listener; //
+
     private final float STEP = 0.1f;
 
     private Food alimentoAEditar; //
@@ -183,6 +185,9 @@ public class EditarBancoAlimentos_Dialogo extends DialogFragment {
                                     textError.setVisibility(View.VISIBLE);
                                     Blocker.removeBlocker((ViewGroup) mainView.getRootView());
                                     mostrarTextError();
+                                    if (listener != null) {
+                                        listener.onAlimentoEditado();  //
+                                    }
                                     dismiss();
                                 })
                                 .addOnFailureListener(e -> {
@@ -251,5 +256,13 @@ public class EditarBancoAlimentos_Dialogo extends DialogFragment {
         args.putSerializable("alimento", alimento); // Food debe implementar Serializable
         dialog.setArguments(args);
         return dialog;
+    }
+    // esto define una interfaz para comunicarnos con BancoAlimentos e indicar que se actualice
+    public interface OnAlimentoEditadoListener {
+        void onAlimentoEditado();
+    }
+    // creamos un listener para activar la llamada al bancoalimentos y actualizarlo
+    public void setOnAlimentoEditadoListener(OnAlimentoEditadoListener listener) {
+        this.listener = listener;
     }
 }

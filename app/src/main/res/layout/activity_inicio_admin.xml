@@ -67,6 +67,19 @@
             android:textSize="50dp"
             android:textStyle="bold" />
 
+        <ImageButton
+            android:id="@+id/ver_usuarios_button"
+            android:layout_width="110dp"
+            android:layout_height="99dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginStart="45dp"
+            android:layout_marginEnd="8dp"
+            android:backgroundTint="#00FFFFFF"
+            android:contentDescription="Ver usuarios"
+            android:onClick="watchUserInformation"
+            android:scaleType="fitCenter"
+            app:srcCompat="@drawable/user_info" />
+
     </LinearLayout>
 
 

@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,12 +18,15 @@ import com.tfg.dietaalplato.firebase.tables.User;
 import com.tfg.dietaalplato.firebase.conectors.FireBaseConnector;
 import com.tfg.dietaalplato.firebase.exceptions.FBCException;
 import com.tfg.dietaalplato.utilities.SaveData;
+import com.tfg.dietaalplato.utilities.dialogo.infoUser_Dialog;
+
 
 public class InicioAdminActivity extends AppCompatActivity {
 
     private LinearLayout layoutUsuarios;
-    private FireBaseConnector fbConnector; // tu conector personalizado
+    private FireBaseConnector fbConnector;
     private SaveData saveData;
+    private boolean infoUserAvailabe = false;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -62,14 +66,21 @@ public class InicioAdminActivity extends AppCompatActivity {
                                     LinearLayout.LayoutParams.WRAP_CONTENT
                             ));
 
-                            item.setOnClickListener(v ->{
-                                        Log.d("Usuario", "Nombre del usuario seleccionado: " + usuario.getName());
-                                        saveData.setCurrentStudent(usuario);
+                            item.setOnClickListener(v -> {
+                                Log.d("Usuario", "Nombre del usuario seleccionado: " + usuario.getName());
+                                saveData.setCurrentStudent(usuario);
 
-                                        Intent intent = new Intent(this, InicioUsuarioActivity.class);
-                                        startActivity(intent);
-                                    }
-                            );
+                                if (infoUserAvailabe) {
+                                    // visualizar passwords
+                                    infoUser_Dialog dialog = new infoUser_Dialog(this, usuario);
+                                    dialog.show();
+                                } else {
+                                    // ver usuario
+                                    Intent intent = new Intent(this, InicioUsuarioActivity.class);
+                                    startActivity(intent);
+                                }
+                            });
+
                             item.addView(nombre);
                             layoutUsuarios.addView(item);
                         }
@@ -83,5 +94,18 @@ public class InicioAdminActivity extends AppCompatActivity {
     public void onClickBackNavigation(View view){
         Intent intent = new Intent(this, LogIn_Activity.class );
         startActivity(intent);
+    }
+    public void watchUserInformation(View View)
+    {
+        ImageButton button = findViewById(R.id.ver_usuarios_button);
+        if (!infoUserAvailabe)
+        {
+            infoUserAvailabe = true;
+            button.setColorFilter(getResources().getColor(R.color.green, null));
+        }
+        else {
+            infoUserAvailabe = false;
+            button.setColorFilter(getResources().getColor(R.color.gray, null));
+        }
     }
 }

@@ -110,6 +110,7 @@ public class BancoAlimentosActivity extends AppCompatActivity {
                                     // esto es para cuando haga click en el alimento
                                     item.setOnClickListener(v -> {
                                         EditarBancoAlimentos_Dialogo dialogo = EditarBancoAlimentos_Dialogo.newInstance(alimento);
+                                        dialogo.setOnAlimentoEditadoListener(() -> actualizarBancoAlimentos(null)); // cuando cierre el dialgo se acutaliza las listas
                                         dialogo.show(getSupportFragmentManager(), "editarAlimento");
                                     });
 
