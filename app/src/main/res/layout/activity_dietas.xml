@@ -42,7 +42,7 @@
         android:fontFamily="@font/lily_script_one"
         android:text="Selecciona una dieta"
         android:textAllCaps="false"
-        android:textColor="#1E1D21"
+        android:textColor="#027C68"
         android:textSize="60sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -169,7 +169,6 @@
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_weight="1"
-            android:onClick="onClickOpenInfo"
             app:srcCompat="@drawable/usuario" />
 
         <TextView
@@ -179,7 +178,6 @@
             android:layout_marginTop="22dp"
             android:fitsSystemWindows="false"
             android:fontFamily="@font/alfa_slab_one"
-            android:onClick="onClickOpenInfo"
             android:textColor="#027C68"
             android:textSize="34sp"
             android:textStyle="bold" />
