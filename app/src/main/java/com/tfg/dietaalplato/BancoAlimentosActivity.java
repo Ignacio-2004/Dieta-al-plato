@@ -6,6 +6,7 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,6 +25,8 @@ public class BancoAlimentosActivity extends AppCompatActivity {
 
     private LinearLayout layoutSV;
     private SaveData saveData;
+    private ImageView imageView;
+    private ImageView return_button;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +35,17 @@ public class BancoAlimentosActivity extends AppCompatActivity {
 
         layoutSV = findViewById(R.id.layoutAlimentos);
         SaveData saveData = SaveData.getInstance();
+
+        imageView = findViewById(R.id.imageView);
+        return_button = findViewById(R.id.imageView3);
+
+        if (saveData.isAdmin()) {
+            return_button.setVisibility(View.INVISIBLE);
+            imageView.setVisibility(View.INVISIBLE);
+        } else {
+            return_button.setVisibility(View.VISIBLE);
+            imageView.setVisibility(View.VISIBLE);
+        }
 
         if(saveData.isAdmin()) { //si es admin, deberíamos mostrar los clientes del usuario que el admin haya seleccionado
             try{

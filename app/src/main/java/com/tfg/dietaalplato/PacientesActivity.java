@@ -28,6 +28,8 @@ public class PacientesActivity extends AppCompatActivity {
 
     private LinearLayout layoutClientes;
     private SaveData saveData;
+    private ImageView imageView;
+    private ImageView return_button;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +38,17 @@ public class PacientesActivity extends AppCompatActivity {
 
         layoutClientes = findViewById(R.id.layoutClientes);
         saveData = SaveData.getInstance();
+
+        imageView = findViewById(R.id.imageView);
+        return_button = findViewById(R.id.imageView3);
+
+        if (saveData.isAdmin()) {
+            return_button.setVisibility(View.INVISIBLE);
+            imageView.setVisibility(View.INVISIBLE);
+        } else {
+            return_button.setVisibility(View.VISIBLE);
+            imageView.setVisibility(View.VISIBLE);
+        }
 
         ImageView botonRefrescar = findViewById(R.id.imageView3);
         ImageView botonAñadir = findViewById(R.id.imageView);

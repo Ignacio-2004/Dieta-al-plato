@@ -26,6 +26,8 @@ import com.tfg.dietaalplato.firebase.utilities.ValidationResult;
 import com.tfg.dietaalplato.utilities.Blocker;
 import com.tfg.dietaalplato.utilities.SaveData;
 
+import org.checkerframework.checker.i18nformatter.qual.I18nInvalidFormat;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -103,83 +105,90 @@ public class ClientInfo_Dialog extends DialogFragment {
 
         saveButton.setOnClickListener(
                 v -> {
-                    ViewGroup parent = (ViewGroup) mainView.getRootView();
-                    Blocker.createBlocker(parent,requireActivity());
-                    ArrayList<View> views = new ArrayList<>();
-                    views.add(editTextNombre);
-                    views.add(editTextApellido);
-                    views.add(minKal);
-                    views.add(maxKal);
+                    if (!saveData.isAdmin()){
+                        ViewGroup parent = (ViewGroup) mainView.getRootView();
+                        Blocker.createBlocker(parent,requireActivity());
+                        ArrayList<View> views = new ArrayList<>();
+                        views.add(editTextNombre);
+                        views.add(editTextApellido);
+                        views.add(minKal);
+                        views.add(maxKal);
 
-                    ValidationResult result = Client.toMapData(views,alergias, patologias,saveData.getUser().getId());
-                    Log.d("FireBase",result.data.get("minKcal")+" "+result.data.get("maxKcal"));
+                        ValidationResult result = Client.toMapData(views,alergias, patologias,saveData.getUser().getId());
+                        Log.d("FireBase",result.data.get("minKcal")+" "+result.data.get("maxKcal"));
 
-                    if (!result.exit){
-                        textError.setText(result.message);
+                        if (!result.exit){
+                            textError.setText(result.message);
+                            textError.setVisibility(View.VISIBLE);
+                            mostrarTextError();
+                            Blocker.removeBlocker(parent);
+                            return;
+                        }else{
+                            if (haveFill){
+                                FireBaseRemover.remove(saveData.getCurrentClient().getId()).addOnSuccessListener(
+                                        validationResult -> {
+                                            FireBaseWriter.saveData(Client.class, result).addOnFailureListener(
+                                                    e -> {
+                                                        if (e instanceof ComplexFBCE) {
+                                                            textError.setText(((ComplexFBCE) e).reason.message);
+                                                        }else{
+                                                            textError.setText("Error al guardar el cliente");
+                                                        }
+                                                        textError.setVisibility(View.VISIBLE);
+                                                        Blocker.removeBlocker(parent);
+                                                        mostrarTextError();
+                                                    }
+                                            ).addOnSuccessListener(
+                                                    validationResult2 -> {
+                                                        saveData.setCurrentClient((Client) validationResult2.result);
+                                                        Blocker.removeBlocker(parent);
+                                                        textError.setText("Cliente guardado correctamente");
+                                                        textError.setTextColor(Color.parseColor("#027C68"));
+                                                        textError.setVisibility(View.VISIBLE);
+                                                        mostrarTextError();
+                                                        getActivity().recreate();
+                                                    }
+                                            );
+                                        }
+                                ).addOnFailureListener(
+                                        e -> {
+                                            if (e instanceof ComplexFBCE) {
+                                                textError.setText(((ComplexFBCE) e).reason.message);
+                                            } else {
+                                                textError.setText("Error al guardar el cliente");
+                                            }
+                                        }
+                                );
+                            }else{
+                                FireBaseWriter.saveData(Client.class, result).addOnFailureListener(
+                                        e -> {
+                                            if (e instanceof ComplexFBCE) {
+                                                textError.setText(((ComplexFBCE) e).reason.message);
+                                            }else{
+                                                textError.setText("Error al guardar el cliente");
+                                            }
+                                            textError.setVisibility(View.VISIBLE);
+                                            Blocker.removeBlocker(parent);
+                                            mostrarTextError();
+                                        }
+                                ).addOnSuccessListener(
+                                        validationResult -> {
+                                            saveData.setCurrentClient((Client) validationResult.result);
+                                            Blocker.removeBlocker(parent);
+                                            textError.setText("Cliente guardado correctamente");
+                                            textError.setTextColor(Color.parseColor("#027C68"));
+                                            textError.setVisibility(View.VISIBLE);
+                                            mostrarTextError();
+                                            getActivity().recreate();
+                                        }
+                                );
+                            }
+                        }
+                    }else{
+                        textError.setText("No puedes modificar un cliente siendo administrador");
+                        textError.setTextColor(Color.RED);
                         textError.setVisibility(View.VISIBLE);
                         mostrarTextError();
-                        Blocker.removeBlocker(parent);
-                        return;
-                    }else{
-                        if (haveFill){
-                            FireBaseRemover.remove(saveData.getCurrentClient().getId()).addOnSuccessListener(
-                                    validationResult -> {
-                                        FireBaseWriter.saveData(Client.class, result).addOnFailureListener(
-                                                e -> {
-                                                    if (e instanceof ComplexFBCE) {
-                                                        textError.setText(((ComplexFBCE) e).reason.message);
-                                                    }else{
-                                                        textError.setText("Error al guardar el cliente");
-                                                    }
-                                                    textError.setVisibility(View.VISIBLE);
-                                                    Blocker.removeBlocker(parent);
-                                                    mostrarTextError();
-                                                }
-                                        ).addOnSuccessListener(
-                                                validationResult2 -> {
-                                                    saveData.setCurrentClient((Client) validationResult2.result);
-                                                    Blocker.removeBlocker(parent);
-                                                    textError.setText("Cliente guardado correctamente");
-                                                    textError.setTextColor(Color.parseColor("#027C68"));
-                                                    textError.setVisibility(View.VISIBLE);
-                                                    mostrarTextError();
-                                                    getActivity().recreate();
-                                                }
-                                        );
-                                    }
-                            ).addOnFailureListener(
-                                    e -> {
-                                        if (e instanceof ComplexFBCE) {
-                                            textError.setText(((ComplexFBCE) e).reason.message);
-                                        } else {
-                                            textError.setText("Error al guardar el cliente");
-                                        }
-                                    }
-                            );
-                        }else{
-                            FireBaseWriter.saveData(Client.class, result).addOnFailureListener(
-                                    e -> {
-                                        if (e instanceof ComplexFBCE) {
-                                            textError.setText(((ComplexFBCE) e).reason.message);
-                                        }else{
-                                            textError.setText("Error al guardar el cliente");
-                                        }
-                                        textError.setVisibility(View.VISIBLE);
-                                        Blocker.removeBlocker(parent);
-                                        mostrarTextError();
-                                    }
-                            ).addOnSuccessListener(
-                                    validationResult -> {
-                                        saveData.setCurrentClient((Client) validationResult.result);
-                                        Blocker.removeBlocker(parent);
-                                        textError.setText("Cliente guardado correctamente");
-                                        textError.setTextColor(Color.parseColor("#027C68"));
-                                        textError.setVisibility(View.VISIBLE);
-                                        mostrarTextError();
-                                        getActivity().recreate();
-                                    }
-                            );
-                        }
                     }
                 }
         );
