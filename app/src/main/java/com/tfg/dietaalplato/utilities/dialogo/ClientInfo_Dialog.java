@@ -45,6 +45,8 @@ public class ClientInfo_Dialog extends DialogFragment {
     private View mainView;
     private EditText minKal;
     private EditText maxKal;
+    private OnPacienteEditadoListener listener;
+
 
     public static ClientInfo_Dialog getInstance(boolean fill) {
         haveFill = fill;
@@ -143,6 +145,10 @@ public class ClientInfo_Dialog extends DialogFragment {
                                                     textError.setTextColor(Color.parseColor("#027C68"));
                                                     textError.setVisibility(View.VISIBLE);
                                                     mostrarTextError();
+                                                    if (listener != null) {
+                                                        listener.onPacienteEditado();  // actualizar al editar
+                                                    }
+
                                                 }
                                         );
                                     }
@@ -297,4 +303,11 @@ public class ClientInfo_Dialog extends DialogFragment {
         textError.postDelayed(() -> textError.setVisibility(View.GONE), 2000);
     }
 
+    public interface OnPacienteEditadoListener {
+        void onPacienteEditado();
+    }
+    // creamos un listener para activar la llamada al bancoalimentos y actualizarlo
+    public void setOnPacienteEditadoListener(ClientInfo_Dialog.OnPacienteEditadoListener listener) {
+        this.listener = listener;
+    }
 }

@@ -2,12 +2,9 @@ package com.tfg.dietaalplato;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.InputType;
-import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -20,22 +17,13 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.google.firebase.database.*;
-import com.tfg.dietaalplato.firebase.tables.Client;
-import com.tfg.dietaalplato.utilities.dialogo.ClientCreator_Dialogo;
-import com.tfg.dietaalplato.utilities.dialogo.ClientInfo_Dialog;
 import com.tfg.dietaalplato.utilities.dialogo.SignUp_Dialogo;
 import com.tfg.dietaalplato.firebase.conectors.tools.FireBaseReader;
-import com.tfg.dietaalplato.firebase.conectors.tools.FireBaseWriter;
-import com.tfg.dietaalplato.firebase.tables.Food;
-import com.tfg.dietaalplato.firebase.utilities.ValidationResult;
 import com.tfg.dietaalplato.utilities.BasketAnimation;
 import com.tfg.dietaalplato.firebase.conectors.FireBaseConnector;
 import com.tfg.dietaalplato.firebase.exceptions.FBCException;
 import com.tfg.dietaalplato.utilities.Blocker;
 import com.tfg.dietaalplato.utilities.SaveData;
-import com.tfg.dietaalplato.utilities.tipe_collection.CacheCollection;
-
-import java.util.ArrayList;
 
 public class LogIn_Activity extends AppCompatActivity {
 

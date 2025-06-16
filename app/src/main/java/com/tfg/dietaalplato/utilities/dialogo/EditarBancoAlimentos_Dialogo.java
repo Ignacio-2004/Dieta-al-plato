@@ -186,7 +186,7 @@ public class EditarBancoAlimentos_Dialogo extends DialogFragment {
                                     Blocker.removeBlocker((ViewGroup) mainView.getRootView());
                                     mostrarTextError();
                                     if (listener != null) {
-                                        listener.onAlimentoEditado();  //
+                                        listener.onAlimentoEditado();  // actualizar al guardar
                                     }
                                     dismiss();
                                 })

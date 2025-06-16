@@ -148,8 +148,10 @@ public class BancoAlimentosActivity extends AppCompatActivity {
     // metodo para mostrar el dialogo cuando se hace clic en INSERTAR ALIMENTO
     public void insertarAlimento(View view) {
         GuardarBancoAlimentos_Dialogo dialogo = new GuardarBancoAlimentos_Dialogo();
+        dialogo.setOnAlimentoInsertadoListener(() -> actualizarBancoAlimentos(null)); // actualiza al guardar
         dialogo.show(getSupportFragmentManager(), "dialogoNuevoAlimento");
     }
+
     public void onClickBackNavigation(View view){
         Intent intent = new Intent(this, InicioUsuarioActivity.class);
         startActivity(intent);

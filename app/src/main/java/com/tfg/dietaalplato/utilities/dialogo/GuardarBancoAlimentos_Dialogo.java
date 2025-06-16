@@ -35,7 +35,7 @@ public class GuardarBancoAlimentos_Dialogo extends DialogFragment {
     private View mainView;
 
     private final float STEP = 0.1f;
-
+    private OnAlimentoInsertadoListener listener;
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
@@ -134,6 +134,10 @@ public class GuardarBancoAlimentos_Dialogo extends DialogFragment {
                     textError.setText("✅ Alimento guardado correctamente");
                     textError.setVisibility(View.VISIBLE);
                     Blocker.removeBlocker((ViewGroup) mainView.getRootView());
+                    if (listener != null) {
+                        listener.onAlimentoEditado();  // actualizar al guardar
+                    }
+
                     dismiss();
                 })
                 .addOnFailureListener(e -> {
@@ -192,5 +196,14 @@ public class GuardarBancoAlimentos_Dialogo extends DialogFragment {
 
         btnIncrement.setOnClickListener(v -> modificarValor(editText, STEP));
         btnDecrement.setOnClickListener(v -> modificarValor(editText, -STEP));
+    }
+
+    // esto define una interfaz para comunicarnos con BancoAlimentos e indicar que se actualice
+    public interface OnAlimentoInsertadoListener {
+        void onAlimentoEditado();
+    }
+    // creamos un listener para activar la llamada al bancoalimentos y actualizarlo
+    public void setOnAlimentoInsertadoListener(GuardarBancoAlimentos_Dialogo.OnAlimentoInsertadoListener listener) {
+        this.listener = listener;
     }
 }

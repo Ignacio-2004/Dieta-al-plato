@@ -28,6 +28,7 @@ import com.tfg.dietaalplato.firebase.utilities.ValidationResult;
 import com.tfg.dietaalplato.utilities.Blocker;
 import com.tfg.dietaalplato.utilities.SaveData;
 import com.tfg.dietaalplato.utilities.dialogo.ClientInfo_Dialog;
+import com.tfg.dietaalplato.utilities.dialogo.GuardarBancoAlimentos_Dialogo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -152,6 +153,16 @@ public class DietasActivity extends AppCompatActivity {
 
     public void onClickOpenInfo(View view, OnResultCallBack<Boolean> callback){
         ClientInfo_Dialog dialogo = ClientInfo_Dialog.getInstance(true);
+        dialogo.setOnPacienteEditadoListener(() -> {
+            // refrescamos
+            String nuevoNombre = saveData.getCurrentClient().getName();
+            if (nuevoNombre != null && !nuevoNombre.isEmpty()) {
+                nuevoNombre = nuevoNombre.substring(0, 1).toUpperCase() + nuevoNombre.substring(1);
+                nombreClienteText.setText(nuevoNombre);
+            }
+            if (callback != null) callback.onResult(true);
+        });
         dialogo.show(getSupportFragmentManager(), "dialogoInfoCliente");
     }
+
 }
