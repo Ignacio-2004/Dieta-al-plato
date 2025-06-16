@@ -143,6 +143,7 @@ public class ClientInfo_Dialog extends DialogFragment {
                                                     textError.setTextColor(Color.parseColor("#027C68"));
                                                     textError.setVisibility(View.VISIBLE);
                                                     mostrarTextError();
+                                                    getActivity().recreate();
                                                 }
                                         );
                                     }
@@ -175,6 +176,7 @@ public class ClientInfo_Dialog extends DialogFragment {
                                         textError.setTextColor(Color.parseColor("#027C68"));
                                         textError.setVisibility(View.VISIBLE);
                                         mostrarTextError();
+                                        getActivity().recreate();
                                     }
                             );
                         }
