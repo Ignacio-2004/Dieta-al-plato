@@ -13,7 +13,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/cliente"
+            android:text="@string/paciente"
             android:textSize="22sp"
             android:textStyle="bold"
             android:textColor="#027C68"
@@ -25,13 +25,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="@string/nombre_del_clienteE"
+            android:text="@string/nombre_del_paciente"
             android:textColor="#027C68"
             android:textSize="18sp"
             android:textStyle="bold" />
         <EditText
             android:id="@+id/editTextNombre"
-            android:hint="@string/nombre_del_cliente"
+            android:hint="Nombre del paciente "
             android:inputType="text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -45,14 +45,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="@string/apellido_del_clienteE"
+            android:text="Apellido del paciente *"
             android:textColor="#027C68"
             android:textSize="18sp"
             android:textStyle="bold" />
 
         <EditText
             android:id="@+id/editTextApellido"
-            android:hint="@string/apellido_del_cliente"
+            android:hint="Apellido del paciente"
             android:inputType="text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

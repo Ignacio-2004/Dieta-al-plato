@@ -55,4 +55,6 @@
     <string name="rango_de_calorias">Rango de calorias *</string>
     <string name="maxkcal">maxKcal</string>
     <string name="guardar_cambios">Guardar Cambios</string>
+    <string name="paciente">Paciente</string>
+    <string name="nombre_del_paciente">Nombre del paciente *</string>
 </resources>
