@@ -232,7 +232,7 @@
         android:id="@+id/buttonSeePasswd"
         android:layout_width="45dp"
         android:layout_height="45dp"
-        android:layout_marginEnd="15dp"
+        android:layout_marginEnd="45dp"
         android:background="@android:color/transparent"
         android:onClick="mostrarPassword"
         android:scaleType="fitXY"
@@ -242,11 +242,12 @@
         app:layout_constraintEnd_toEndOf="@+id/Password"
         app:layout_constraintTop_toTopOf="@+id/Password" />
 
+
     <ImageButton
         android:id="@+id/buttHidePsw"
         android:layout_width="45dp"
         android:layout_height="45dp"
-        android:layout_marginEnd="15dp"
+        android:layout_marginEnd="45dp"
         android:background="@android:color/transparent"
         android:onClick="ocultarPassword"
         android:scaleType="fitXY"
@@ -255,6 +256,8 @@
         app:layout_constraintBottom_toBottomOf="@+id/Password"
         app:layout_constraintEnd_toEndOf="@+id/Password"
         app:layout_constraintTop_toTopOf="@+id/Password" />
+
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

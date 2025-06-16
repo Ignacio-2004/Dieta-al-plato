@@ -1,5 +1,6 @@
 package com.tfg.dietaalplato.utilities.dialogo;
 
+
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.graphics.Color;
@@ -16,8 +17,10 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.DialogFragment;
+
 
 import com.tfg.dietaalplato.R;
 import com.tfg.dietaalplato.firebase.conectors.tools.FireBaseReader;
@@ -31,8 +34,10 @@ import com.tfg.dietaalplato.utilities.Blocker;
 import com.tfg.dietaalplato.utilities.SaveData;
 import com.tfg.dietaalplato.utilities.TableGenerator;
 
+
 import java.util.ArrayList;
 import java.util.Map;
+
 
 public class NewDietDialog extends DialogFragment {
     private View mainView;
@@ -46,16 +51,20 @@ public class NewDietDialog extends DialogFragment {
     private EditText nameRecepie;
     private TextView errTxt;
 
+
     public static NewDietDialog getInstance() {
         return new NewDietDialog();
     }
+
 
     private NewDietDialog(){
         saveData = SaveData.getInstance();
     }
 
+
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         mainView = getActivity().getLayoutInflater().inflate(R.layout.activity_new_diet_dialog, null);
+
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setView(mainView)
@@ -70,6 +79,7 @@ public class NewDietDialog extends DialogFragment {
             nameRecepie = mainView.findViewById(R.id.editTextNombre);
             errTxt = mainView.findViewById(R.id.txtMensajeErrorAlimento);
 
+
             readFood(foods -> {
                 ScrollView sv = new ScrollView(mainView.getContext());
                 sv.setBackgroundColor(Color.TRANSPARENT);
@@ -78,6 +88,7 @@ public class NewDietDialog extends DialogFragment {
                         LinearLayout.LayoutParams.WRAP_CONTENT)
                 );
 
+
                 LinearLayout ln = new LinearLayout(mainView.getContext());
                 ln.setLayoutParams( new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,
@@ -85,6 +96,7 @@ public class NewDietDialog extends DialogFragment {
                 );
                 ln.setBackgroundColor(Color.TRANSPARENT);
                 ln.setOrientation(LinearLayout.VERTICAL);
+
 
                 for (Food food: foods) {
                     ln.addView(generateList(food));
@@ -100,6 +112,7 @@ public class NewDietDialog extends DialogFragment {
         return builder.create();
     }
 
+
     private void readFood(OnResultCallBack<ArrayList<Food>> result) throws FBCException {
         Blocker.createBlocker((ViewGroup) mainView.getRootView(),mainView.getContext());
         FireBaseReader.readAllFoodFromUser(saveData.getUser().getId()).addOnFailureListener(
@@ -114,6 +127,7 @@ public class NewDietDialog extends DialogFragment {
         Blocker.removeBlocker((ViewGroup) mainView.getRootView());
     }
 
+
     private LinearLayout generateList(Food food){
         LinearLayout ln = new LinearLayout(mainView.getContext());
         ln.setBackgroundResource(R.drawable.bg_food_background);
@@ -126,6 +140,8 @@ public class NewDietDialog extends DialogFragment {
         );
         params.setMargins(20, 5, 20, 5);
         ln.setLayoutParams(params);
+
+
 
 
         TextView tv = new TextView(mainView.getContext());
@@ -161,14 +177,17 @@ public class NewDietDialog extends DialogFragment {
         return ln;
     }
 
+
     private void save(View view) {
         if (selectedFood!=null){
             if(!nameRecepie.getText().toString().equals("")){
                 Blocker.createBlocker((ViewGroup) mainView.getRootView(),mainView.getContext());
 
+
                 if (egComida.getText().toString() == null || egComida.getText().toString().equals("")){
                     egComida.setText("0");
                 }
+
 
                 ArrayList<String> data = new ArrayList<>();
                 data.add(saveData.getMomentOfDay());
@@ -177,8 +196,10 @@ public class NewDietDialog extends DialogFragment {
                 data.add(egComida.getText().toString());
                 data.add(nameRecepie.getText().toString());
 
+
                 ValidationResult result = FoodDiet.toMapData(data,saveData.getCurrentDiet().getId(),selectedFood.getId(),"");
                 Log.d("RESULT",result.toString());
+
 
                 FireBaseWriter.saveData(FoodDiet.class,result).addOnFailureListener(
                         e -> {
@@ -191,6 +212,7 @@ public class NewDietDialog extends DialogFragment {
                         aVoid -> {
                             errTxt.setText("Guardado perfectamente");
                             errTxt.setVisibility(View.VISIBLE);
+                            errTxt.setTextColor(Color.parseColor("#027C68"));
                             mostrarTextError();
                             try{
                                 TableGenerator tableGenerator = TableGenerator.getInstance();
@@ -214,10 +236,13 @@ public class NewDietDialog extends DialogFragment {
             mostrarTextError();
         }
 
+
     }
+
 
     private void mostrarTextError() {
         errTxt.postDelayed(() -> errTxt.setVisibility(View.GONE), 2000);
     }
+
 
 }

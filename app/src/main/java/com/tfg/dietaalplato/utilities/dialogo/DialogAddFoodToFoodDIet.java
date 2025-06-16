@@ -1,5 +1,6 @@
 package com.tfg.dietaalplato.utilities.dialogo;
 
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -21,10 +22,12 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+
 import androidx.annotation.NonNull;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentActivity;
+
 
 import com.tfg.dietaalplato.R;
 import com.tfg.dietaalplato.firebase.conectors.tools.FireBaseReader;
@@ -39,19 +42,24 @@ import com.tfg.dietaalplato.utilities.Blocker;
 import com.tfg.dietaalplato.utilities.SaveData;
 import com.tfg.dietaalplato.utilities.TableGenerator;
 
+
 import java.util.ArrayList;
 
+
 public class DialogAddFoodToFoodDIet extends DialogFragment {
+
 
     private View mainView; //R
     private SaveData saveData; //R
     private TableGenerator tableGenerator; //R
+
 
     private ArrayList<Food> currentFoods; //R
     private ArrayList<Food> foods; //R
     private ArrayList<FoodDiet> currentsfoodDiets; //R
     private Food selectedFood;
     private LinearLayout selectedLayout;
+
 
     private LinearLayout currentLayout; //R
     private LinearLayout toAddLayout; //R
@@ -66,26 +74,36 @@ public class DialogAddFoodToFoodDIet extends DialogFragment {
 
 
 
+
+
+
+
+
     public static DialogAddFoodToFoodDIet getInstance() {
         return new DialogAddFoodToFoodDIet();
     }
+
 
     private DialogAddFoodToFoodDIet() {
         tableGenerator = TableGenerator.getInstance();
         saveData = SaveData.getInstance();
     }
 
+
     public void setFoods(ArrayList<Food> foods){
         this.currentFoods = foods;
     }
     public void setCurrentsfoodDiets(ArrayList<FoodDiet> currentsfoodDiets){this.currentsfoodDiets = currentsfoodDiets;}
 
+
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         mainView = getActivity().getLayoutInflater().inflate(R.layout.dialog_add_food_to_food_diet, null);
+
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setView(mainView)
                 .setCancelable(true);
+
 
         try {
             loadFood(o -> {
@@ -98,9 +116,11 @@ public class DialogAddFoodToFoodDIet extends DialogFragment {
                 inputgr = mainView.findViewById(R.id.inputgr);
                 errTv = mainView.findViewById(R.id.txtMensajeErrorAlimento);
 
+
                 View.OnClickListener listener = v -> {
                     if (selectedFood != null){
                         if (currentFoods.contains(selectedFood)){
+
 
                             for (FoodDiet foodDiet : currentsfoodDiets) {
                                 if (foodDiet.getIdAlimento().equals(selectedFood.getId())) {
@@ -111,10 +131,13 @@ public class DialogAddFoodToFoodDIet extends DialogFragment {
                                     data.add(inputgr.getText().toString());
                                     data.add(foodDiet.getName());
 
+
                                     ValidationResult validationResult = FoodDiet.toMapData(data, foodDiet.getIdDieta(), selectedFood.getId(), foodDiet.getId());
+
 
                                     if (validationResult.exit) {
                                         Blocker.createBlocker((ViewGroup) mainView.getRootView(), mainView.getContext());
+
 
                                         FireBaseRemover.remove(foodDiet).addOnFailureListener(
                                                 e -> {
@@ -127,6 +150,7 @@ public class DialogAddFoodToFoodDIet extends DialogFragment {
                                         ).addOnSuccessListener(
                                                 aVoid -> {
 
+
                                                     FireBaseWriter.saveData(FoodDiet.class,validationResult).addOnFailureListener(
                                                             e -> {
                                                                 errTv.setTextColor(Color.RED);
@@ -137,10 +161,11 @@ public class DialogAddFoodToFoodDIet extends DialogFragment {
                                                             }
                                                     ).addOnSuccessListener(
                                                             aVoid1 ->{
-                                                                errTv.setTextColor(Color.GREEN);
+                                                                errTv.setTextColor(Color.parseColor("#027C68"));
                                                                 errTv.setText("Cambio guardado correctamente");
                                                                 errTv.setVisibility(View.VISIBLE);
                                                                 mostrarTextError();
+
 
                                                                 for (int i = 0; i < currentsfoodDiets.size(); i++) {
                                                                     if (currentsfoodDiets.get(i).getId().equals(foodDiet.getId())){
@@ -150,24 +175,28 @@ public class DialogAddFoodToFoodDIet extends DialogFragment {
                                                                 }
                                                                 currentsfoodDiets.add((FoodDiet) aVoid1.result);
 
+
 //                                                                Activity activity = getActivity();
                                                                 // Esperar un poco para que el mensaje se muestre
                                                                 new Handler(Looper.getMainLooper()).postDelayed(() -> {
                                                                     dismiss();
 
+
                                                                     // Esperamos a que se cierre bien para abrir el nuevo diálogo
 /*
-                                                                    new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                                                                        if (activity != null && !currentFoods.isEmpty()) {
-                                                                            DialogAddFoodToFoodDIet nuevoDialog = new DialogAddFoodToFoodDIet();
-                                                                            nuevoDialog.setFoods(currentFoods);
-                                                                            nuevoDialog.setCurrentsfoodDiets(currentsfoodDiets);
-                                                                            nuevoDialog.show(((FragmentActivity) activity).getSupportFragmentManager(), "DialogAddFoodToFoodDIet");
-                                                                        }
-                                                                    }, 100);
+                                                                   new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                                                                       if (activity != null && !currentFoods.isEmpty()) {
+                                                                           DialogAddFoodToFoodDIet nuevoDialog = new DialogAddFoodToFoodDIet();
+                                                                           nuevoDialog.setFoods(currentFoods);
+                                                                           nuevoDialog.setCurrentsfoodDiets(currentsfoodDiets);
+                                                                           nuevoDialog.show(((FragmentActivity) activity).getSupportFragmentManager(), "DialogAddFoodToFoodDIet");
+                                                                       }
+                                                                   }, 100);
 */
 
+
                                                                 }, 600); // le das medio segundo para que se vea el mensaje
+
 
                                                                 Blocker.removeBlocker((ViewGroup) mainView.getRootView());
                                                             }
@@ -187,10 +216,13 @@ public class DialogAddFoodToFoodDIet extends DialogFragment {
                                     data.add(inputgr.getText().toString());
                                     data.add(currentsfoodDiets.get(0).getName());
 
+
                                     ValidationResult validationResult = FoodDiet.toMapData(data, currentsfoodDiets.get(0).getIdDieta(), selectedFood.getId(),foodDiet.getId());
+
 
                                     if (validationResult.exit) {
                                         Blocker.createBlocker((ViewGroup) mainView.getRootView(), mainView.getContext());
+
 
                                         FireBaseWriter.saveData(FoodDiet.class,validationResult).addOnFailureListener(
                                                 e -> {
@@ -202,10 +234,11 @@ public class DialogAddFoodToFoodDIet extends DialogFragment {
                                                 }
                                         ).addOnSuccessListener(
                                                 aVoid -> {
-                                                    errTv.setTextColor(Color.GREEN);
+                                                    errTv.setTextColor(Color.parseColor("#027C68"));
                                                     errTv.setText("Cambio guardado correctamente");
                                                     errTv.setVisibility(View.VISIBLE);
                                                     mostrarTextError();
+
 
                                                     if (!currentsfoodDiets.contains(aVoid.result)) {
                                                         currentsfoodDiets.add((FoodDiet) aVoid.result);
@@ -214,23 +247,26 @@ public class DialogAddFoodToFoodDIet extends DialogFragment {
                                                         currentFoods.add(selectedFood);
                                                     }
 
+
 //                                                    Activity activity = getActivity();
                                                     // Esperar un poco para que el mensaje se muestre
                                                     new Handler(Looper.getMainLooper()).postDelayed(() -> {
                                                         dismiss();
 /*
-                                                        // Esperamos a que se cierre bien para abrir el nuevo diálogo
-                                                        new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                                                            if (activity != null && !currentFoods.isEmpty()) {
-                                                                DialogAddFoodToFoodDIet nuevoDialog = new DialogAddFoodToFoodDIet();
-                                                                nuevoDialog.setFoods(currentFoods);
-                                                                nuevoDialog.setCurrentsfoodDiets(currentsfoodDiets);
-                                                                nuevoDialog.show(((FragmentActivity) activity).getSupportFragmentManager(), "DialogAddFoodToFoodDIet");
-                                                            }
-                                                        }, 100);
+                                                       // Esperamos a que se cierre bien para abrir el nuevo diálogo
+                                                       new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                                                           if (activity != null && !currentFoods.isEmpty()) {
+                                                               DialogAddFoodToFoodDIet nuevoDialog = new DialogAddFoodToFoodDIet();
+                                                               nuevoDialog.setFoods(currentFoods);
+                                                               nuevoDialog.setCurrentsfoodDiets(currentsfoodDiets);
+                                                               nuevoDialog.show(((FragmentActivity) activity).getSupportFragmentManager(), "DialogAddFoodToFoodDIet");
+                                                           }
+                                                       }, 100);
 */
 
+
                                                     }, 600); // le das medio segundo para que se vea el mensaje
+
 
                                                     Blocker.removeBlocker((ViewGroup) mainView.getRootView());
                                                 }
@@ -253,7 +289,9 @@ public class DialogAddFoodToFoodDIet extends DialogFragment {
                     }
                 };
 
+
                 bttSave.setOnClickListener(listener);
+
 
                 bttDecrement.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -265,6 +303,7 @@ public class DialogAddFoodToFoodDIet extends DialogFragment {
                     }
                 });
 
+
                 bttIncrement.setOnClickListener( new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -275,12 +314,14 @@ public class DialogAddFoodToFoodDIet extends DialogFragment {
                     }
                 });
 
+
                 bttReturn.setOnClickListener(new View.OnClickListener() {
-                     @Override
-                     public void onClick(View v) {
-                         dismiss();
-                     }
+                    @Override
+                    public void onClick(View v) {
+                        dismiss();
+                    }
                 });
+
 
                 ScrollView csv = new ScrollView(mainView.getContext());
                 csv.setBackgroundColor(Color.TRANSPARENT);
@@ -289,12 +330,14 @@ public class DialogAddFoodToFoodDIet extends DialogFragment {
                         LinearLayout.LayoutParams.WRAP_CONTENT)
                 );
 
+
                 ScrollView sv = new ScrollView(mainView.getContext());
                 sv.setBackgroundColor(Color.TRANSPARENT);
                 sv.setLayoutParams(new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,
                         LinearLayout.LayoutParams.WRAP_CONTENT)
                 );
+
 
                 LinearLayout ln = new LinearLayout(mainView.getContext());
                 ln.setLayoutParams( new LinearLayout.LayoutParams(
@@ -304,6 +347,7 @@ public class DialogAddFoodToFoodDIet extends DialogFragment {
                 ln.setBackgroundColor(Color.TRANSPARENT);
                 ln.setOrientation(LinearLayout.VERTICAL);
 
+
                 LinearLayout cln = new LinearLayout(mainView.getContext());
                 cln.setLayoutParams( new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,
@@ -312,6 +356,7 @@ public class DialogAddFoodToFoodDIet extends DialogFragment {
                 cln.setBackgroundColor(Color.TRANSPARENT);
                 cln.setOrientation(LinearLayout.VERTICAL);
 
+
                 ArrayList<Food> filterFoods = new ArrayList<>();
                 for (Food food : foods) {
                     if (!currentFoods.contains(food)){
@@ -319,6 +364,7 @@ public class DialogAddFoodToFoodDIet extends DialogFragment {
                     }
                 }
                 sv.addView(ln);
+
 
                 filterFoods = new ArrayList<>();
                 for (Food food : currentFoods) {
@@ -333,7 +379,9 @@ public class DialogAddFoodToFoodDIet extends DialogFragment {
                 }
                 csv.addView(cln);
 
+
                 filterFoods.clear();
+
 
                 currentLayout.addView(csv);
                 toAddLayout.addView(sv);
@@ -343,8 +391,10 @@ public class DialogAddFoodToFoodDIet extends DialogFragment {
             dismiss();
         }
 
+
         return builder.create();
     }
+
 
     private LinearLayout generateList(Food food,View.OnClickListener listener){
         LinearLayout ln = new LinearLayout(mainView.getContext());
@@ -361,6 +411,9 @@ public class DialogAddFoodToFoodDIet extends DialogFragment {
 
 
 
+
+
+
         TextView tv = new TextView(mainView.getContext());
         tv.setText(food.getName());
         tv.setBackgroundColor(Color.TRANSPARENT);
@@ -373,6 +426,7 @@ public class DialogAddFoodToFoodDIet extends DialogFragment {
             tv.setTypeface(customFont);
         }
 
+
         View.OnClickListener listener2 = v -> {
             if (selectedFood != food){
                 try{
@@ -384,6 +438,7 @@ public class DialogAddFoodToFoodDIet extends DialogFragment {
                     selectedFood = food;
                     selectedLayout = ln;
 
+
                     if (currentFoods.contains(food)){
                         for (FoodDiet foodDiet : currentsfoodDiets) {
                             if (foodDiet.getIdAlimento().equals(food.getId())){
@@ -393,6 +448,7 @@ public class DialogAddFoodToFoodDIet extends DialogFragment {
                     }else{
                         inputgr.setText("0");
                     }
+
 
                 }catch (Exception e){
                     Toast.makeText(mainView.getContext(),"Error al seleccionar el alimento", Toast.LENGTH_SHORT).show();
@@ -405,14 +461,18 @@ public class DialogAddFoodToFoodDIet extends DialogFragment {
         return ln;
     }
 
+
     private LinearLayout addRermoveBotton(LinearLayout ln,FoodDiet foodDiet){
 
+
         ImageButton remove = new ImageButton(mainView.getContext());
+
 
         remove.setImageResource(android.R.drawable.ic_menu_close_clear_cancel);
         remove.setBackgroundColor(Color.TRANSPARENT);
         remove.setScaleX(0.8f);
         remove.setScaleY(0.8f);
+
 
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -420,6 +480,7 @@ public class DialogAddFoodToFoodDIet extends DialogFragment {
         );
         params.setMargins(0,0,0,0);
         remove.setLayoutParams(params);
+
 
         View.OnClickListener listener2 = v -> {
             Blocker.createBlocker((ViewGroup) mainView.getRootView() ,mainView.getContext());
@@ -440,29 +501,35 @@ public class DialogAddFoodToFoodDIet extends DialogFragment {
                     }
                 }
 
+
 //                Activity activity = getActivity();
                 dismiss();
 
+
 /*
-                new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                    if (activity != null && !currentFoods.isEmpty()) {
-                        DialogAddFoodToFoodDIet nuevoDialog = new DialogAddFoodToFoodDIet();
-                        nuevoDialog.setFoods(currentFoods);
-                        nuevoDialog.setCurrentsfoodDiets(currentsfoodDiets);
-                        nuevoDialog.show(((FragmentActivity) activity).getSupportFragmentManager(), "DialogAddFoodToFoodDIet");
-                    }
-                }, 100);
+               new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                   if (activity != null && !currentFoods.isEmpty()) {
+                       DialogAddFoodToFoodDIet nuevoDialog = new DialogAddFoodToFoodDIet();
+                       nuevoDialog.setFoods(currentFoods);
+                       nuevoDialog.setCurrentsfoodDiets(currentsfoodDiets);
+                       nuevoDialog.show(((FragmentActivity) activity).getSupportFragmentManager(), "DialogAddFoodToFoodDIet");
+                   }
+               }, 100);
 */
                 Blocker.removeBlocker((ViewGroup) mainView.getRootView());
             });
         };
 
+
         remove.setOnClickListener(listener2);
+
 
         ln.addView(remove);
 
+
         return ln;
     }
+
 
     private void loadFood(OnResultCallBack<Void> onResultCallBack) throws FBCException {
         FireBaseReader.readAllFoodFromUser(saveData.getUser().getId()).addOnFailureListener(
@@ -479,6 +546,7 @@ public class DialogAddFoodToFoodDIet extends DialogFragment {
         );
     }
 
+
     @Override
     public void onDismiss(@NonNull DialogInterface dialog) {
         super.onDismiss(dialog);
@@ -488,6 +556,7 @@ public class DialogAddFoodToFoodDIet extends DialogFragment {
             Toast.makeText(mainView.getContext(), "No ha sido posible regenerar la tabla", Toast.LENGTH_SHORT).show();
         }
     }
+
 
     private void mostrarTextError() {
         errTv.postDelayed(() -> errTv.setVisibility(View.GONE), 2000);
