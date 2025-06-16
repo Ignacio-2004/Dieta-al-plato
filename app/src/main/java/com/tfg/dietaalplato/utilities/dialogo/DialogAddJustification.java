@@ -19,6 +19,7 @@ import com.tfg.dietaalplato.firebase.conectors.tools.FireBaseRemover;
 import com.tfg.dietaalplato.firebase.conectors.tools.FireBaseWriter;
 import com.tfg.dietaalplato.firebase.exceptions.FBCException;
 import com.tfg.dietaalplato.firebase.tables.Diet;
+import com.tfg.dietaalplato.firebase.tables.FoodDiet;
 import com.tfg.dietaalplato.firebase.utilities.ValidationResult;
 import com.tfg.dietaalplato.utilities.Blocker;
 import com.tfg.dietaalplato.utilities.SaveData;
@@ -47,7 +48,7 @@ public class DialogAddJustification extends DialogFragment {
         btnCancelar = mainView.findViewById(R.id.btnCancelar);
         saveData = SaveData.getInstance();
 
-        if (saveData.getCurrentDiet().getJust() != null && !Objects.equals(saveData.getCurrentDiet().getJust(), "") && !saveData.getCurrentDiet().getJust().equals("null")){
+        if (saveData.getCurrentDiet().getJust() != null && !saveData.getCurrentDiet().getJust().isEmpty() && !saveData.getCurrentDiet().getJust().equalsIgnoreCase("null")){
             Diet currentDiet = saveData.getCurrentDiet();
 
             editTextMultiline.setText(currentDiet.getJust());
@@ -75,8 +76,10 @@ public class DialogAddJustification extends DialogFragment {
                                         Log.d("TAG", "✅ Justificacion guardada correctamente");
                                         txtMensajeErrorAlimento.setText("✅ Justificacion guardada correctamente");
                                         txtMensajeErrorAlimento.setVisibility(View.VISIBLE);
+                                        saveData.setCurrentDiet((Diet) aVoid2.result);
                                         Blocker.removeBlocker(parent);
                                         mostrarTextError();
+                                        getActivity().recreate();
                                     }
                             ).addOnFailureListener(
                                     e -> {

@@ -133,12 +133,18 @@ public class TableGenerator {
          */
 
         if (saveData.getCurrentDiet().getId() != null && !saveData.getCurrentDiet().getId().isEmpty()) {
-            FireBaseReader.readFoodDietByDiet(saveData.getCurrentDiet().getId()).addOnFailureListener(
+            FireBaseReader.readFoodDietByDietAndDayAndMeal(saveData.getCurrentDiet().getId(), String.valueOf(saveData.getCurrentDay()).trim(), saveData.getMomentOfDay().trim()).addOnFailureListener(
                     e -> Toast.makeText(context, "Error al leer los alimentos", Toast.LENGTH_SHORT).show()
             ).addOnSuccessListener(
                     foodDiets -> {
                         try {
-                            FireBaseReader.readAllFoodFromUser(saveData.getUser().getId()).addOnFailureListener(
+                            String id;
+                            if (!saveData.isAdmin()){
+                                id = saveData.getUser().getId();
+                            }else{
+                                id = saveData.getCurrentStudent().getId();
+                            }
+                            FireBaseReader.readAllFoodFromUser(id).addOnFailureListener(
                                     e -> Toast.makeText(context, "Error al leer los alimentos", Toast.LENGTH_SHORT).show()
                             ).addOnSuccessListener(
                                     foods -> {
@@ -155,16 +161,18 @@ public class TableGenerator {
 
                                                     ArrayList<Food> foodArrayList = new ArrayList<>();
                                                     ArrayList<Double> grs = new ArrayList<>();
-                                                    for (FoodDiet foodDiet: fd) {
-                                                        for (Food food: foods.result.values()) {
-                                                            if (!foodArrayList.contains(food)){
-                                                                try{
-                                                                    if (foodDiet.getIdAlimento().equals(food.getId())) {
-                                                                        foodArrayList.add(food);
-                                                                        grs.add(safeParse(foodDiet.getG()));
+                                                    if (foods.result != null) {
+                                                        for (FoodDiet foodDiet : fd) {
+                                                            for (Food food : foods.result.values()) {
+                                                                if (!foodArrayList.contains(food)) {
+                                                                    try {
+                                                                        if (foodDiet.getIdAlimento().equals(food.getId())) {
+                                                                            foodArrayList.add(food);
+                                                                            grs.add(safeParse(foodDiet.getG()));
+                                                                        }
+                                                                    } catch (Exception e) {
+                                                                        Toast.makeText(context, "Error al leer algunos alimentos", Toast.LENGTH_SHORT).show();
                                                                     }
-                                                                }catch (Exception e){
-                                                                    Toast.makeText(context, "Error al leer algunos alimentos", Toast.LENGTH_SHORT).show();
                                                                 }
                                                             }
                                                         }
@@ -497,14 +505,14 @@ public class TableGenerator {
             alimentosLayout.addView(fRow);
         }
 
-        // Botón "+" para añadir alimentos
+        if (!saveData.isAdmin()){
+            // Botón "+" para añadir alimentos
 
-        Button botonAdd = addBtnPlus(context, onClickAddHeader);
-        botonAdd.setLayoutParams(insiteSVmargin());
-        botonAdd.setBackgroundResource(R.drawable.bg_food_background);
-        botonAdd.setTextColor(Color.WHITE);
+            Button botonAdd = addBtnPlus(context, onClickAddHeader);
+            botonAdd.setLayoutParams(insiteSVmargin());
+            botonAdd.setBackgroundResource(R.drawable.bg_food_background);
+            botonAdd.setTextColor(Color.WHITE);
 
-        if (!saveData.isAdmin())
             botonAdd.setOnClickListener(v -> {
                 if (foodsDiet.get(0).getName() == null || foodsDiet.get(0).getName().isEmpty()){
                     onClickCreateRecepie.onClick(v);
@@ -516,8 +524,8 @@ public class TableGenerator {
                 }
             });
 
-        alimentosLayout.addView(botonAdd);
-
+            alimentosLayout.addView(botonAdd);
+        }
         scrollView.addView(alimentosLayout);
         container.addView(scrollView);
         return container;

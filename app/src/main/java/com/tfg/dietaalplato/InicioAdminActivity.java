@@ -27,6 +27,7 @@ public class InicioAdminActivity extends AppCompatActivity {
     private FireBaseConnector fbConnector;
     private SaveData saveData;
     private boolean infoUserAvailabe = false;
+    private ImageButton button;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -38,6 +39,11 @@ public class InicioAdminActivity extends AppCompatActivity {
 
         saveData = SaveData.getInstance();
         saveData.clearAdmin();
+        saveData.setAdmin(true);
+        button = findViewById(R.id.ver_usuarios_button);
+        if (button != null) {
+            button.setColorFilter(getResources().getColor(R.color.gray, null));
+        }
 
         try {
             FireBaseReader.readAllFromCollection("usuarios", User.class)
@@ -97,7 +103,7 @@ public class InicioAdminActivity extends AppCompatActivity {
     }
     public void watchUserInformation(View View)
     {
-        ImageButton button = findViewById(R.id.ver_usuarios_button);
+
         if (!infoUserAvailabe)
         {
             infoUserAvailabe = true;

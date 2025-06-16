@@ -20,6 +20,7 @@ import com.tfg.dietaalplato.firebase.tables.Food;
 import com.tfg.dietaalplato.firebase.tables.FoodDiet;
 import com.tfg.dietaalplato.firebase.utilities.ValidationResult;
 import com.tfg.dietaalplato.utilities.Blocker;
+import com.tfg.dietaalplato.utilities.SaveData;
 
 import java.util.ArrayList;
 
@@ -33,6 +34,7 @@ public class DialogInfoFoodPerGr extends DialogFragment {
     private Double originalGr;
     private TextView errTv;
     private boolean hasChange;
+    private SaveData saveData;
 
     private EditText inputAlimento;
     private EditText inputgr;
@@ -66,6 +68,7 @@ public class DialogInfoFoodPerGr extends DialogFragment {
         currentFood = new Food();
         currentFoodDiet = new FoodDiet();
         hasChange = false;
+        saveData = SaveData.getInstance();
     }
 
     public void setFood(Food food) {
@@ -125,61 +128,62 @@ public class DialogInfoFoodPerGr extends DialogFragment {
              }
         });
 
-        btnSave.setOnClickListener( new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (originalGr != safeParse(inputgr.getText().toString())) {
+        if (!saveData.isAdmin())
+            btnSave.setOnClickListener( new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (originalGr != safeParse(inputgr.getText().toString())) {
 
-                    ArrayList<String> data = new ArrayList<>();
-                    data.add(currentFoodDiet.getComida());
-                    data.add(currentFoodDiet.getNumeroPlato());
-                    data.add(currentFoodDiet.getDia());
-                    data.add(inputgr.getText().toString());
-                    data.add(currentFoodDiet.getName());
+                        ArrayList<String> data = new ArrayList<>();
+                        data.add(currentFoodDiet.getComida());
+                        data.add(currentFoodDiet.getNumeroPlato());
+                        data.add(currentFoodDiet.getDia());
+                        data.add(inputgr.getText().toString());
+                        data.add(currentFoodDiet.getName());
 
 
-                    ValidationResult validationResult = FoodDiet.toMapData(data, currentFoodDiet.getIdDieta(), currentFood.getId(), currentFoodDiet.getId());
+                        ValidationResult validationResult = FoodDiet.toMapData(data, currentFoodDiet.getIdDieta(), currentFood.getId(), currentFoodDiet.getId());
 
-                    if (validationResult.exit) {
-                        ViewGroup parent = (ViewGroup) mainView.getRootView();
-                        Blocker.createBlocker(parent,requireActivity());
+                        if (validationResult.exit) {
+                            ViewGroup parent = (ViewGroup) mainView.getRootView();
+                            Blocker.createBlocker(parent,requireActivity());
 
-                        FireBaseRemover.remove(currentFoodDiet).addOnFailureListener(
-                                e -> {
-                                    errTv.setText("Error al guardar");
-                                    errTv.setVisibility(View.VISIBLE);
-                                    mostrarTextError();
-                                    Blocker.removeBlocker(parent);
-                                }
-                        ).addOnSuccessListener(
-                                aVoid -> {
+                            FireBaseRemover.remove(currentFoodDiet).addOnFailureListener(
+                                    e -> {
+                                        errTv.setText("Error al guardar");
+                                        errTv.setVisibility(View.VISIBLE);
+                                        mostrarTextError();
+                                        Blocker.removeBlocker(parent);
+                                    }
+                            ).addOnSuccessListener(
+                                    aVoid -> {
 
-                                    FireBaseWriter.saveData(FoodDiet.class,validationResult).addOnFailureListener(
-                                            e -> {
-                                                errTv.setText("Error al guardar");
-                                                errTv.setVisibility(View.VISIBLE);
-                                                mostrarTextError();
-                                                Blocker.removeBlocker(parent);
-                                            }
-                                    ).addOnSuccessListener(
-                                            aVoid1 ->{
-                                                errTv.setText("Cambio guardado correctamente");
-                                                errTv.setVisibility(View.VISIBLE);
-                                                hasChange = true;
-                                                mostrarTextError();
-                                                Blocker.removeBlocker(parent);
-                                            }
-                                    );
-                                }
-                        );
+                                        FireBaseWriter.saveData(FoodDiet.class,validationResult).addOnFailureListener(
+                                                e -> {
+                                                    errTv.setText("Error al guardar");
+                                                    errTv.setVisibility(View.VISIBLE);
+                                                    mostrarTextError();
+                                                    Blocker.removeBlocker(parent);
+                                                }
+                                        ).addOnSuccessListener(
+                                                aVoid1 ->{
+                                                    errTv.setText("Cambio guardado correctamente");
+                                                    errTv.setVisibility(View.VISIBLE);
+                                                    hasChange = true;
+                                                    mostrarTextError();
+                                                    Blocker.removeBlocker(parent);
+                                                }
+                                        );
+                                    }
+                            );
+                        }
+                    }else{
+                        errTv.setText("No se ha realizado ningún cambio");
+                        errTv.setVisibility(View.VISIBLE);
+                        mostrarTextError();
                     }
-                }else{
-                    errTv.setText("No se ha realizado ningún cambio");
-                    errTv.setVisibility(View.VISIBLE);
-                    mostrarTextError();
                 }
-            }
-        });
+            });
 
         btnDecrement.setOnClickListener( new View.OnClickListener() {
             @Override

@@ -19,26 +19,6 @@ public class DailyNutrition {
         totalCalorias = 0;
     }
 
-    public void addFood(Food food, double gramos) {
-        if (food == null) return;
-
-        double factor = gramos / 100.0; // Conversión a porcentaje
-
-        // Macronutrientes (ajustados por gramos)
-        double proteinas = parseDoubleSafe(food.getProteina()) * factor;
-        double carbohidratos = parseDoubleSafe(food.getHc()) * factor;
-        double grasas = parseDoubleSafe(food.getGrasa()) * factor;
-
-        totalProteinas += proteinas;
-        totalCarbohidratos += carbohidratos;
-        totalGrasas += grasas;
-
-        // Calorías: Usamos valor directo si existe, si no calculamos
-        double energia = parseDoubleSafe(food.getEnergia());
-        totalCalorias += (energia > 0) ? (energia * factor) :
-                ((proteinas * 4) + (carbohidratos * 4) + (grasas * 9));
-    }
-
     private double parseDoubleSafe(String value) {
         try {
             return Double.parseDouble(value);

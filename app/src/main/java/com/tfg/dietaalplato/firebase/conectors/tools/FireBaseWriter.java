@@ -549,17 +549,17 @@ public class FireBaseWriter {
 
         // Crear un objeto Map con los datos de la DietFood
         Map<String, Object> foodData = new HashMap<>();
-        foodData.put("idDieta", dietFood.getIdDieta());
-        foodData.put("comida", dietFood.getComida());
-        foodData.put("numeroPlato", dietFood.getNumeroPlato());
-        foodData.put("dia", dietFood.getDia());
-        foodData.put("name", dietFood.getName());
-        foodData.put("id", dietFood.getId());
+        foodData.put("idDieta", dietFood.getIdDieta().trim());
+        foodData.put("comida", dietFood.getComida().trim());
+        foodData.put("numeroPlato", dietFood.getNumeroPlato().trim());
+        foodData.put("dia", dietFood.getDia().trim());
+        foodData.put("name", dietFood.getName().trim());
+        foodData.put("id", dietFood.getId().trim());
 
         Map<String, Object> receta = new HashMap<>();
-        receta.put("idFooDiet", dietFood.getId());
-        receta.put("idFood", dietFood.getIdAlimento());
-        receta.put("g", dietFood.getG());
+        receta.put("idFooDiet", dietFood.getId().trim());
+        receta.put("idFood", dietFood.getIdAlimento().trim());
+        receta.put("g", dietFood.getG().trim());
 
 
         TaskCompletionSource<ObjectResult<FoodDiet>> callback = new TaskCompletionSource<>();

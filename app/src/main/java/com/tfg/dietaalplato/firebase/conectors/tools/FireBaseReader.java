@@ -31,6 +31,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class FireBaseReader {
     private static final String TAG = "FireBase/Reader";
@@ -625,6 +627,115 @@ public class FireBaseReader {
                 });
 
         return taskCompletionSource.getTask();
+    }
+
+    /**
+     * Metodo que lee todas las comidasde una dieta a partir de su id de dieta (Fill)
+     * @param idDieta id de la dieta
+     * @throws FBCException excepcion propia que marca si la conexion no es buena
+     */
+    public static Task<ObjectResult<Map<String, ArrayList<FoodDiet>>>> readFoodDietByDietAndDayAndMeal(String idDieta, String dia, String comida) throws FBCException {
+        FirebaseFirestore fst = FireBaseConnector.getInstance().getFirestore();
+        SaveData saveData = SaveData.getInstance();
+        TaskCompletionSource<ObjectResult<Map<String, ArrayList<FoodDiet>>>> taskCompletionSource = new TaskCompletionSource<>();
+
+        // Si ya está en caché, devolvemos directamente
+        if (saveData.getFoodDiets().isLoaded() && saveData.getFoodDiets().contains(idDieta)) {
+            for (ArrayList<FoodDiet> lista : saveData.getFoodDietsOfDiet(idDieta).values()) {
+                for (FoodDiet foodDiet : lista) {
+                    if (foodDiet.getDia().equals(dia) && foodDiet.getComida().equals(comida)) {
+                        Log.d(TAG, "📖 FoodDiets encontradas en cache");
+                        taskCompletionSource.setResult(new ObjectResult<>(true, "success", saveData.getFoodDiets().get(idDieta)));
+                        return taskCompletionSource.getTask();
+                    }
+                }
+            }
+        }
+
+        // Consultamos en Firestore
+        fst.collection("comidaDietas")
+                .whereEqualTo("idDieta", idDieta)
+                .whereEqualTo("dia", dia)
+                .whereEqualTo("comida", comida)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    if (!queryDocumentSnapshots.isEmpty()) {
+                        Map<String, ArrayList<FoodDiet>> agrupado = new HashMap<>();
+                        List<DocumentSnapshot> docs = queryDocumentSnapshots.getDocuments();
+                        final int totalDocs = docs.size();
+                        final AtomicInteger processedDocs = new AtomicInteger(0);
+                        final AtomicBoolean errorOccurred = new AtomicBoolean(false);
+
+                        for (DocumentSnapshot document : docs) {
+                            FoodDiet foodDiet = document.toObject(FoodDiet.class);
+
+                            if (foodDiet != null) {
+                                sincronize(foodDiet, result -> {
+                                    if (errorOccurred.get()) return;
+
+                                    if (result instanceof QuerySnapshot) {
+                                        QuerySnapshot result1 = (QuerySnapshot) result;
+                                        for (DocumentSnapshot documentR : result1.getDocuments()) {
+                                            RelacionRecetaAlimento rra = documentR.toObject(RelacionRecetaAlimento.class);
+                                            if (rra != null) {
+                                                FoodDiet reFoodDiet = new FoodDiet();
+                                                reFoodDiet.setId(foodDiet.getId());
+                                                reFoodDiet.setIdAlimento(rra.getIdFood());
+                                                reFoodDiet.setG(rra.getG());
+                                                reFoodDiet.setName(foodDiet.getName());
+                                                reFoodDiet.setDia(foodDiet.getDia());
+                                                reFoodDiet.setComida(foodDiet.getComida());
+                                                reFoodDiet.setIdDieta(foodDiet.getIdDieta());
+
+                                                String nombre = foodDiet.getName();
+                                                agrupado.putIfAbsent(nombre, new ArrayList<>());
+                                                agrupado.get(nombre).add(reFoodDiet);
+                                            } else {
+                                                errorOccurred.set(true);
+                                                taskCompletionSource.setException(new ComplexFBCE(new ObjectResult<>(false, "Error al convertir RRA", null)));
+                                                return;
+                                            }
+                                        }
+                                    } else {
+                                        errorOccurred.set(true);
+                                        taskCompletionSource.setException(new ComplexFBCE(new ObjectResult<>(false, "Error en sincronize", null)));
+                                        return;
+                                    }
+
+                                    // Verificar si ya se procesaron todos los documentos
+                                    if (processedDocs.incrementAndGet() == totalDocs && !errorOccurred.get()) {
+                                        saveData.getFoodDiets().add(idDieta, agrupado);
+                                        saveData.getFoodDiets().setLoaded(true);
+                                        taskCompletionSource.setResult(new ObjectResult<>(true, "success", agrupado));
+                                    }
+                                });
+                            } else {
+                                errorOccurred.set(true);
+                                taskCompletionSource.setException(new ComplexFBCE(new ObjectResult<>(false, "Error al convertir FoodDiet", null)));
+                                return;
+                            }
+                        }
+                    } else {
+                        Log.d("Firebase", "⚠️ No se encontraron documentos con idDieta: " + idDieta);
+                        taskCompletionSource.setResult(new ObjectResult<>(false, "FoodDiet no encontrado", null));
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("Firebase", "❌ Error al buscar FoodDiet: " + e.getMessage());
+                    taskCompletionSource.setException(new ComplexFBCE(new ObjectResult<>(false, "Error: " + e.getMessage(), null)));
+                });
+
+        return taskCompletionSource.getTask();
+    }
+    private static void sincronize (FoodDiet foodDiet, OnResultCallBack<Object> callback){
+        FirebaseFirestore fst = FireBaseConnector.getInstance().getFirestore();
+        fst.collection("recetaAlimento")
+                .whereEqualTo("idFooDiet", foodDiet.getId())
+                .get().addOnSuccessListener(
+                        result -> callback.onResult(result)
+                ).addOnFailureListener(
+                        e -> callback.onResult(null)
+                );
     }
 
     public static Task<ObjectResult<ArrayList<FoodDiet>>> readFoodDietByDay(
