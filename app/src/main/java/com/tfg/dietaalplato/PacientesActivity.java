@@ -15,8 +15,6 @@ import android.widget.Toast;
 
 
 import androidx.appcompat.app.AppCompatActivity;
-
-
 import com.tfg.dietaalplato.utilities.Blocker;
 import com.tfg.dietaalplato.firebase.conectors.tools.FireBaseReader;
 import com.tfg.dietaalplato.firebase.tables.Client;
@@ -173,7 +171,6 @@ public class PacientesActivity extends AppCompatActivity {
 
     public void onClickAddClient(View view){
         ClientInfo_Dialog dialogo = ClientInfo_Dialog.getInstance(false);
-        dialogo.setOnPacienteEditadoListener(() -> actualizarPacientes(null)); // actualiza al guardar
         dialogo.show(getSupportFragmentManager(), "dialogoNuevoCliente");
     }
 
@@ -182,9 +179,4 @@ public class PacientesActivity extends AppCompatActivity {
         super.onRestart();
         recreate();
     }
-    public void actualizarPacientes(View view){
-        Intent intent = new Intent(this, PacientesActivity.class );
-        startActivity(intent);
-    }
-
 }
