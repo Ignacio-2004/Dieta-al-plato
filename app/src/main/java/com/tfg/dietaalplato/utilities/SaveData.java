@@ -40,11 +40,9 @@ public class SaveData {
     private FoodDiet currentFood;
     private int currentDay;
     private String momentOfDay;
-    private String day;
     private final String TAG = "SaveData";
 
     private Map<String, DailyNutrition> nutritionByDay = new HashMap<>();
-    private List<FoodDiet> currentMealFoods;
 
     private SaveData() {
         Log.d(TAG, "SaveData instanciando");
@@ -58,7 +56,6 @@ public class SaveData {
         currentClient = new Client();
         currentDiet = new Diet();
         currentFood = new FoodDiet();
-        day = "";
         momentOfDay = "";
     }
 
@@ -69,13 +66,6 @@ public class SaveData {
         return saveData;
     }
 
-    public String getDay() {
-        return day;
-    }
-
-    public void setDay(String day) {
-        this.day = day;
-    }
 
     public String getMomentOfDay() {
         return momentOfDay;
@@ -432,7 +422,7 @@ public class SaveData {
         return mealsFoods.getOrDefault(mealType, new ArrayList<>());
     }
 
-
+    // ++ Dani
     private ArrayList<FoodDiet> currentDayFoodDiets;
     private Map<String, Food> foodHashMap = new HashMap<>();
 
@@ -453,4 +443,5 @@ public class SaveData {
     public Food getFoodById(String foodId) {
         return foodHashMap.get(foodId);
     }
+    //--Dani
 }
