@@ -80,6 +80,7 @@ public class DialogAddJustification extends DialogFragment {
                                         Blocker.removeBlocker(parent);
                                         mostrarTextError();
                                         getActivity().recreate();
+                                        dismiss();
                                     }
                             ).addOnFailureListener(
                                     e -> {

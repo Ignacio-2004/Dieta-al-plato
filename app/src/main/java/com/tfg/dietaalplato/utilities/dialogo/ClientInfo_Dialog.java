@@ -147,6 +147,7 @@ public class ClientInfo_Dialog extends DialogFragment {
                                                         textError.setVisibility(View.VISIBLE);
                                                         mostrarTextError();
                                                         getActivity().recreate();
+                                                        dismiss();
                                                     }
                                             );
                                         }
@@ -180,6 +181,7 @@ public class ClientInfo_Dialog extends DialogFragment {
                                             textError.setVisibility(View.VISIBLE);
                                             mostrarTextError();
                                             getActivity().recreate();
+                                            dismiss();
                                         }
                                 );
                             }
